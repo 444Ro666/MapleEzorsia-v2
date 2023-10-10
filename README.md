@@ -4,15 +4,11 @@ This DLL modifies addresses in a v83 MapleStory client to change the game window
 Some in-game component boundaries are also modified to scale with the custom resolution.  
 This code can only be compiled on the x86 platform.
 
----
+HD client setup instructions: https://github.com/444Ro666/v83-Client-Setup-and-Development-Guide
+
 ### Default config.ini
-The default `config.ini` file isn't included or generated but is optional.
-Simply make a file called `config.ini` in your game folder (where the .dll is) and the program will try to use it.  
-```
-[general]
-width=1280
-height=720
-```
+The default `config.ini` file is included. put it in your game folder (where the .dll is) and the program will try to use it.  
+
 
 ### How to use
 In your v83 MapleStory directory,  
