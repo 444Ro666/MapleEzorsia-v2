@@ -16,7 +16,7 @@ This code can only be compiled on the x86 platform. ([Compilation settings](http
   
 - [HD client setup instructions/development guide](https://github.com/444Ro666/MapleEzorsia-v2/wiki/v83%E2%80%90Client%E2%80%90Setup%E2%80%90and%E2%80%90Development%E2%80%90Guide)
 - Original Ezorsia: https://github.com/izarooni/MapleEzorsia
-- Current most frequently updated open source server source (checked 2023/10/10): [cosmic](https://github.com/P0nk/Cosmic)
+- Current most frequently updated open source v83 server source (checked 2023/10/10): [cosmic](https://github.com/P0nk/Cosmic)
 
 #### Default config.ini
 The default `config.ini` file is included. put it in your game folder (where the .dll is) and the program will try to use it. try to avoid extending the comments (behind ;comment) inside of it or INIReader will be unable to read from it and cause the patch to default to default values for all of the toggle-able values
