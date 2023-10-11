@@ -2,14 +2,18 @@
 #### Please follow setup instructions [here](https://github.com/444Ro666/MapleEzorsia-v2/wiki/v83%E2%80%90Client%E2%80%90Setup%E2%80%90and%E2%80%90Development%E2%80%90Guide) for optimal setup
 This DLL modifies addresses in a v83 MapleStory client to change the game window and canvas resolution.  
 Most in-game component boundaries are also modified to scale with the custom resolution. 
-
-This DLL requires a clean game client like the one provided in setup, using a client with unknown binary edits can result in unstable and unpredictable behavior!  
-
+  
+The goal of this DLL patch is to allow an old 4:3 aspect ratio game to work on 16:9 aspect ratio modern monitors while perserving the original gameplay experience as much as possible. However i also do believe that it is the individual player's choice on how they wish to play the game so i am willing to be flexible regarding optional functionality.
+  
+This DLL patch is designed to provide a quality, relatively safe, open source client setup to work alongside open source servers.
+  
+This DLL requires a clean game client like the one provided in setup, or at least one in which the binary edits are known to avoid potential execution conflicts and instability. using a client with unknown binary edits can result in unstable and unpredictable behavior!  
+  
 This DLL also requires some minor modifications to UI.wz to work optimally because i'm currently not skilled enough to change the game in those areas using only DLL, these are also provided in the setup.  
 (The patch can be used without those UI.wz modifications but you need to turn CustomLoginFrame=false in the `config.ini` file if you aren't using your own custom login frame)
-
+  
 This code can only be compiled on the x86 platform. ([Compilation settings](https://www.mediafire.com/view/6xk7b9bf8qv3gda/buildsettingsEzorsia.png/file))
-
+  
 - [HD client setup instructions/development guide](https://github.com/444Ro666/MapleEzorsia-v2/wiki/v83%E2%80%90Client%E2%80%90Setup%E2%80%90and%E2%80%90Development%E2%80%90Guide)
 - Original Ezorsia: https://github.com/izarooni/MapleEzorsia
 - Current most frequently updated open source server source (checked 2023/10/10): [cosmic](https://github.com/P0nk/Cosmic)
