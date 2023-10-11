@@ -1,5 +1,5 @@
 # MapleEzorsia v2 (HD client patch for v83)
-#### Please follow setup instructions [here](https://github.com/444Ro666/MapleEzorsia-v2/wiki/v83%E2%80%90Client%E2%80%90Setup%E2%80%90and%E2%80%90Development%E2%80%90Guide) for optimal setup
+#### Please follow setup instructions [here](https://github.com/444Ro666/MapleEzorsia-v2/wiki/v83%E2%80%90Client%E2%80%90Setup%E2%80%90and%E2%80%90Development%E2%80%90Guide) for optimal setup, [full setup gameplay](https://www.youtube.com/watch?v=HxGKn0EjPC0)
 This DLL modifies addresses in a v83 MapleStory client to change the game window and canvas resolution.  
 Most in-game component boundaries are also modified to scale with the custom resolution. 
   
