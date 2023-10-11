@@ -57,7 +57,7 @@ In your v83 MapleStory directory,
 
 ### Want to help me?
 My [To-do](https://github.com/444Ro666/MapleEzorsia-v2/wiki/my-to%E2%80%90do-list) list is what im currently looking to improve on for the patch in the future. development will be slower now that it is releasable compared to pre-release.
-[click here](https://github.com/444Ro666/MapleEzorsia-v2/blob/main/CONTRIBUTING.md) to see how you can help
+[click here](https://github.com/444Ro666/MapleEzorsia-v2/blob/main/CONTRIBUTING.md) to see how you can help. you can also see the [guide here](https://github.com/444Ro666/MapleEzorsia-v2/wiki/v83%E2%80%90Client%E2%80%90Setup%E2%80%90and%E2%80%90Development%E2%80%90Guide) on how to develop the patch
 
 
 ## Credits
