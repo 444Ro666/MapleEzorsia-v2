@@ -10,7 +10,7 @@ This DLL also requires some minor modifications to UI.wz to work optimally becau
 
 This code can only be compiled on the x86 platform. ([Compilation settings](https://www.mediafire.com/view/6xk7b9bf8qv3gda/buildsettingsEzorsia.png/file))
 
-- HD client setup instructions/development guide: [here](https://github.com/444Ro666/MapleEzorsia-v2/wiki/v83%E2%80%90Client%E2%80%90Setup%E2%80%90and%E2%80%90Development%E2%80%90Guide)
+- [HD client setup instructions/development guide](https://github.com/444Ro666/MapleEzorsia-v2/wiki/v83%E2%80%90Client%E2%80%90Setup%E2%80%90and%E2%80%90Development%E2%80%90Guide)
 - Original Ezorsia: https://github.com/izarooni/MapleEzorsia
 - Current most frequently updated open source server source (checked 2023/10/10): [cosmic](https://github.com/P0nk/Cosmic)
 
@@ -22,7 +22,7 @@ The default `config.ini` file is included. put it in your game folder (where the
 In your v83 MapleStory directory,  
 1. Rename file `nmconew.dll` to `nmconew2.dll`  
 2. insert [this DLL file](https://github.com/444Ro666/MapleEzorsia-v2/releases) in that directory
-3. insert config.ini in that same directory and check to make the values are as they should be; CustomLoginFrame=false if you aren't using the UI.wz from the [setup guide](https://github.com/444Ro666/v83-Client-Setup-and-Development-Guide) or your own custom login frame
+3. insert config.ini in that same directory and check to make the values are as they should be; CustomLoginFrame=false if you aren't using the UI.wz from the [setup guide](https://github.com/444Ro666/MapleEzorsia-v2/wiki/v83%E2%80%90Client%E2%80%90Setup%E2%80%90and%E2%80%90Development%E2%80%90Guide) or your own custom login frame
 4. Run your client!
 
 ## Features
