@@ -5,7 +5,7 @@ Most in-game component boundaries are also modified to scale with the custom res
   
 The goal of this DLL patch is to allow an old 4:3 aspect ratio game to work on 16:9 aspect ratio modern monitors while perserving the original gameplay experience as much as possible. However i also do believe that it is the individual player's choice on how they wish to play the game so i am willing to be flexible regarding optional functionality.
   
-This DLL patch is designed to provide a quality, relatively safe, open source client setup to work alongside open source servers.
+This DLL patch is designed to provide a quality, relatively safe, open source client setup to work alongside open source servers. I do not have the skill or resources available to make a fully working custom client from scratch so this is the best i can do
   
 This DLL requires a clean game client like the one provided in [the setup guide](https://github.com/444Ro666/MapleEzorsia-v2/wiki/v83%E2%80%90Client%E2%80%90Setup%E2%80%90and%E2%80%90Development%E2%80%90Guide), or at least one in which the binary edits are known to avoid potential execution conflicts and instability. using a client with unknown binary edits can result in unstable and unpredictable behavior!  
   
