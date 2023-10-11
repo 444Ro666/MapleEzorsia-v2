@@ -1,5 +1,5 @@
 # MapleEzorsia v2 (HD client patch for v83)
-#### Please follow setup instructions [here](https://github.com/444Ro666/v83-Client-Setup-and-Development-Guide) for optimal setup
+#### Please follow setup instructions [here](https://github.com/444Ro666/MapleEzorsia-v2/wiki/v83%E2%80%90Client%E2%80%90Setup%E2%80%90and%E2%80%90Development%E2%80%90Guide) for optimal setup
 This DLL modifies addresses in a v83 MapleStory client to change the game window and canvas resolution.  
 Most in-game component boundaries are also modified to scale with the custom resolution. 
 
@@ -10,9 +10,9 @@ This DLL also requires some minor modifications to UI.wz to work optimally becau
 
 This code can only be compiled on the x86 platform. (Compilation settings: https://www.mediafire.com/view/6xk7b9bf8qv3gda/buildsettingsEzorsia.png/file)
 
-- HD client setup instructions/development guide: https://github.com/444Ro666/v83-Client-Setup-and-Development-Guide  
+- HD client setup instructions/development guide: [here](https://github.com/444Ro666/MapleEzorsia-v2/wiki/v83%E2%80%90Client%E2%80%90Setup%E2%80%90and%E2%80%90Development%E2%80%90Guide)
 - Original Ezorsia: https://github.com/izarooni/MapleEzorsia
-- Current most frequently updated open source server source (checked 2023/10/10): https://github.com/P0nk/Cosmic
+- Current most frequently updated open source server source (checked 2023/10/10): [cosmic](https://github.com/P0nk/Cosmic)
 
 #### Default config.ini
 The default `config.ini` file is included. put it in your game folder (where the .dll is) and the program will try to use it. try to avoid extending the comments (behind ;comment) inside of it or INIReader will be unable to read from it and cause the patch to default to default values for all of the toggle-able values
