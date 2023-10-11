@@ -61,7 +61,7 @@ My [To-do](https://github.com/444Ro666/MapleEzorsia-v2/wiki/my-to%E2%80%90do-lis
 
 
 ## Credits
-i'd like to thank the members of the [maple dev community](https://discord.gg/DU8j6xrW) who took the time to help me when they did. I'd also like to thank the creator of the [original ezorsia](https://github.com/izarooni/MapleEzorsia) for creating the base i used to work off of and learn from. I'd also like to thank the people who provided the releases and resources in the [setup and development](https://github.com/444Ro666/v83-Client-Setup-and-Development-Guid) page; i would not have been able to do this work without the work that which was done before me.
+i'd like to thank the members of the [maple dev community](https://discord.gg/DU8j6xrW) who took the time to help me when they did. I'd also like to thank the creator of the [original ezorsia](https://github.com/izarooni/MapleEzorsia) for creating the base i used to work off of and learn from. I'd also like to thank the people who provided the releases and resources in the [setup and development](https://github.com/444Ro666/MapleEzorsia-v2/wiki/v83%E2%80%90Client%E2%80%90Setup%E2%80%90and%E2%80%90Development%E2%80%90Guide) page; i would not have been able to do this work without the work that which was done before me.
 
 ## License
 
