@@ -72,9 +72,9 @@ void Client::UpdateResolution() {
 	//Memory::WriteInt(0x0045B898 + 1, m_nGameHeight - 25);	//push 575
 	Memory::WriteInt(0x0045B898 + 1, m_nGameWidth - 225);	//push 575 ##ED  //smega x axis fade
 	//Memory::WriteInt(0x0045B97E + 1, m_nGameWidth);	//push 800 ; RelMove? ##REDUN
-	Memory::WriteInt(0x004D9BD1 + 1, m_nGameWidth);	//push 800
-	Memory::WriteInt(0x004D9C37 + 1, m_nGameWidth);	//push 800
-	//Memory::WriteInt(0x004D9C84 + 1, m_nGameWidth);	//push 800 ; StringPool#1443 (BtMouseCilck)		//click width for tabs and numbers in cash shop (uncomment and adjust if cash shop ever gets upgraded to full rez, for now enabling it will cause buttons in the cashshop to not work)
+	//Memory::WriteInt(0x004D9BD1 + 1, m_nGameWidth);	//push 800	; StringPool#1443 (BtMouseCilck)		//click ???related?? for tabs and numbers in cash shop
+	//Memory::WriteInt(0x004D9C37 + 1, m_nGameWidth);	//push 800	; StringPool#1443 (BtMouseCilck)		//click ???related?? for tabs and numbers in cash shop
+	//Memory::WriteInt(0x004D9C84 + 1, m_nGameWidth);	//push 800 ; StringPool#1443 (BtMouseCilck)		//click ???related?? for tabs and numbers in cash shop
 	Memory::WriteInt(0x005386F0 + 1, m_nGameHeight);//push 600
 	Memory::WriteInt(0x005386F5 + 1, m_nGameWidth);	//push 800 ; CField::DrawFearEffect
 	Memory::WriteInt(0x0055B808 + 1, m_nGameHeight);//push 600
@@ -203,7 +203,7 @@ void Client::UpdateResolution() {
 	Memory::WriteInt(0x008D2765 + 1, m_nGameHeight - 19);	//push 581
 	Memory::WriteInt(0x008D29B4 + 1, m_nGameHeight - 19);	//push 581
 	Memory::WriteInt(0x008D8BFE + 1, m_nGameHeight - 19);	//push 581
-	Memory::WriteInt(0x008D937E + 1, m_nGameHeight - 19);	//push 581
+	Memory::WriteInt(0x008D937E + 1, m_nGameHeight - 19);	//push 581 //008D9373  move mana bar outline? //ty rynyan
 	Memory::WriteInt(0x008D9AC9 + 1, m_nGameHeight - 19);	//push  
 	Memory::WriteInt(0x008D1D50 + 1, m_nGameHeight - 22);	//push 578
 	Memory::WriteInt(0x008D1D55 + 1, m_nGameWidth);	//push 800
@@ -417,22 +417,22 @@ void Client::UpdateResolution() {
 
 	myHeight = (Client::m_nGameHeight - 600) / 2;//cash shop fix for frame area	//recalc offsets
 	myWidth = (Client::m_nGameWidth - 800) / 2;//cash shop fix for frame area		//recalc offsets
-	nHeightOfsetted1 = 316 + myHeight; nWidthOfsetted1 = 256 + myWidth; nTopOfsetted1 = 0 + myHeight; nLeftOfsetted1 = 0 + myWidth; //parameters for fix1
+	nHeightOfsetted1 = 316; nWidthOfsetted1 = 256; nTopOfsetted1 = 0 + myHeight; nLeftOfsetted1 = 0 + myWidth; //parameters for fix1
 	Memory::CodeCave(CashShopFix1, dwCashFix1, dwCashFix1NOPs);
-	nHeightOfsetted2 = 104 + myHeight; nWidthOfsetted2 = 256 + myWidth; nTopOfsetted2 = 318 + myHeight; nLeftOfsetted2 = -1 + myWidth; //parameters for fix2
+	nHeightOfsetted2 = 104; nWidthOfsetted2 = 256; nTopOfsetted2 = 318 + myHeight; nLeftOfsetted2 = -1 + myWidth; //parameters for fix2
 	Memory::CodeCave(CashShopFix2, dwCashFix2, dwCashFix2NOPs);
-	nHeightOfsetted3 = 163 + myHeight; nWidthOfsetted3 = 246 + myWidth; nTopOfsetted3 = 426 + myHeight; nLeftOfsetted3 = 0 + myWidth; //parameters for fix3
+	nHeightOfsetted3 = 163; nWidthOfsetted3 = 246; nTopOfsetted3 = 426 + myHeight; nLeftOfsetted3 = 0 + myWidth; //parameters for fix3
 	Memory::CodeCave(CashShopFix3, dwCashFix3, dwCashFix3NOPs);
-	nHeightOfsetted4 = 78 + myHeight; nWidthOfsetted4 = 508 + myWidth; nTopOfsetted4 = 17 + myHeight; nLeftOfsetted4 = 272 + myWidth; //parameters for fix4
+	nHeightOfsetted4 = 78; nWidthOfsetted4 = 508; nTopOfsetted4 = 17 + myHeight; nLeftOfsetted4 = 272 + myWidth; //parameters for fix4
 	Memory::CodeCave(CashShopFix4, dwCashFix4, dwCashFix4NOPs);
-	nHeightOfsetted5 = 430 + myHeight; nWidthOfsetted5 = 412 + myWidth; nTopOfsetted5 = 95 + myHeight; nLeftOfsetted5 = 275 + myWidth; //parameters for fix5
+	nHeightOfsetted5 = 430; nWidthOfsetted5 = 412; nTopOfsetted5 = 95 + myHeight; nLeftOfsetted5 = 275 + myWidth; //parameters for fix5
 	Memory::CodeCave(CashShopFix5, dwCashFix5, dwCashFix5NOPs);	//main part of shop, item listings	//thanks angel for stuff that helped
-	nHeightOfsetted6 = 358 + myHeight; nWidthOfsetted6 = 90 + myWidth; nTopOfsetted6 = 157 + myHeight; //parameters for fix6
+	nHeightOfsetted6 = 358; nWidthOfsetted6 = 90; nTopOfsetted6 = 157 + myHeight; //parameters for fix6
 	Memory::CodeCave(CashShopFix6, dwCashFix6, dwCashFix6NOPs);//code cave 6 //best sellers
 	Memory::WriteInt(0x004694BA + 1, myWidth + 690);//nleft, actual drawn part	//best sellers
-	nHeightOfsetted7 = 56 + myHeight; nWidthOfsetted7 = 545 + myWidth; nTopOfsetted7 = 530 + myHeight; nLeftOfsetted7 = 254 + myWidth; //parameters for fix7
+	nHeightOfsetted7 = 56; nWidthOfsetted7 = 545; nTopOfsetted7 = 530 + myHeight; nLeftOfsetted7 = 254 + myWidth; //parameters for fix7
 	Memory::CodeCave(CashShopFix7, dwCashFix7, dwCashFix7NOPs);
-	nHeightOfsetted8 = 22 + myHeight; nWidthOfsetted8 = 89 + myWidth; nTopOfsetted8 = 97 + myHeight; nLeftOfsetted8 = 690 + myWidth; //parameters for fix8
+	nHeightOfsetted8 = 22; nWidthOfsetted8 = 89; nTopOfsetted8 = 97 + myHeight; nLeftOfsetted8 = 690 + myWidth; //parameters for fix8
 	Memory::CodeCave(CashShopFix8, dwCashFix8, dwCashFix8NOPs);
 	Memory::CodeCave(CashShopFixOnOff, dwCashFixOnOff, dwCashFixOnOffNOPs);	//fix for preview On/Off button not being accurate on entering cash shop //thanks windyboy
 
