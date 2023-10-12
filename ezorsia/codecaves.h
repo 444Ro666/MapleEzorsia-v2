@@ -507,17 +507,25 @@ __declspec(naked) void ccMuruengraidMonster1_2() {
 	}
 }
 
+__declspec(naked) void ccStatsSubMov() {
+	__asm {
+		mov     ecx, esi
+		add   DWORD PTR[ebp + 0x8], 84 //260-176
+		push   DWORD PTR[ebp + 0x8]
+		jmp dword ptr[dwStatsSubMovRetn]
+	}
+}
+
 int MINT = 0;
 
-const DWORD dwTesting = 0x0089B0A0;
-const DWORD dwTestingRetn = 0x0089B0A5;
+const DWORD dwTesting = 0x008C5112;
+const DWORD dwTestingRetn = 0x008C5117;
 const int TestingNOPs = 5;
 __declspec(naked) void testingCodeCave() {
 	__asm {
-		//sub eax,100
-		push eax
-		push -110
-		push -110
+		mov     ecx, esi
+		add   DWORD PTR[ebp + 0x8],84 //260-176
+		push   DWORD PTR[ebp + 0x8]
 		jmp dword ptr[dwTestingRetn]
 	}
 }

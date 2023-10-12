@@ -74,7 +74,7 @@ void Memory::WriteDouble(const DWORD dwOriginAddress, const double dwValue) {
     else { *(double*)dwOriginAddress = dwValue; }
 }
 
-void Memory::WriteByteArray(const DWORD dwOriginAddress, unsigned char ucValue[], const int ucValueSize) {
+void Memory::WriteByteArray(const DWORD dwOriginAddress, unsigned char* ucValue, const int ucValueSize) {
     if (UseVirtuProtect) {
         for (int i = 0; i < ucValueSize; i++) {
             const DWORD newAddr = dwOriginAddress + i;
