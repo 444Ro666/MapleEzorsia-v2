@@ -14,7 +14,6 @@ const DWORD dwIGCipherDecryptStr = 0x00A4A9F7;
 const DWORD dwUnlimitedSoulRush = 0x0096BF09;
 const DWORD dwUnlimitedFJ = 0x0096BEB5;
 const DWORD dwUnlimitedFJYVector = 0x0096BF86;
-//0x00AFE8A0 + 4 - Damage cap	//or AFE8A0 + 4	//thanks rain	//use IEEE 754 Floating Point convert to get new values of new real# for new dmg cap
 //0x008C3304 - Range stat cap
 //0x008DB181 + 1	position of the line breaks in the text displayed in this chat log //ty dream
 //008DFB06 008D4B75 008D4C27 008D4CBF 008D6308 //related to vertical scrolling //ty rynyan

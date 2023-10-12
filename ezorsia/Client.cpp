@@ -9,6 +9,8 @@ int Client::MsgAmount = 26;
 bool Client::CustomLoginFrame = true;
 bool Client::WindowedMode = true;
 bool Client::RemoveLogos = true;
+double Client::setDamageCap = 199999.0;
+bool Client::useTubi = false;
 
 void Client::UpdateResolution() {
 	nStatusBarY = Client::m_nGameHeight - 578;
@@ -509,10 +511,17 @@ void Client::UpdateResolution() {
 	xOffsetOfMuruengraidMonster1_2 = 318 + myWidth; //params	//finally fixed this bugger
 	Memory::CodeCave(ccMuruengraidMonster1_2, dwMuruengraidMonster1_2, MuruengraidMonster1_2NOPs);	//muruengraid scaling
 
+	if (useTubi) { Memory::FillBytes(0x00485C32, 0x90, 2); }
+	Memory::WriteDouble(0x00AFE8A0, setDamageCap);	//ty rain
+	int setDamageCapInt = static_cast<int>(setDamageCap < 0 ? setDamageCap - 0.5 : setDamageCap + 0.5);
+	Memory::WriteInt(0x008C3304 + 1, setDamageCapInt); //ty rain
+
 	//Memory::WriteInt(0x00554BA3 + 2, 666); //testing
 	//Memory::WriteInt(0x0060D87A + 1, 100); //testing
 	//Memory::WriteByte(0x004289C0 + 1, 99); //testing
-	//Memory::FillBytes(0x00AF49F8, 0x90, 4);
+	//Memory::FillBytes(0x00485C01, 0x90, 2);
+	//Memory::FillBytes(0x00485C21, 0x90, 2);
+
 	//Memory::CodeCave(testingCodeCave, dwTesting, TestingNOPs); //testing
 	//Memory::CodeCave(testingCodeCave2, dwTesting2, Testing2NOPs); //testing
 	//Memory::CodeCave(testingCodeCave3, dwTesting3, Testing3NOPs); //testing
