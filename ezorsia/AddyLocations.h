@@ -18,6 +18,7 @@ const DWORD dwUnlimitedFJYVector = 0x0096BF86;
 //0x008C3304 - Range stat cap
 //0x008DB181 + 1	position of the line breaks in the text displayed in this chat log //ty dream
 //008DFB06 008D4B75 008D4C27 008D4CBF 008D6308 //related to vertical scrolling //ty rynyan
+//005F456A version number edit //ty windy
 
 // ===== Resolution Modifications =====
 const DWORD dwByteAvatarMegaHPos = 0x0045B97E;
