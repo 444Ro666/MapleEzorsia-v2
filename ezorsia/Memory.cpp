@@ -71,7 +71,7 @@ void Memory::WriteDouble(const DWORD dwOriginAddress, const double dwValue) {
         *(double*)dwOriginAddress = dwValue;
         VirtualProtect((LPVOID)dwOriginAddress, sizeof(double), dwOldProtect, &dwOldProtect);
     }
-    else { *(unsigned int*)dwOriginAddress = dwValue; }
+    else { *(double*)dwOriginAddress = dwValue; }
 }
 
 void Memory::WriteByteArray(const DWORD dwOriginAddress, unsigned char ucValue[], const int ucValueSize) {
