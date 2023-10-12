@@ -56,6 +56,8 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD  ul_reason_for_call, LPVOID lpReser
 			Client::WindowedMode = reader.GetBoolean("general", "WindowedMode", true);
 			Client::RemoveLogos = reader.GetBoolean("general", "RemoveLogos", true);
 			Memory::UseVirtuProtect = reader.GetBoolean("general", "UseVirtuProtect", true);
+			Client::setDamageCap = reader.GetReal("optional", "setDamageCap", 199999.0);
+			Client::useTubi = reader.GetBoolean("optional", "useTubi", false);
 			//ServerIP_AddressFromINI = reader.Get("general", "ServerIPaddress", "255.255.255.255");
 		}
 		//const char* ServerIP_Address = ServerIP_AddressFromINI.c_str();
