@@ -15,4 +15,5 @@ public:
 	static bool RemoveLogos;
 	static double setDamageCap;
 	static bool useTubi;
+	static bool bigLoginFrame;
 };

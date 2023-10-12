@@ -14,7 +14,6 @@ const DWORD dwIGCipherDecryptStr = 0x00A4A9F7;
 const DWORD dwUnlimitedSoulRush = 0x0096BF09;
 const DWORD dwUnlimitedFJ = 0x0096BEB5;
 const DWORD dwUnlimitedFJYVector = 0x0096BF86;
-//0x008C3304 - Range stat cap
 //0x008DB181 + 1	position of the line breaks in the text displayed in this chat log //ty dream
 //008DFB06 008D4B75 008D4C27 008D4CBF 008D6308 //related to vertical scrolling //ty rynyan
 //005F456A version number edit //ty windy
@@ -147,6 +146,10 @@ const int MuruengraidTimerBarNOPs = 7;
 const DWORD dwMuruengraidMonster1_2 = 0x00554BA3;
 const DWORD dwMuruengraidMonster1_2Retn = 0x00554BA8;
 const int MuruengraidMonster1_2NOPs = 5;
+
+const DWORD dwStatsSubMov = 0x008C5112;
+const DWORD dwStatsSubMovRetn = 0x008C5117;
+const int StatsSubMovNOPs = 5;
 
 //my cash shop fix
 const DWORD dwCashFix1 = 0x00469414;
