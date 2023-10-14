@@ -2,6 +2,7 @@
 #include "stdafx.h"
 #include "NMCO.h"
 #include "INIReader.h"
+#include "multi.h"
 
 void CreateConsole() {
 	AllocConsole();
@@ -59,12 +60,14 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD  ul_reason_for_call, LPVOID lpReser
 			Client::setDamageCap = reader.GetReal("optional", "setDamageCap", 199999.0);
 			Client::useTubi = reader.GetBoolean("optional", "useTubi", false);
 			Client::bigLoginFrame = reader.GetBoolean("general", "bigLoginFrame", false);
+			Client::speedMovementCap = reader.GetInteger("optional", "speedMovementCap", 140);
 			//ServerIP_AddressFromINI = reader.Get("general", "ServerIPaddress", "255.255.255.255");
 		}
 		//const char* ServerIP_Address = ServerIP_AddressFromINI.c_str();
-
+		Hook_CreateMutexA(true); //multiclient //ty darter, angel, and alias!  //not currently working, likely cannot hook early enough with nmconew.dll
 		HookCreateWindowExA();
 		HookGetModuleFileName();
+
 		std::cout << "GetModuleFileName hook created" << std::endl;
 		NMCO::CreateHook();
 		std::cout << "NMCO hook initialized" << std::endl;
@@ -83,9 +86,7 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD  ul_reason_for_call, LPVOID lpReser
 		//Memory::WriteByte(0x49C2CE, 0x01);//remove elevation requests	//thanks stelmo for showing me how to do this
 		//Memory::WriteByte(0x49CFE9, 0x01);//remove elevation requests
 		//Memory::WriteByte(0x49D399, 0x01);//remove elevation requests
-
-		//Client::FunctionReplace();
-
+		Client::FunctionReplace();
 		std::cout << "Applying resolution " << Client::m_nGameWidth << "x" << Client::m_nGameHeight << std::endl;
 		Client::UpdateResolution();
 		break;

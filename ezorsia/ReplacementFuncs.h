@@ -1,4 +1,5 @@
-
+#include <iostream>
+#include <cstdio>
 //notes from my knowledge as i have not used these kinds of codes practically well
 //function replacement is when you replace the original function in the client with your own fake function, usually to add some extra functionality
 //for more complex applications you would also need to define the client's variables and reinterpret_cast those (no void this time)
@@ -39,14 +40,27 @@ bool HookDetectLogin()	//a working example for testing when i was learning how t
 	return Memory::SetHook(true, reinterpret_cast<void**>(&_CLoginSendSelectCharPacket), _CLoginSendSelectCharPacket_Hook);
 }
 
-//#define tagPOINT		int[]*
-//bool HookLoginDescriptor()	
+//bool HookDetectLogin2()
 //{
-//	typedef void(__fastcall* _CFadeWndSetOption_t)(void* esi, void* edx, int a0, int a, int a1, tagPOINT pt0, tagPOINT pt, tagPOINT pt1, int t0, int t, int t1);
-//	static auto _CFadeWndSetOption = reinterpret_cast<_CFadeWndSetOption_t>(0x0051F93D);
-//	tagPOINT pt0 = [-149, -63];
-//	static _CFadeWndSetOption_t _CFadeWndSetOption_Hook = [](void* esi, void* edx, int a0, int a, int a1, tagPOINT pt0, tagPOINT pt, tagPOINT pt1, int t0, int t, int t1)
-//		-> void {_CFadeWndSetOption(esi, edx, 255, 255, 0, pt0, [-63, 0], [0, -63], 100, 0, 300);
+//	typedef VARIANTARG* (__fastcall* _IWzProperty__GetItem_t)(void* _this, void* edx, VARIANTARG* result, int* sPath);
+//	static auto _IWzProperty__GetItem = reinterpret_cast<_IWzProperty__GetItem_t>(0x00403935);
+//
+//	_IWzProperty__GetItem_t _IWzProperty__GetItem_Hook = [](void* _this, void* edx, VARIANTARG* result, int* sPath) -> VARIANTARG*
+//	{
+//		testingOut("IWzProperty__GetItem _this: 0x%x, result: 0x%x, sPath: %s");//, _this, result, (char*)sPath);
+//
+//		return _IWzProperty__GetItem(_this, edx, result, sPath);
 //	};
-//	return Memory::SetHook(true, reinterpret_cast<void**>(&_CFadeWndSetOption), _CFadeWndSetOption_Hook);
+//	return Memory::SetHook(true, reinterpret_cast<void**>(&_IWzProperty__GetItem), _IWzProperty__GetItem_Hook);
 //}
+
+int testingOut(const char* input)	//search struct
+{
+	using namespace std;
+	if (std::freopen("output.txt", "w", stdout))
+	{
+		std::printf(input);	std::printf("\n");
+		std::fclose(stdout);
+	}
+	return 0;
+}

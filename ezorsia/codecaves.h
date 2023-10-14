@@ -516,16 +516,14 @@ __declspec(naked) void ccStatsSubMov() {
 	}
 }
 
-int MINT = 0;
-
-const DWORD dwTesting = 0x008C5112;
-const DWORD dwTestingRetn = 0x008C5117;
-const int TestingNOPs = 5;
+int MINT = 51+1;
+const DWORD dwTesting = 0x008D8289;
+const DWORD dwTestingRetn = 0x008D828F;
+const int TestingNOPs = 6;
 __declspec(naked) void testingCodeCave() {
 	__asm {
-		mov     ecx, esi
-		add   DWORD PTR[ebp + 0x8],84 //260-176
-		push   DWORD PTR[ebp + 0x8]
+		push   DWORD PTR[ecx + 0x35]
+		add ecx,MINT
 		jmp dword ptr[dwTestingRetn]
 	}
 }

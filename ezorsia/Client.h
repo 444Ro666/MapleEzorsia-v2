@@ -16,4 +16,5 @@ public:
 	static double setDamageCap;
 	static bool useTubi;
 	static bool bigLoginFrame;
+	static int speedMovementCap;
 };
