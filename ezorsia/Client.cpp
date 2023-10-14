@@ -2,6 +2,7 @@
 #include "AddyLocations.h"
 #include "codecaves.h"
 #include "ReplacementFuncs.h"
+#include <comutil.h>
 
 int Client::m_nGameHeight = 720;
 int Client::m_nGameWidth = 1280;
@@ -12,6 +13,7 @@ bool Client::RemoveLogos = true;
 double Client::setDamageCap = 199999.0;
 bool Client::useTubi = false;
 bool Client::bigLoginFrame = false;
+int Client::speedMovementCap = 140;
 
 void Client::UpdateResolution() {
 	nStatusBarY = Client::m_nGameHeight - 578;
@@ -520,17 +522,20 @@ void Client::UpdateResolution() {
 	Memory::WriteDouble(0x00AFE8A0, setDamageCap);	//ty rain
 	int setDamageCapInt = static_cast<int>(setDamageCap < 0 ? setDamageCap - 0.5 : setDamageCap + 0.5);
 	Memory::WriteInt(0x008C3304 + 1, setDamageCapInt); //ty rain
-	int myStatsWindowOffsetVal = 4, myStatsWindowOffset = 176, myStatsWindowOffset1 = 177;
+
+	Memory::WriteInt(0x00780743 + 3, speedMovementCap); //set speed cap //ty ronan
+	Memory::WriteInt(0x008C4286 + 1, speedMovementCap); //set speed cap //ty ronan
+	Memory::WriteInt(0x0094D91E + 1, speedMovementCap); //set speed cap //ty ronan
+
+	//testingOut("IWzProperty__GetItem _this: 0x%x, result: 0x%x, sPath: %s");//, _this, result, (char*)sPath);
+
+	//int myStatsWindowOffsetVal = 4, myStatsWindowOffset = 176, myStatsWindowOffset1 = 177;
 	//Memory::WriteInt(0x008C4AB3 + 1, myStatsWindowOffset); //stat window ty resinate
 	//Memory::WriteInt(0x008C510A + 1, myStatsWindowOffset1); //stat window ty resinate
 
-	//void* dwThisDW = &testingCodeCave;
-	//unsigned char* This22 = (char*)dwThisDW;
-	//Memory::WriteByte(0x008C5112, 0xE9);// JMP opcode
-	//Memory::WriteByteArray(0x008C5112 + 1, *dwThisDW, 5); //sizeof(&testingCodeCave)
-
-	//Memory::WriteInt(0x00554BA3 + 2, 666); //testing
-	//Memory::WriteInt(0x0060D87A + 1, 100); //testing
+	//Memory::WriteInt(0x0094D91E + 1, 400); //testing
+	//Memory::WriteInt(0x008C4286 + 1, 400); //testing
+	//Memory::WriteInt(0x00780743 + 3, 400); //testing
 	//Memory::WriteByte(0x004289C0 + 1, 99); //testing
 	//Memory::FillBytes(0x00485C01, 0x90, 2);
 	//Memory::FillBytes(0x00485C21, 0x90, 2);
