@@ -1,5 +1,8 @@
 # MapleEzorsia v2 (HD client patch for v83)
-#### Please follow setup instructions [here](https://github.com/444Ro666/MapleEzorsia-v2/wiki/v83%E2%80%90Client%E2%80%90Setup%E2%80%90and%E2%80%90Development%E2%80%90Guide) for optimal setup, [full setup gameplay](https://www.youtube.com/watch?v=HxGKn0EjPC0). see the [change log to make sure you're up to date](https://github.com/444Ro666/MapleEzorsia-v2/wiki/Change-Log)
+#### Please follow [setup instructions here](https://github.com/444Ro666/MapleEzorsia-v2/wiki/v83%E2%80%90Client%E2%80%90Setup%E2%80%90and%E2%80%90Development%E2%80%90Guide) for optimal setup, [gameplay after optimal setup](https://www.youtube.com/watch?v=HxGKn0EjPC0). see the [change log to make sure you're up to date](https://github.com/444Ro666/MapleEzorsia-v2/wiki/Change-Log)  
+
+#### 2023/10/17 - Major update to how the patch loads wz data, YOU NEED THE [NEW WZ FILE](https://www.mediafire.com/file/6bimll8wtpbclmx/EzorsiaV2_UI.wz/file) OR YOUR GAME WILL CRASH (replace old one, works for all res). [setup for more detailed instructions](https://github.com/444Ro666/MapleEzorsia-v2/wiki/v83%E2%80%90Client%E2%80%90Setup%E2%80%90and%E2%80%90Development%E2%80%90Guide)
+
 This DLL modifies addresses in a v83 MapleStory client to change the game window and canvas resolution.  
 Most in-game component boundaries are also modified to scale with the custom resolution. 
   
@@ -65,7 +68,7 @@ My [To-do](https://github.com/444Ro666/MapleEzorsia-v2/wiki/my-to%E2%80%90do-lis
 
 
 ## Credits
-i'd like to thank the members of the [maple dev community](https://discord.gg/DU8j6xrW) who took the time to help me when they did. I'd also like to thank the creator of the [original ezorsia](https://github.com/izarooni/MapleEzorsia) for creating the base i used to work off of and learn from. I'd also like to thank the people who provided the releases and resources in the [setup and development](https://github.com/444Ro666/MapleEzorsia-v2/wiki/v83%E2%80%90Client%E2%80%90Setup%E2%80%90and%E2%80%90Development%E2%80%90Guide) page; i would not have been able to do this work without the work that which was done before me.
+i'd like to thank the members of the [maple dev community](https://discord.gg/DU8j6xrW) who took the time to help me when they did. I'd also like to thank the creator of the [original ezorsia](https://github.com/izarooni/MapleEzorsia) for creating the base i used to work off of and learn from. A special mention to the creators of [MapleClientEditTemplate](https://github.com/MapleStory-Archive/MapleClientEditTemplate) whose re-written utility functions and type definitions helped transition this project towards more advanced client modifications. Finally, I'd like to thank the people who provided the releases and resources in the [setup and development](https://github.com/444Ro666/MapleEzorsia-v2/wiki/v83%E2%80%90Client%E2%80%90Setup%E2%80%90and%E2%80%90Development%E2%80%90Guide) page; i would not have been able to do this work without the work that which was done before me.
 
 ## License
 
