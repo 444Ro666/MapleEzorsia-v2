@@ -1,3 +1,4 @@
+#pragma once
 const DWORD dwDInput8DLLInject = 0x00796357; 
 const DWORD dwMovementFlushInterval = 0x0068A83F;
 const DWORD dwStatWndOnStatChange = 0x00A20213;
@@ -18,6 +19,9 @@ const DWORD dwUnlimitedFJYVector = 0x0096BF86;
 //008DFB06 008D4B75 008D4C27 008D4CBF 008D6308 //related to vertical scrolling //ty rynyan
 //005F456A version number edit //ty windy
 //008DFBA0 character typing limit	//ty chris
+//008C4EA2 stat window related?? //ty masterrulax
+//skill tooltip extension x 008F26F3/008F26F8 y //ty rynyan
+//item UI tooltip extension 008EEEAF //ty rain
 
 // ===== Resolution Modifications =====
 const DWORD dwByteAvatarMegaHPos = 0x0045B97E;

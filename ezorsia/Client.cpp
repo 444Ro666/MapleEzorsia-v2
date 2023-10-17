@@ -1,8 +1,6 @@
 #include "stdafx.h"
 #include "AddyLocations.h"
 #include "codecaves.h"
-#include "ReplacementFuncs.h"
-#include <comutil.h>
 
 int Client::m_nGameHeight = 720;
 int Client::m_nGameWidth = 1280;
@@ -26,8 +24,8 @@ void Client::UpdateResolution() {
 
 	Memory::WriteInt(dwApplicationHeight + 1, m_nGameHeight);//push 600
 	Memory::WriteInt(dwApplicationWidth + 1, m_nGameWidth);	//push 800 ; CWvsApp::InitializeGr2D
-	Memory::WriteInt(dwCursorVectorVPos + 2, floor(-m_nGameHeight / 2));//push -300				!!moves all interactable UI elements!!
-	Memory::WriteInt(dwCursorVectorHPos + 2, floor(-m_nGameWidth / 2));	//push -400 ; CInputSystem::SetCursorVectorPos				!!moves all interactable UI elements!!
+	Memory::WriteInt(dwCursorVectorVPos + 2, (unsigned int)floor(-m_nGameHeight / 2));//push -300				!!moves all interactable UI elements!!
+	Memory::WriteInt(dwCursorVectorHPos + 2, (unsigned int)floor(-m_nGameWidth / 2));	//push -400 ; CInputSystem::SetCursorVectorPos				!!moves all interactable UI elements!!
 	Memory::WriteInt(dwUpdateMouseLimitVPos + 1, m_nGameHeight);//mov ecx,600
 	Memory::WriteInt(dwUpdateMouseLimitHPos + 1, m_nGameWidth);	//mov ecx,800 ; CInputSystem::UpdateMouse
 	Memory::WriteInt(dwCursorPosLimitVPos + 1, m_nGameHeight);//mov eax,600
@@ -49,8 +47,8 @@ void Client::UpdateResolution() {
 	Memory::WriteInt(dwQuickSlotInitHPos + 1, 798); //push 647 //hd800
 	Memory::WriteInt(dwQuickSlotVPos + 2, m_nGameHeight + 1);//add esi,533
 	Memory::WriteInt(dwQuickSlotHPos + 1, 798); //push 647 //hd800
-	Memory::WriteInt(dwQuickSlotCWndVPos + 2, (-m_nGameWidth + 32) / 2); //lea edi,[eax-647]
-	Memory::WriteInt(dwQuickSlotCWndHPos + 2, -m_nGameWidth + 228); //lea ebx,[eax-427]
+	Memory::WriteInt(dwQuickSlotCWndVPos + 2, (600 - m_nGameHeight) / 2 - 427); //lea edi,[eax-427]
+	Memory::WriteInt(dwQuickSlotCWndHPos + 2, -798); //lea ebx,[eax-647]
 
 	//Memory::WriteInt(dwByteAvatarMegaHPos + 1, m_nGameWidth + 100); //push 800 ; CAvatarMegaphone::ByeAvatarMegaphone ; IWzVector2D::RelMove ##BAK
 	Memory::WriteInt(dwByteAvatarMegaHPos + 1, m_nGameWidth); //push 800 ; CAvatarMegaphone::ByeAvatarMegaphone ; IWzVector2D::RelMove
@@ -124,31 +122,31 @@ void Client::UpdateResolution() {
 	Memory::WriteInt(0x00640606 + 1, m_nGameWidth);	//mov ecx,800
 	Memory::WriteInt(0x0064067E + 1, m_nGameWidth);	//mov ecx,800
 	Memory::WriteInt(0x00640639 + 1, m_nGameWidth);	//mov ecx,800
-	Memory::WriteInt(0x0064043E + 1, floor(m_nGameWidth / 2));	//mov edi,400
-	Memory::WriteInt(0x00640443 + 1, floor(m_nGameHeight / 2));	//mov esi,300
-	Memory::WriteInt(0x00640626 + 1, floor(m_nGameWidth / 2));	//add eax,400 ; bunch of modulus stuff
+	Memory::WriteInt(0x0064043E + 1, (unsigned int)floor(m_nGameWidth / 2));	//mov edi,400
+	Memory::WriteInt(0x00640443 + 1, (unsigned int)floor(m_nGameHeight / 2));	//mov esi,300
+	Memory::WriteInt(0x00640626 + 1, (unsigned int)floor(m_nGameWidth / 2));	//add eax,400 ; bunch of modulus stuff
 
 	Memory::WriteInt(0x00641038 + 2, m_nGameHeight);//??possibly related to player display
 	Memory::WriteInt(0x0064103F + 2, m_nGameWidth);//??possibly related to player display
-	Memory::WriteInt(0x00641048 + 1, floor(-m_nGameHeight / 2));	//mov esi,-300
-	Memory::WriteInt(0x00641050 + 1, floor(-m_nGameWidth / 2));		//mov esi,-400 ;
+	Memory::WriteInt(0x00641048 + 1, (unsigned int)floor(-m_nGameHeight / 2));	//mov esi,-300
+	Memory::WriteInt(0x00641050 + 1, (unsigned int)floor(-m_nGameWidth / 2));		//mov esi,-400 ;
 	Memory::WriteInt(0x00641A19 + 3, m_nGameHeight);//mov [ebp+28],600
 	Memory::WriteInt(0x00641A12 + 3, m_nGameWidth);	//mov [ebp+32],800 ; idk
 	Memory::WriteInt(0x00641B38 + 3, m_nGameHeight);//mov [ebp-32],600
 	Memory::WriteInt(0x00641B2E + 3, m_nGameWidth);	//mov [ebp-36],800 ; CAnimationDisplayer::SetCenterOrigin
 
-	Memory::WriteInt(0x006CD842 + 1, floor(m_nGameWidth / 2));	//push 400 ; RelMove?
+	Memory::WriteInt(0x006CD842 + 1, (unsigned int)floor(m_nGameWidth / 2));	//push 400 ; RelMove?
 
-	Memory::WriteInt(0x0059A0A2 + 6, floor(m_nGameHeight / 2));	//mov [ebx+2364],300
-	Memory::WriteInt(0x0059A09C + 2, floor(m_nGameWidth / 2));	//mov [esi],400	; CInputSystem::LoadCursorState
+	Memory::WriteInt(0x0059A0A2 + 6, (unsigned int)floor(m_nGameHeight / 2));	//mov [ebx+2364],300
+	Memory::WriteInt(0x0059A09C + 2, (unsigned int)floor(m_nGameWidth / 2));	//mov [esi],400	; CInputSystem::LoadCursorState
 	Memory::WriteInt(0x0080546C + 1, m_nGameHeight);//mov edi,600
 	Memory::WriteInt(0x00805459 + 1, m_nGameWidth);	//mov edx,800 ; CUIEventAlarm::CreateEventAlarm
 	Memory::WriteInt(0x008CFD4B + 1, m_nGameHeight - 22);	//push 578
 	Memory::WriteInt(0x008CFD50 + 1, m_nGameWidth);	//push 800
-	Memory::WriteInt(0x0053836D + 1, floor(-m_nGameHeight / 2));//push -300
-	Memory::WriteInt(0x00538373 + 1, floor(-m_nGameWidth / 2));	//push -400	; RelMove?
-	Memory::WriteInt(0x0055BB2F + 1, floor(-m_nGameHeight / 2));//push -300
-	Memory::WriteInt(0x0055BB35 + 1, floor(-m_nGameWidth / 2));	//push -400 ; RelMove?
+	Memory::WriteInt(0x0053836D + 1, (unsigned int)floor(-m_nGameHeight / 2));//push -300
+	Memory::WriteInt(0x00538373 + 1, (unsigned int)floor(-m_nGameWidth / 2));	//push -400	; RelMove?
+	Memory::WriteInt(0x0055BB2F + 1, (unsigned int)floor(-m_nGameHeight / 2));//push -300
+	Memory::WriteInt(0x0055BB35 + 1, (unsigned int)floor(-m_nGameWidth / 2));	//push -400 ; RelMove?
 
 	Memory::WriteInt(0x005A8B46 + 1, m_nGameHeight);//mov eax,600
 	Memory::WriteInt(0x005A8B56 + 1, m_nGameWidth);	//mov eax,800 ; RelMove?
@@ -166,9 +164,9 @@ void Client::UpdateResolution() {
 	Memory::WriteInt(0x005C2D72 + 1, m_nGameWidth);	//mov eax,800 ; RelMove?
 	Memory::WriteInt(0x005E3FA0 + 1, m_nGameHeight);//push 600
 
-	Memory::WriteInt(0x005F64DE + 1, floor(-m_nGameHeight / 2));	//push -300 ;
-	Memory::WriteInt(0x005F6627 + 1, floor(-m_nGameHeight / 2));	//push -300 ;
-	Memory::WriteInt(0x005F464D + 1, floor(m_nGameWidth / 2));//??related to login game frame
+	Memory::WriteInt(0x005F64DE + 1, (unsigned int)floor(-m_nGameHeight / 2));	//push -300 ;
+	Memory::WriteInt(0x005F6627 + 1, (unsigned int)floor(-m_nGameHeight / 2));	//push -300 ;
+	Memory::WriteInt(0x005F464D + 1, (unsigned int)floor(m_nGameWidth / 2));//??related to login game frame
 
 	Memory::WriteInt(0x0060411C + 1, m_nGameHeight);//push 600
 	//Memory::WriteInt(0x00604126 + 1, floor(-m_nGameWidth / 2));	//push -300 //moves characters side to side on char select //unnecessary atm
@@ -183,17 +181,17 @@ void Client::UpdateResolution() {
 	Memory::WriteInt(0x0061DB10 + 1, (m_nGameWidth / 2) - 201);//??likely related to login pop-up msg
 	Memory::WriteInt(0x0061DB19 + 1, (m_nGameWidth / 2) - 181);//??likely related to login pop-up msg
 
-	Memory::WriteInt(0x004372B1 + 1, floor(-m_nGameHeight / 2));//push -300
-	Memory::WriteInt(0x004372B6 + 1, floor(-m_nGameWidth / 2));	//push -400 ; RelMove?
+	Memory::WriteInt(0x004372B1 + 1, (unsigned int)floor(-m_nGameHeight / 2));//push -300
+	Memory::WriteInt(0x004372B6 + 1, (unsigned int)floor(-m_nGameWidth / 2));	//push -400 ; RelMove?
 	Memory::WriteInt(0x006CE3AB + 1, m_nGameWidth);	//push 800
 	Memory::WriteInt(0x007E1CB7 + 1, m_nGameWidth);	//push 800
 	Memory::WriteInt(0x008D82F5 + 1, m_nGameHeight - 22);	//push 578
 	Memory::WriteInt(0x008D82FA + 1, m_nGameWidth);	//push 800 ; CreateWnd?
-	Memory::WriteInt(0x00935870 + 1, floor(m_nGameHeight / 2));	//push 300
+	Memory::WriteInt(0x00935870 + 1, (unsigned int)floor(m_nGameHeight / 2));	//push 300
 	Memory::WriteInt(0x0093586B + 1, m_nGameWidth);	// push 800 ; RelMove? (Skills)
 	Memory::WriteInt(0x009DFD5C + 1, m_nGameWidth);	//mov ecx,800
 	Memory::WriteInt(0x009DFED2 + 1, m_nGameHeight);//mov ecx,600	; IWzVector2D::RelMove
-	Memory::WriteInt(0x009F6ADD + 1, floor(m_nGameHeight / 2)); //push 300 ; MapleStoryClass
+	Memory::WriteInt(0x009F6ADD + 1, (unsigned int)floor(m_nGameHeight / 2)); //push 300 ; MapleStoryClass
 	Memory::WriteInt(0x006D50D8 + 1, m_nGameHeight);//push 600
 	Memory::WriteInt(0x0074BAA9 + 1, m_nGameHeight);//push 600
 	Memory::WriteInt(0x0074B951 + 1, m_nGameHeight);//push 600
@@ -221,24 +219,24 @@ void Client::UpdateResolution() {
 	Memory::WriteInt(0x004EDAD8 + 1, m_nGameWidth);	//mov ecx,800
 	Memory::WriteInt(0x009F7079, m_nGameHeight);	// dd 600
 	Memory::WriteInt(0x009F707E, m_nGameWidth);	// dd 800
-	Memory::WriteInt(0x00BE2738, floor(m_nGameWidth / 2));	// dd 400
-	Memory::WriteInt(0x00BE2DF4, floor(m_nGameHeight / 2));	// dd 300
-	Memory::WriteInt(0x00BE2DF0, floor(m_nGameWidth / 2));	// dd 400
-	Memory::WriteInt(0x00640656 + 2, floor(-m_nGameWidth / 2));		//add edi,-400 ;
+	Memory::WriteInt(0x00BE2738, (unsigned int)floor(m_nGameWidth / 2));	// dd 400
+	Memory::WriteInt(0x00BE2DF4, (unsigned int)floor(m_nGameHeight / 2));	// dd 300
+	Memory::WriteInt(0x00BE2DF0, (unsigned int)floor(m_nGameWidth / 2));	// dd 400
+	Memory::WriteInt(0x00640656 + 2, (unsigned int)floor(-m_nGameWidth / 2));		//add edi,-400 ;
 
-	Memory::WriteInt(0x006CE4C6 + 1, floor(-m_nGameWidth / 2));		//push -400 ;
-	Memory::WriteInt(0x009E2E85 + 1, floor(-m_nGameHeight / 2));	//push -300		overall screen visible UI scaling
-	Memory::WriteInt(0x009E2E8B + 1, floor(-m_nGameWidth / 2));		//push -400 ;	overall screen visible UI scaling
+	Memory::WriteInt(0x006CE4C6 + 1, (unsigned int)floor(-m_nGameWidth / 2));		//push -400 ;
+	Memory::WriteInt(0x009E2E85 + 1, (unsigned int)floor(-m_nGameHeight / 2));	//push -300		overall screen visible UI scaling
+	Memory::WriteInt(0x009E2E8B + 1, (unsigned int)floor(-m_nGameWidth / 2));		//push -400 ;	overall screen visible UI scaling
 
-	Memory::WriteInt(0x0093519A + 1, floor(-m_nGameHeight / 2));	//push -300 ;
-	Memory::WriteInt(0x00954433 + 1, floor(-m_nGameHeight / 2));	//push -300 ;
-	Memory::WriteInt(0x00981555 + 1, floor(-m_nGameHeight / 2));	//push -300 ;
-	Memory::WriteInt(0x00981F7A + 2, floor(-m_nGameHeight / 2));	//push -300 ;
-	Memory::WriteInt(0x00A448B0 + 2, floor(-m_nGameHeight / 2));	//push -300 ; CWvsPhysicalSpace2D::Load]
+	Memory::WriteInt(0x0093519A + 1, (unsigned int)floor(-m_nGameHeight / 2));	//push -300 ;
+	Memory::WriteInt(0x00954433 + 1, (unsigned int)floor(-m_nGameHeight / 2));	//push -300 ;
+	Memory::WriteInt(0x00981555 + 1, (unsigned int)floor(-m_nGameHeight / 2));	//push -300 ;
+	Memory::WriteInt(0x00981F7A + 2, (unsigned int)floor(-m_nGameHeight / 2));	//push -300 ;
+	Memory::WriteInt(0x00A448B0 + 2, (unsigned int)floor(-m_nGameHeight / 2));	//push -300 ; CWvsPhysicalSpace2D::Load]
 
-	Memory::WriteInt(0x0066BACE + 2, floor(-m_nGameWidth / 2));		//and ecx,-400
-	Memory::WriteInt(0x009B76BD + 3, floor(-m_nGameHeight / 2));	//push -300
-	Memory::WriteInt(0x009B76CB + 3, floor(m_nGameHeight / 2));		//push 300
+	Memory::WriteInt(0x0066BACE + 2, (unsigned int)floor(-m_nGameWidth / 2));		//and ecx,-400
+	Memory::WriteInt(0x009B76BD + 3, (unsigned int)floor(-m_nGameHeight / 2));	//push -300
+	Memory::WriteInt(0x009B76CB + 3, (unsigned int)floor(m_nGameHeight / 2));		//push 300
 
 	Memory::WriteInt(0x009F7078 + 1, m_nGameHeight);//??related to application dimensions	//(ragezone release merge)//thanks mr mr of ragezone for these addresses
 	Memory::WriteInt(0x009F707D + 1, m_nGameWidth);//??related to application dimensions
@@ -250,8 +248,8 @@ void Client::UpdateResolution() {
 	Memory::WriteInt(0x00991854 + 1, m_nGameHeight);//??unknown cwnd function
 	Memory::WriteInt(0x0099185F + 1, (m_nGameWidth / 2) - 134);//??unknown cwnd function
 	Memory::WriteInt(0x00991867 + 1, (m_nGameWidth / 2) - 133);//??unknown cwnd function
-	Memory::WriteInt(0x00992BA7 + 1, floor(m_nGameWidth / 2));//??unknown cwnd function, possibly related to cutildlg
-	Memory::WriteInt(0x00992BAC + 1, floor(m_nGameHeight / 2));//??unknown cwnd function, possibly related to cutildlg
+	Memory::WriteInt(0x00992BA7 + 1, (unsigned int)floor(m_nGameWidth / 2));//??unknown cwnd function, possibly related to cutildlg
+	Memory::WriteInt(0x00992BAC + 1, (unsigned int)floor(m_nGameHeight / 2));//??unknown cwnd function, possibly related to cutildlg
 
 	Memory::WriteInt(0x007E1E07 + 2, m_nGameWidth);//??related to displaying server message at top of screen
 	Memory::WriteInt(0x007E19CA + 2, m_nGameWidth);//??related to displaying server message at top of screen
@@ -315,14 +313,15 @@ void Client::UpdateResolution() {
 
 	//Memory::WriteInt(0x0089B796 + 2, m_nGameHeight - 18);//???related to exp gain/item pick up msg
 	//Memory::WriteInt(0x0089BA03 + 1, m_nGameHeight - 96); //??related to exp gain/item pick up msg
-	//Memory::WriteInt(0x008DE82B + 1, m_nGameHeight - 93); //interactivity of bottom buttoms //quickslot related
 	//Memory::WriteInt(0x008D3F73 + 1, m_nGameHeight - 93);//bottom frame, white area
 	//Memory::WriteInt(0x008D3FE5 + 1, m_nGameHeight - 93);//bottom frame, grey area
 	//Memory::WriteInt(0x008D8353 + 1, m_nGameHeight - 46); //bottom frame, character level
 	//Memory::WriteInt(0x008D83D1 + 1, m_nGameHeight - 55); //role
 	//Memory::WriteInt(0x008D8470 + 1, m_nGameHeight - 40); //name of character
 
-	Memory::WriteInt(0x008DE896 + 1, m_nGameWidth);//??//interactivity of bottom buttoms //quickslot related
+	//Memory::WriteInt(0x008DE850 + 1, 580);//quickslotcheckX//interactivity of bottom buttoms
+	//Memory::WriteInt(0x008DE896 + 1, 647);//quickslotcheckX//interactivity of bottom buttoms
+	//Memory::WriteInt(0x008DE82B + 1, 507);///quickslotcheckY //interactivity of bottom buttoms
 
 	//Memory::WriteInt(0x008DA11C + 1, m_nGameHeight - 19);//??likely various status bar UI components
 	//Memory::WriteInt(0x008DA3D4 + 1, m_nGameHeight - 56); //exphpmp % labels
@@ -444,17 +443,17 @@ void Client::UpdateResolution() {
 	nHeightOfsettedPrev = 165 + myHeight; nWidthOfsettedPrev = 212 + myWidth; nTopOfsettedPrev = 40 + myHeight; nLeftOfsettedPrev = 24 + myWidth; //parameters for fix cash preview
 	Memory::CodeCave(CashShopFixPrev, dwCashFixPrev, dwCashFixPrevNOPs); //cash shop preview fix
 
-	Memory::WriteInt(0x00641F61 + 1, floor(m_nGameWidth / 2));	//mov ebc,400 ;  VRleft		//camera movement
-	Memory::WriteInt(0x00641FC8 + 1, floor(m_nGameHeight / 2));	//add eax,300  ; VRTop //camera movement //not working for most maps
-	//Memory::WriteInt(0x0064202F + 2, floor(m_nGameWidth / 2));	//mov ebc,400 ;  VRright		//camera movement	//crashes
-	Memory::WriteInt(0x0064208F + 1, floor(m_nGameHeight / 2));	//add eax,300  ; VRbottom //camera movement //not working for most maps
+	Memory::WriteInt(0x00641F61 + 1, (unsigned int)floor(m_nGameWidth / 2));	//mov ebc,400 ;  VRleft		//camera movement
+	Memory::WriteInt(0x00641FC8 + 1, (unsigned int)floor(m_nGameHeight / 2));	//add eax,300  ; VRTop //camera movement //not working for most maps
+	//Memory::WriteInt(0x0064202F + 2, (unsigned int)floor(m_nGameWidth / 2));	//mov ebc,400 ;  VRright		//camera movement	//crashes
+	Memory::WriteInt(0x0064208F + 1, (unsigned int)floor(m_nGameHeight / 2));	//add eax,300  ; VRbottom //camera movement //not working for most maps
 
 	myAlwaysViewRestoreFixOffset = myHeight; //parameters for fix view restore all maps number ?????working????!!!
 	Memory::CodeCave(AlwaysViewRestoreFix, dwAlwaysViewRestoreFix, dwAlwaysViewRestoreFixNOPs);	//fix view restora on all maps, currently does nothing; i likely looked in the wrong area
 
 	if (CustomLoginFrame) {
-		Memory::WriteInt(0x005F481E + 1, floor(-m_nGameHeight / 2));//push -300				!!game login frame!! turn this on if you edit UI.wz and use a frame that matches your res
-		Memory::WriteInt(0x005F4824 + 1, floor(-m_nGameWidth / 2));	//push -400 ; RelMove?				!!game login frame!! turn this on if you edit UI.wz and use a frame that matches your res
+		Memory::WriteInt(0x005F481E + 1, (unsigned int)floor(-m_nGameHeight / 2));//push -300				!!game login frame!! turn this on if you edit UI.wz and use a frame that matches your res
+		Memory::WriteInt(0x005F4824 + 1, (unsigned int)floor(-m_nGameWidth / 2));	//push -400 ; RelMove?				!!game login frame!! turn this on if you edit UI.wz and use a frame that matches your res
 	}
 	//nHeightOfsettedloginFrameFix = 0 + myHeight; nWidthOfsettedloginFrameFix = 0 + myWidth;
 	//nTopOfsettedloginFrameFix = 0 + myHeight; nLeftOfsettedloginFrameFix = 0 + myWidth; //parameters for fix cash preview
@@ -533,7 +532,9 @@ void Client::UpdateResolution() {
 	//Memory::WriteInt(0x008C4AB3 + 1, myStatsWindowOffset); //stat window ty resinate
 	//Memory::WriteInt(0x008C510A + 1, myStatsWindowOffset1); //stat window ty resinate
 
-	//Memory::WriteInt(0x0094D91E + 1, 400); //testing
+	
+	//const char* testString = "RoSWzFile"; Memory::WriteString(0x00B3F434, testString);//testing
+	//Memory::WriteInt(0x009F74EA + 3, 16); //testing
 	//Memory::WriteInt(0x008C4286 + 1, 400); //testing
 	//Memory::WriteInt(0x00780743 + 3, 400); //testing
 	//Memory::WriteByte(0x004289C0 + 1, 99); //testing
@@ -544,10 +545,6 @@ void Client::UpdateResolution() {
 	//Memory::CodeCave(testingCodeCave2, dwTesting2, Testing2NOPs); //testing
 	//Memory::CodeCave(testingCodeCave3, dwTesting3, Testing3NOPs); //testing
 	//Memory::CodeCave(testingCodeCave4, dwTesting4, Testing4NOPs); //testing
-}
-
-void Client::FunctionReplace() {//replace nexon functions
-
 }
 
 void Client::EnableNewIGCipher() {//??not called //no idea what cipher is
@@ -573,3 +570,22 @@ void Client::UpdateLogin() {	//un-used //may still contain some useful addresses
 	Memory::WriteByte(dwLoginWebHomeBtn + 1, -127); // x-pos
 	Memory::WriteByte(dwLoginWebRegisterBtn + 1, -127); // x-pos
 }
+
+//unused kept for ref
+// 		//std::string ServerIP_AddressFromINI;
+// 			//ServerIP_AddressFromINI = reader.Get("general", "ServerIPaddress", "255.255.255.255");
+// 		//const char* ServerIP_Address = ServerIP_AddressFromINI.c_str();
+		//Memory::FillBytes(0xAFE084, 0x00, 0x6FE0B2 - 0x6FE084);//remove the existing server IP address	//writing ip from dll doesnt work
+		//Memory::WriteString(0x6FE084, ServerIP_Address);//write the user-set IP address
+		//Memory::WriteString(0x6FE084 + 16, ServerIP_Address);//write the user-set IP address
+		//Memory::WriteString(0x6FE084 + 32, ServerIP_Address);//write the user-set IP address
+		//Memory::WriteString(0xAFE084, "255.255.255.255");//write the user-set IP address //function not working
+		//Memory::WriteString(0xAFE084 + 16, "255.255.255.255");//write the user-set IP address
+		//Memory::WriteString(0xAFE084 + 32, "255.255.255.255");//write the user-set IP address
+
+		//unsigned char remove_elevation[] = { 0x22, *(unsigned char*)"a", *(unsigned char*)"s", *(unsigned char*)"I", *(unsigned char*)"n", *(unsigned char*)"v", *(unsigned char*)"o", *(unsigned char*)"k", *(unsigned char*)"e", *(unsigned char*)"r", 0x22 };//remove elevation requests	//thanks stelmo for showing me how to do this
+		//Memory::WriteByteArray(0xC08459, remove_elevation, sizeof(remove_elevation));//remove elevation requests	//not working from dll
+		//Memory::FillBytes(0xC08464, 0x20, 0xC0846e - 0xC08464);//remove elevation requests
+		//Memory::WriteByte(0x49C2CE, 0x01);//remove elevation requests	//thanks stelmo for showing me how to do this
+		//Memory::WriteByte(0x49CFE9, 0x01);//remove elevation requests
+		//Memory::WriteByte(0x49D399, 0x01);//remove elevation requests

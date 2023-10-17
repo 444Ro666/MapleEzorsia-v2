@@ -1,3 +1,4 @@
+#pragma once
 int nStatusBarY = 0;
 __declspec(naked) void AdjustStatusBar() {
 	__asm {
@@ -516,14 +517,20 @@ __declspec(naked) void ccStatsSubMov() {
 	}
 }
 
+const char myWzFile[] = "TamingMob";
+const char* ptrmyWzFile = myWzFile;
+
 int MINT = 51+1;
-const DWORD dwTesting = 0x008D8289;
-const DWORD dwTestingRetn = 0x008D828F;
-const int TestingNOPs = 6;
+const DWORD dwTesting = 0x009F74D2;
+const DWORD dwTestingRetn = 0x009F74EA;
+const int TestingNOPs = 24;
 __declspec(naked) void testingCodeCave() {
 	__asm {
-		push   DWORD PTR[ecx + 0x35]
-		add ecx,MINT
+		mov    DWORD PTR[ebp - 0x78], 0xb3f434
+		mov    DWORD PTR[ebp - 0x74], 0xb3f42c
+		mov    DWORD PTR[ebp - 0x70], 0xb3f428
+		mov    DWORD PTR[ebp - 0x6C], 0xb3f428
+		mov    DWORD PTR[ebp - 0x18], edi
 		jmp dword ptr[dwTestingRetn]
 	}
 }

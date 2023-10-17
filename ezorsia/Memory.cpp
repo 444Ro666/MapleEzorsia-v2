@@ -24,14 +24,15 @@ void Memory::FillBytes(const DWORD dwOriginAddress, const unsigned char ucValue,
     else { memset((void*)dwOriginAddress, ucValue, nCount); }
 }
 
-void Memory::WriteString(const DWORD dwOriginAddress, const char* sContent, const size_t nSize) {
+void Memory::WriteString(const DWORD dwOriginAddress, const char* sContent) {
+    const size_t nSize = strlen(sContent);
     if (UseVirtuProtect) {
         DWORD dwOldProtect;
         VirtualProtect((LPVOID)dwOriginAddress, nSize, PAGE_EXECUTE_READWRITE, &dwOldProtect);
-        memset((void*)dwOriginAddress, *sContent, nSize);
+        memcpy((void*)dwOriginAddress, sContent, nSize);
         VirtualProtect((LPVOID)dwOriginAddress, nSize, dwOldProtect, &dwOldProtect);
     }
-    else { memset((void*)dwOriginAddress, *sContent, nSize); }
+    else { memcpy((void*)dwOriginAddress, sContent, nSize); }
 }
 
 void Memory::WriteByte(const DWORD dwOriginAddress, const unsigned char ucValue) {
@@ -86,23 +87,6 @@ void Memory::WriteByteArray(const DWORD dwOriginAddress, unsigned char* ucValue,
     }
     else {
         for (int i = 0; i < ucValueSize; i++) { const DWORD newAddr = dwOriginAddress + i; *(unsigned char*)newAddr = ucValue[i]; }
-    }
-}
-
-void Memory::WriteByteArrayFromString(const DWORD dwOriginAddress, const std::string ucValueStr) { //broken, rewrite using memcpy?
-    const char* ucValue = ucValueStr.c_str();
-    int ucValueSize = strlen(ucValue);
-    if (UseVirtuProtect) {
-        for (int i = 0; i < ucValueSize; i++) {
-            const DWORD newAddr = dwOriginAddress + i;
-            DWORD dwOldProtect;
-            VirtualProtect((LPVOID)newAddr, sizeof(unsigned char), PAGE_EXECUTE_READWRITE, &dwOldProtect);
-            *(unsigned char*)newAddr = *(unsigned char*)ucValue[i];
-            VirtualProtect((LPVOID)newAddr, sizeof(unsigned char), dwOldProtect, &dwOldProtect);
-        }
-    }
-    else {
-        for (int i = 0; i < ucValueSize; i++) { const DWORD newAddr = dwOriginAddress + i;  *(unsigned char*)newAddr = *(unsigned char*)ucValue[i]; }
     }
 }
 
