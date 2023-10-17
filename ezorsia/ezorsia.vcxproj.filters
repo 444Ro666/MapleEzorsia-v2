@@ -16,18 +16,27 @@
     <Filter Include="Header Files\detours">
       <UniqueIdentifier>{78940425-4fe1-4831-b133-0a7dc43b6727}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\innerH">
+      <UniqueIdentifier>{b1d7281e-c42a-47b1-8996-1c9d0f091abf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\MapleTypes">
+      <UniqueIdentifier>{e82beaf3-55e6-400f-89b4-8e79d9aabe92}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\MapleTypes\ZAllocEx">
+      <UniqueIdentifier>{0424608b-472c-4104-bb3a-89ed0a0bbb3f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\MapleTypes\ZRecycleable">
+      <UniqueIdentifier>{e58cfda8-a067-43b1-a816-ee82bec2358c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\MapleTypes\ZRef">
+      <UniqueIdentifier>{1bebc9b5-b38a-40a1-bd6e-edf9bb4c8d50}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\innerH">
+      <UniqueIdentifier>{284a1d4a-e325-4e87-9869-4c958dc42975}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="stdafx.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="targetver.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="dllmain.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="resource.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="AddyLocations.h">
@@ -39,9 +48,6 @@
     <ClInclude Include="Client.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="NMCO.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="detours.h">
       <Filter>Header Files\detours</Filter>
     </ClInclude>
@@ -51,23 +57,86 @@
     <ClInclude Include="syelog.h">
       <Filter>Header Files\detours</Filter>
     </ClInclude>
-    <ClInclude Include="INIReader.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="codecaves.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ReplacementFuncs.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="multi.h">
+    <ClInclude Include="AutoTypes.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>Header Files\innerH</Filter>
+    </ClInclude>
+    <ClInclude Include="targetver.h">
+      <Filter>Header Files\innerH</Filter>
+    </ClInclude>
+    <ClInclude Include="INIReader.h">
+      <Filter>Header Files\innerH</Filter>
+    </ClInclude>
+    <ClInclude Include="MapleClientCollectionTypes\ZAllocAnonSelector.h">
+      <Filter>Header Files\MapleTypes\ZAllocEx</Filter>
+    </ClInclude>
+    <ClInclude Include="MapleClientCollectionTypes\ZAllocBase.h">
+      <Filter>Header Files\MapleTypes\ZAllocEx</Filter>
+    </ClInclude>
+    <ClInclude Include="MapleClientCollectionTypes\ZAllocEx.h">
+      <Filter>Header Files\MapleTypes\ZAllocEx</Filter>
+    </ClInclude>
+    <ClInclude Include="MapleClientCollectionTypes\ZAllocStrSelector.h">
+      <Filter>Header Files\MapleTypes\ZAllocEx</Filter>
+    </ClInclude>
+    <ClInclude Include="stdafx.h">
+      <Filter>Header Files\innerH</Filter>
+    </ClInclude>
+    <ClInclude Include="NMCO.h">
+      <Filter>Header Files\innerH</Filter>
+    </ClInclude>
+    <ClInclude Include="MapleClientCollectionTypes\ZRecyclable.h">
+      <Filter>Header Files\MapleTypes\ZRecycleable</Filter>
+    </ClInclude>
+    <ClInclude Include="MapleClientCollectionTypes\ZRecyclableAvBuffer.h">
+      <Filter>Header Files\MapleTypes\ZRecycleable</Filter>
+    </ClInclude>
+    <ClInclude Include="MapleClientCollectionTypes\ZRecyclableStatic.h">
+      <Filter>Header Files\MapleTypes\ZRecycleable</Filter>
+    </ClInclude>
+    <ClInclude Include="MapleClientCollectionTypes\ZRef.h">
+      <Filter>Header Files\MapleTypes\ZRef</Filter>
+    </ClInclude>
+    <ClInclude Include="MapleClientCollectionTypes\ZRefCounted.h">
+      <Filter>Header Files\MapleTypes\ZRef</Filter>
+    </ClInclude>
+    <ClInclude Include="MapleClientCollectionTypes\ZRefCountedAccessor.h">
+      <Filter>Header Files\MapleTypes\ZRef</Filter>
+    </ClInclude>
+    <ClInclude Include="MapleClientCollectionTypes\ZRefCountedDummy.h">
+      <Filter>Header Files\MapleTypes\ZRef</Filter>
+    </ClInclude>
+    <ClInclude Include="MapleClientCollectionTypes\TSecType.h">
+      <Filter>Header Files\MapleTypes</Filter>
+    </ClInclude>
+    <ClInclude Include="MapleClientCollectionTypes\ZArray.h">
+      <Filter>Header Files\MapleTypes</Filter>
+    </ClInclude>
+    <ClInclude Include="MapleClientCollectionTypes\ZFatalSection.h">
+      <Filter>Header Files\MapleTypes</Filter>
+    </ClInclude>
+    <ClInclude Include="MapleClientCollectionTypes\ZList.h">
+      <Filter>Header Files\MapleTypes</Filter>
+    </ClInclude>
+    <ClInclude Include="MapleClientCollectionTypes\ZMap.h">
+      <Filter>Header Files\MapleTypes</Filter>
+    </ClInclude>
+    <ClInclude Include="MapleClientCollectionTypes\ZtlSecure.h">
+      <Filter>Header Files\MapleTypes</Filter>
+    </ClInclude>
+    <ClInclude Include="MapleClientCollectionTypes\ZXString.h">
+      <Filter>Header Files\MapleTypes</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="stdafx.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="dllmain.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -77,8 +146,14 @@
     <ClCompile Include="Memory.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="NMCO.cpp">
+    <ClCompile Include="ZAllocEx.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="NMCO.cpp">
+      <Filter>Source Files\innerH</Filter>
+    </ClCompile>
+    <ClCompile Include="stdafx.cpp">
+      <Filter>Source Files\innerH</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
