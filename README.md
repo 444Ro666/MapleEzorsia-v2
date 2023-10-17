@@ -29,7 +29,7 @@ The default `config.ini` file is included. put it in your game folder (where the
 In your v83 MapleStory directory,  
 1. Rename file `nmconew.dll` to `nmconew2.dll`  
 2. insert [this DLL file](https://github.com/444Ro666/MapleEzorsia-v2/releases) in that directory
-3. insert 'config.ini' in that same directory and check to make the values are as they should be; CustomLoginFrame=false if you aren't using the UI.wz from the [setup guide](https://github.com/444Ro666/MapleEzorsia-v2/wiki/v83%E2%80%90Client%E2%80%90Setup%E2%80%90and%E2%80%90Development%E2%80%90Guide) or your own custom login frame
+3. insert 'config.ini' in that same directory and check to make the values are as they should be; EzorsiaV2WzIncluded=false if you aren't using the UI.wz from the [setup guide](https://github.com/444Ro666/MapleEzorsia-v2/wiki/v83%E2%80%90Client%E2%80%90Setup%E2%80%90and%E2%80%90Development%E2%80%90Guide) and also CustomLoginFrame=false if not using your own custom login frame
 4. Run your client!
 
 ## Features
@@ -38,7 +38,7 @@ In your v83 MapleStory directory,
 	- the functionality of announcing the messages has been improved, and the player can now configure how many pick up and exp gain messages they want to display	instead of being stuck with 6 maximum (the recommended maximum amount is half your resolution height divided by 14, this will make the messages go up to half your screen)  
 - cash shop has been fully fixed, and it now displays as 800x600, centered in the middle of the screen regardless of resoluton (you still need UI.wz edit if you don't want the medal text under character to show outside the left of the preview screen)  
 	- cash shop preview bug from vanilla v83 has been fixed and now you can move your character right away in preview upon entering the cash shop. normally you'd have to toggle previewing off and then on again for it to work (vanilla bug)  
-- login, world/channel, character select, screens have been fixed and is now centered, and it now displays as 800x600, centered in the middle of the screen regardless of resolution (you still need UI.wz edit for the best look, but it works with vanilla login frame as well if CustomLoginFrame=false in config)  
+- login, world/channel, character select, screens have been fixed and is now centered, and it now displays as 800x600, centered in the middle of the screen regardless of resolution (you still need UI.wz edit for the best look, but it works with vanilla login frame as well if EzorsiaV2WzIncluded=false and CustomLoginFrame=false in config)  
 	- version number, view recommended, buttons, and other UI element related to these screens are centered  
 - fully scaled mulung dojo UI, all elements in right spots for each resolution  
 - fully scaled "clear" pop up for small bosses (tested on Capt latanica)  
