@@ -29,7 +29,9 @@ The default `config.ini` file is included. put it in your game folder (where the
 In your v83 MapleStory directory,  
 1. Rename file `nmconew.dll` to `nmconew2.dll`  
 2. insert [this DLL file](https://github.com/444Ro666/MapleEzorsia-v2/releases) in that directory
-3. insert 'config.ini' in that same directory and check to make the values are as they should be; EzorsiaV2WzIncluded=false if you aren't using the UI.wz from the [setup guide](https://github.com/444Ro666/MapleEzorsia-v2/wiki/v83%E2%80%90Client%E2%80%90Setup%E2%80%90and%E2%80%90Development%E2%80%90Guide) and also CustomLoginFrame=false if there are no login frame modifications at all (note: MapleEzorsiaV2wzfiles.img counts as a modification even if it doesn't directly touch the original login frame)
+3. insert 'config.ini' in that same directory and check to make the values are as they should be
+ 	- EzorsiaV2WzIncluded=false if you aren't using the UI.wz from the [setup guide](https://github.com/444Ro666/MapleEzorsia-v2/wiki/v83%E2%80%90Client%E2%80%90Setup%E2%80%90and%E2%80%90Development%E2%80%90Guide) or if your UI.wz doesn't contain MapleEzorsiaV2wzfiles.img
+ 		- also CustomLoginFrame=false if there are no login frame modifications at all (note: MapleEzorsiaV2wzfiles.img counts as a modification even if it doesn't directly touch the original login frame, so CustomLoginFrame=true if EzorsiaV2WzIncluded=true)
 4. Run your client!
 
 ## Features
