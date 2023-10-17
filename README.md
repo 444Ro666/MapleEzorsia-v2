@@ -13,7 +13,7 @@ This DLL patch is designed to provide a quality, relatively safe, open source cl
 This DLL requires a clean game client like the one provided in [the setup guide](https://github.com/444Ro666/MapleEzorsia-v2/wiki/v83%E2%80%90Client%E2%80%90Setup%E2%80%90and%E2%80%90Development%E2%80%90Guide), or at least one in which the binary edits are known to avoid potential execution conflicts and instability. using a client with unknown binary edits can result in unstable and unpredictable behavior!  
   
 This DLL also requires some minor modifications to UI.wz to work optimally because i'm currently not skilled enough to change the game in those areas using only DLL, these are also provided in the setup.  
-(The patch can be used without those UI.wz modifications but you need to turn CustomLoginFrame=false in the `config.ini` file if you aren't using your own custom login frame)
+(The patch can be used without those UI.wz modifications but you need to turn EzorsiaV2WzIncluded=false and also CustomLoginFrame=false in the `config.ini` file if you aren't using your own custom login frame)
   
 This code can only be compiled on the x86 platform. ([Compilation settings](https://www.mediafire.com/view/6xk7b9bf8qv3gda/buildsettingsEzorsia.png/file))
   
