@@ -55,6 +55,7 @@ In your v83 MapleStory directory,
 - logos on game load that can be turned on and off  
 - all of the resolution edits that came with original ezorsia (ones that cause issues has been commented out but still kept for reference)  
 - most of the resolution edits from the [ragezone resolution addresses release](https://forum.ragezone.com/threads/all-addresses-for-v83-resolution-change.1161938/), with problematic ones removed and addresses not repeated versus the original ezorsia addresses
+- these are only the features/fixes at release, [there have been additions](https://github.com/444Ro666/MapleEzorsia-v2/wiki/Change-Log) after release
    
 
 
