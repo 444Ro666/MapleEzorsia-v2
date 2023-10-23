@@ -127,3 +127,6 @@ static _IWzNameSpace__Mount_t _IWzNameSpace__Mount_Hook = [](void* pThis, void* 
 //-> HRESULT {_IWzNameSpace__Mount(pThis, edx, sPath, pDown, nPriority); //HRESULT //return _IWzNameSpace__Mount(pThis, edx, sPath, pDown, nPriority);
 	return _IWzNameSpace__Mount(pThis, edx, sPath, pDown, nPriority);
 };
+
+typedef void* (__cdecl* _lpfn_NextLevel_t)(int[]); 
+static auto _lpfn_NextLevel = reinterpret_cast<_lpfn_NextLevel_t>(0x0078C8A6);
