@@ -145,7 +145,7 @@ const DWORD dwMuruengraidTimerSecondsRetn = 0x005556EC;
 const int MuruengraidTimerSecondsNOPs = 6;
 
 const DWORD dwMuruengraidTimerBar = 0x00555541;
-const DWORD dwMuruengraidTimerBarRetn = 0x00555543;
+const DWORD dwMuruengraidTimerBarRetn = 0x00555548;
 const int MuruengraidTimerBarNOPs = 7;
 
 const DWORD dwMuruengraidMonster1_2 = 0x00554BA3;
@@ -155,6 +155,219 @@ const int MuruengraidMonster1_2NOPs = 5;
 const DWORD dwStatsSubMov = 0x008C5112;
 const DWORD dwStatsSubMovRetn = 0x008C5117;
 const int StatsSubMovNOPs = 5;
+
+//beginning of packed client run addies //CwvsAppSetup?? //CWvsAppInitializeInput?? //CWvsAppCallUpdate?? //CClientSocketConnect??
+const DWORD dwCLoginSendCheckPasswordPacket = 0x005F6994;
+const DWORD dwCLoginSendCheckPasswordPacketRetn = 0x005F6B5D;
+const int CLoginSendCheckPasswordPacketNops = 6;
+
+const DWORD dw0x0044E550 = 0x0044E550;
+const DWORD dw0x0044E550Retn = 0x0044E562;
+const int dw0x0044E550Nops = 18;
+
+const DWORD dw0x0044E5BE = 0x0044E5BE;
+const DWORD dw0x0044E5BERetn = 0x0044E5D0;
+const int dw0x0044E5BENops = 18;
+
+const DWORD dw0x0044E5DB = 0x0044E5DB;
+const DWORD dw0x0044E5DBRetn = 0x0044E5ED;
+const int dw0x0044E5DBNops = 18;
+
+const DWORD dw0x0044E6AC = 0x0044E6AC;
+const DWORD dw0x0044E6ACRetn = 0x0044E6BE;
+const int dw0x0044E6ACNops = 18;
+
+const DWORD dw0x0044E71D = 0x0044E71D;
+const DWORD dw0x0044E71DRetn = 0x0044E72F;
+const int dw0x0044E71DNops = 18;
+
+const DWORD dw0x0044E80C = 0x0044E80C;
+const DWORD dw0x0044E80CRetn = 0x0044E81E;
+const int dw0x0044E80CNops = 18;
+
+const DWORD dw0x0044E8B4 = 0x0044E8B4;
+const DWORD dw0x0044E8B4Retn = 0x0044E8C6;
+const int dw0x0044E8B4Nops = 18;
+
+const DWORD dw0x0044EA22 = 0x0044EA22;
+const DWORD dw0x0044EA22Retn = 0x0044EA37;
+const int dw0x0044EA22Nops = 19;
+
+const DWORD dw0x0044EA6F = 0x0044EA6F;
+const DWORD dw0x0044EA6FRetn = 0x0044EA81;
+const int dw0x0044EA6FNops = 18;
+
+const DWORD dw0x0044EBD6 = 0x0044EBD6;
+const DWORD dw0x0044EBD6Retn = 0x0044EBE8;
+const int dw0x0044EBD6Nops = 18;
+
+const DWORD dw0x0044ECA1 = 0x0044ECA1;
+const DWORD dw0x0044ECA1Retn = 0x0044ECB3;
+const int dw0x0044ECA1Nops = 18;
+
+const DWORD dw0x0044ED32 = 0x0044ED32;
+const DWORD dw0x0044ED32Retn = 0x0044ED44;
+const int dw0x0044ED32Nops = 18;
+
+const DWORD dw0x0044ED52 = 0x0044ED52;
+const DWORD dw0x0044ED52Retn = 0x0044ED64;
+const int dw0x0044ED52Nops = 18;
+
+const DWORD dw0x0044EED3 = 0x0044EED3;
+const DWORD dw0x0044EED3Retn = 0x0044EEE3;
+const int dw0x0044EED3Nops = 16;
+//start of 494 bloc
+const DWORD dw0x00494943 = 0x00494943;
+const DWORD dw0x00494943Retn = 0x00494955;
+const int dw0x00494943Nops = 18;
+
+const DWORD dw0x00494BB6 = 0x00494BB6;
+const DWORD dw0x00494BB6Retn = 0x00494BC8;
+const int dw0x00494BB6Nops = 18;
+
+const DWORD dw0x00494CA9 = 0x00494CA9;
+const DWORD dw0x00494CA9Retn = 0x00494CBB;
+const int dw0x00494CA9Nops = 18;
+
+const DWORD dw0x00494CF0 = 0x00494CF0;
+const DWORD dw0x00494CF0Retn = 0x00494D02;
+const int dw0x00494CF0Nops = 18;
+
+const DWORD dw0x00494D3B = 0x00494D3B;
+const DWORD dw0x00494D3BRetn = 0x00494DEF;
+const int dw0x00494D3BNops = 18;
+
+const DWORD dw0x00494EAF = 0x00494EAF;
+const DWORD dw0x00494EAFRetn = 0x00494ECA;
+const int dw0x00494EAFNops = 27;
+
+const DWORD dw0x00494EEC = 0x00494EEC;
+const DWORD dw0x00494EECRetn = 0x00494EFE;
+const int dw0x00494EECNops = 18;
+
+const DWORD dw0x00494F87 = 0x00494F87;
+const DWORD dw0x00494F87Retn = 0x00494F99;
+const int dw0x00494F87Nops = 18;
+//start of 009F bloc
+const DWORD dw0x009F4E84 = 0x009F4E84;
+const DWORD dw0x009F4E84Retn = 0x009F4E96;
+const int dw0x009F4E84Nops = 18;
+
+const DWORD dw0x009F4EC3 = 0x009F4EC3;
+const DWORD dw0x009F4EC3Retn = 0x009F4ED5;
+const int dw0x009F4EC3Nops = 18;
+
+const DWORD dw0x009F4F12 = 0x009F4F12;
+const DWORD dw0x009F4F12Retn = 0x009F4F24;
+const int dw0x009F4F12Nops = 18;
+
+const DWORD dw0x009F4FC6 = 0x009F4FC6;
+const DWORD dw0x009F4FC6Retn = 0x009F4FD8;
+const int dw0x009F4FC6Nops = 18;
+
+const DWORD dw0x009F503C = 0x009F503C;
+const DWORD dw0x009F503CRetn = 0x009F504E;
+const int dw0x009F503CNops = 18;
+
+const DWORD dw0x009F51A7 = 0x009F51A7;
+const DWORD dw0x009F51A7Retn = 0x009F51B7;
+const int dw0x009F51A7Nops = 16;
+
+const DWORD dw0x009F526F = 0x009F526F;
+const DWORD dw0x009F526FRetn = 0x009F55D8;
+const int dw0x009F526FNops = 19;
+
+const DWORD dw0x009F5653 = 0x009F5653;
+const DWORD dw0x009F5653Retn = 0x009F5667;
+const int dw0x009F5653Nops = 20;
+
+const DWORD dw0x009F5833 = 0x009F5833;
+const DWORD dw0x009F5833Retn = 0x009F5AA2;
+const int dw0x009F5833Nops = 18;
+
+const DWORD dw0x009F5C2C = 0x009F5C2C;
+const DWORD dw0x009F5C2CRetn = 0x009F5C41;
+const int dw0x009F5C2CNops = 21;
+
+const DWORD dw0x009F5CA3 = 0x009F5CA3;	//dwCWvsAppRun
+const DWORD dw0x009F5CA3Retn = 0x009F5FDB;
+const int dw0x009F5CA3Nops = 18;
+
+const DWORD dw0x009F5FBD = 0x009F5FBD;
+const DWORD dw0x009F5FBDRetn = 0x009F5FDB;
+const int dw0x009F5FBDNops = 30;
+
+const DWORD dw0x009F631C = 0x009F631C;
+const DWORD dw0x009F631CRetn = 0x009F632E;
+const int dw0x009F631CNops = 18;
+
+const DWORD dw0x009F691F = 0x009F691F;
+const DWORD dw0x009F691FRetn = 0x009F6945;
+const int dw0x009F691FNops = 38;
+
+const DWORD dw0x009F6F36 = 0x009F6F36;
+const DWORD dw0x009F6F36Retn = 0x009F6F48;
+const int dw0x009F6F36Nops = 18;
+
+const DWORD dw0x009F6F5C = 0x009F6F5C;
+const DWORD dw0x009F6F5CRetn = 0x009F6F6E;
+const int dw0x009F6F5CNops = 18;
+
+const DWORD dw0x009F7CFA = 0x009F7CFA;
+const DWORD dw0x009F7CFARetn = 0x009F7D0C;
+const int dw0x009F7CFANops = 18;
+
+const DWORD dw0x009F7D83 = 0x009F7D83;
+const DWORD dw0x009F7D83Retn = 0x009F8210;
+const int dw0x009F7D83Nops = 5;
+
+const DWORD dw0x009F81FB = 0x009F81FB;
+const DWORD dw0x009F81FBRetn = 0x009F8210;
+const int dw0x009F81FBNops = 21;
+
+const DWORD dw0x009F84E9 = 0x009F84E9;
+const DWORD dw0x009F84E9Retn = 0x009F84FB;
+const int dw0x009F84E9Nops = 18;
+
+const DWORD dw0x009F8AD4 = 0x009F8AD4;
+const DWORD dw0x009F8AD4Retn = 0x009F8AEE;
+const int dw0x009F8AD4Nops = 26;
+//start of 00A4B bloc
+const DWORD dw0x00A4BB39 = 0x00A4BB39;
+const DWORD dw0x00A4BB39Retn = 0x00A4BB4B;
+const int dw0x00A4BB39Nops = 18;
+
+const DWORD dw0x00A4BC79 = 0x00A4BC79;
+const DWORD dw0x00A4BC79Retn = 0x00A4BC89;
+const int dw0x00A4BC79Nops = 16;
+
+const DWORD dw0x00A4BD05 = 0x00A4BD05;
+const DWORD dw0x00A4BD05Retn = 0x00A4BD17;
+const int dw0x00A4BD05Nops = 18;
+
+const DWORD dw0x00A4BD4E = 0x00A4BD4E;
+const DWORD dw0x00A4BD4ERetn = 0x00A4BD60;
+const int dw0x00A4BD4ENops = 18;
+
+const DWORD dw0x00A4BD99 = 0x00A4BD99;
+const DWORD dw0x00A4BD99Retn = 0x00A4BDAB;
+const int dw0x00A4BD99Nops = 18;
+
+const DWORD dw0x00A4BDE3 = 0x00A4BDE3;
+const DWORD dw0x00A4BDE3Retn = 0x00A4BDF5;
+const int dw0x00A4BDE3Nops = 18;
+
+const DWORD dw0x00A4BDFE = 0x00A4BDFE;
+const DWORD dw0x00A4BDFERetn = 0x00A4BE10;
+const int dw0x00A4BDFENops = 18;
+
+const DWORD dw0x00A4BE47 = 0x00A4BE47;
+const DWORD dw0x00A4BE47Retn = 0x00A4BE59;
+const int dw0x00A4BE47Nops = 18;
+
+//addresses hooked by CRCbypassed v83 version to redirect to their section. may be incomplete
+//0x0044E550 //0x0044E5DB //0x0044E71D //0x0044E8B4 //0x0044EA6F //0x0044ECA1 //0x0044ED52 //0x00494D3B //0x00494EEC //0x009F4E84
+//0x009F4F12 //0x009F503C //0x009F526F //0x009F6F36 //0x009F7CFA //0x009F84E9 //0x00A4BDFE //0x00A4BD99 //0x00A4BD05 //0x00A4BB39
 
 //my cash shop fix
 const DWORD dwCashFix1 = 0x00469414;

@@ -1,6 +1,7 @@
 // dllmain.cpp : Defines the entry point for the DLL application.
 #include "stdafx.h"
 #include "NMCO.h"
+#include "ijl15.h"
 #include "INIReader.h"
 #include "ReplacementFuncs.h"
 #include <comutil.h>
@@ -34,9 +35,10 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD  ul_reason_for_call, LPVOID lpReser
 			ownLoginFrame = reader.GetBoolean("optional", "ownLoginFrame", false);
 			ownCashShopFrame = reader.GetBoolean("optional", "ownCashShopFrame", false);
 			EzorsiaV2WzIncluded = reader.GetBoolean("general", "EzorsiaV2WzIncluded", true);
+			Client::ServerIP_AddressFromINI = reader.Get("general", "ServerIP_Address", "127.0.0.1");
 		}
 
-		Hook_CreateMutexA(true); //multiclient //ty darter, angel, and alias!  //not currently working, likely cannot hook early enough with nmconew.dll
+		Hook_CreateMutexA(true); //multiclient //ty darter, angel, and alias!
 		HookCreateWindowExA(true); //default ezorsia
 		HookGetModuleFileName(true); //default ezorsia
 		HookPcCreateObject_IWzResMan(true);
@@ -54,12 +56,14 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD  ul_reason_for_call, LPVOID lpReser
 		//Hook_com_ptr_t_IWzProperty__ctor(true);
 		//Hook_com_ptr_t_IWzProperty__dtor(true);
 
-		std::cout << "GetModuleFileName hook created" << std::endl;
-		NMCO::CreateHook();
-		std::cout << "NMCO hook initialized" << std::endl;
+		Client::UpdateGameStartup();
 
 		std::cout << "Applying resolution " << Client::m_nGameWidth << "x" << Client::m_nGameHeight << std::endl;
 		Client::UpdateResolution();
+
+		std::cout << "GetModuleFileName hook created" << std::endl;
+		ijl15::CreateHook(); //NMCO::CreateHook();
+		std::cout << "NMCO hook initialized" << std::endl;
 		break;
 	}
 	default: break;

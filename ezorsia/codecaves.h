@@ -516,6 +516,320 @@ __declspec(naked) void ccStatsSubMov() {
 		jmp dword ptr[dwStatsSubMovRetn]
 	}
 }
+//beginning of packed client run caves
+
+__declspec(naked) void ccCLoginSendCheckPasswordPacket() {
+	__asm {
+		jmp dword ptr[dwCLoginSendCheckPasswordPacketRetn]
+	}
+}
+
+__declspec(naked) void cc0x0044E550() {
+	__asm {
+		jmp dword ptr[dw0x0044E550Retn]
+	}
+}
+
+__declspec(naked) void cc0x0044E5BE() {
+	__asm {
+		jmp dword ptr[dw0x0044E5BERetn]
+	}
+}
+
+__declspec(naked) void cc0x0044E5DB() {
+	__asm {
+		jmp dword ptr[dw0x0044E5DBRetn]
+	}
+}
+
+__declspec(naked) void cc0x0044E6AC() {
+	__asm {
+		jmp dword ptr[dw0x0044E6ACRetn]
+	}
+}
+
+__declspec(naked) void cc0x0044E71D() {
+	__asm {
+		jmp dword ptr[dw0x0044E71DRetn]
+	}
+}
+
+__declspec(naked) void cc0x0044E80C() {
+	__asm {
+		jmp dword ptr[dw0x0044E80CRetn]
+	}
+}
+
+__declspec(naked) void cc0x0044E8B4() {
+	__asm {
+		jmp dword ptr[dw0x0044E8B4Retn]
+	}
+}
+
+__declspec(naked) void cc0x0044EA22() {
+	__asm {
+		jmp dword ptr[dw0x0044EA22Retn]
+	}
+}
+
+__declspec(naked) void cc0x0044EA6F() {
+	__asm {
+		jmp dword ptr[dw0x0044EA6FRetn]
+	}
+}
+
+__declspec(naked) void cc0x0044EBD6() {
+	__asm {
+		jmp dword ptr[dw0x0044EBD6Retn]
+	}
+}
+
+__declspec(naked) void cc0x0044ECA1() {
+	__asm {
+		jmp dword ptr[dw0x0044ECA1Retn]
+	}
+}
+
+__declspec(naked) void cc0x0044ED32() {
+	__asm {
+		jmp dword ptr[dw0x0044ED32Retn]
+	}
+}
+
+__declspec(naked) void cc0x0044ED52() {
+	__asm {
+		jmp dword ptr[dw0x0044ED52Retn]
+	}
+}
+
+__declspec(naked) void cc0x0044EED3() {
+	__asm {
+		jmp dword ptr[dw0x0044EED3Retn]
+	}
+}
+
+__declspec(naked) void cc0x00494943() {
+	__asm {
+		jmp dword ptr[dw0x00494943Retn]
+	}
+}
+
+__declspec(naked) void cc0x00494BB6() {
+	__asm {
+		jmp dword ptr[dw0x00494BB6Retn]
+	}
+}
+
+__declspec(naked) void cc0x00494CA9() {
+	__asm {
+		jmp dword ptr[dw0x00494CA9Retn]
+	}
+}
+
+__declspec(naked) void cc0x00494CF0() {
+	__asm {
+		jmp dword ptr[dw0x00494CF0Retn]
+	}
+}
+
+__declspec(naked) void cc0x00494D3B() {
+	__asm {
+		jmp dword ptr[dw0x00494D3BRetn]
+	}
+}
+
+__declspec(naked) void cc0x00494EAF() {
+	__asm {
+		jmp dword ptr[dw0x00494EAFRetn]
+	}
+}
+
+__declspec(naked) void cc0x00494EEC() {
+	__asm {
+		jmp dword ptr[dw0x00494EECRetn]
+	}
+}
+
+__declspec(naked) void cc0x00494F87() {
+	__asm {
+		jmp dword ptr[dw0x00494F87Retn]
+	}
+}
+
+__declspec(naked) void cc0x009F4E84() {
+	__asm {
+		jmp dword ptr[dw0x009F4E84Retn]
+	}
+}
+
+__declspec(naked) void cc0x009F4EC3() {
+	__asm {
+		jmp dword ptr[dw0x009F4EC3Retn]
+	}
+}
+
+__declspec(naked) void cc0x009F4F12() {
+	__asm {
+		jmp dword ptr[dw0x009F4F12Retn]
+	}
+}
+
+__declspec(naked) void cc0x009F4FC6() {
+	__asm {
+		jmp dword ptr[dw0x009F4FC6Retn]
+	}
+}
+
+__declspec(naked) void cc0x009F503C() {
+	__asm {
+		jmp dword ptr[dw0x009F503CRetn]
+	}
+}
+
+__declspec(naked) void cc0x009F51A7() {
+	__asm {
+		jmp dword ptr[dw0x009F51A7Retn]
+	}
+}
+
+__declspec(naked) void cc0x009F526F() {
+	__asm {
+		jmp dword ptr[dw0x009F526FRetn]
+	}
+}
+
+__declspec(naked) void cc0x009F5653() {
+	__asm {
+		jmp dword ptr[dw0x009F5653Retn]
+	}
+}
+
+__declspec(naked) void cc0x009F5833() {
+	__asm {
+		jmp dword ptr[dw0x009F5833Retn]
+	}
+}
+
+__declspec(naked) void cc0x009F5C2C() {
+	__asm {
+		jmp dword ptr[dw0x009F5C2CRetn]
+	}
+}
+
+__declspec(naked) void cc0x009F5CA3() {
+	__asm {
+		jmp dword ptr[dw0x009F5CA3Retn]
+	}
+}
+
+__declspec(naked) void cc0x009F5FBD() {
+	__asm {
+		jmp dword ptr[dw0x009F5FBDRetn]
+	}
+}
+
+__declspec(naked) void cc0x009F631C() {
+	__asm {
+		jmp dword ptr[dw0x009F631CRetn]
+	}
+}
+
+__declspec(naked) void cc0x009F691F() {
+	__asm {
+		jmp dword ptr[dw0x009F691FRetn]
+	}
+}
+
+__declspec(naked) void cc0x009F6F36() {
+	__asm {
+		jmp dword ptr[dw0x009F6F36Retn]
+	}
+}
+
+__declspec(naked) void cc0x009F6F5C() {
+	__asm {
+		jmp dword ptr[dw0x009F6F5CRetn]
+	}
+}
+
+__declspec(naked) void cc0x009F7CFA() {
+	__asm {
+		jmp dword ptr[dw0x009F7CFARetn]
+	}
+}
+
+__declspec(naked) void cc0x009F7D83() {
+	__asm {
+		jmp dword ptr[dw0x009F7D83Retn]
+	}
+}
+
+__declspec(naked) void cc0x009F81FB() {
+	__asm {
+		jmp dword ptr[dw0x009F81FBRetn]
+	}
+}
+
+__declspec(naked) void cc0x009F84E9() {
+	__asm {
+		jmp dword ptr[dw0x009F84E9Retn]
+	}
+}
+
+__declspec(naked) void cc0x009F8AD4() {
+	__asm {
+		jmp dword ptr[dw0x009F8AD4Retn]
+	}
+}
+
+__declspec(naked) void cc0x00A4BB39() {
+	__asm {
+		jmp dword ptr[dw0x00A4BB39Retn]
+	}
+}
+
+__declspec(naked) void cc0x00A4BC79() {
+	__asm {
+		jmp dword ptr[dw0x00A4BC79Retn]
+	}
+}
+
+__declspec(naked) void cc0x00A4BD05() {
+	__asm {
+		jmp dword ptr[dw0x00A4BD05Retn]
+	}
+}
+
+__declspec(naked) void cc0x00A4BD4E() {
+	__asm {
+		jmp dword ptr[dw0x00A4BD4ERetn]
+	}
+}
+
+__declspec(naked) void cc0x00A4BD99() {
+	__asm {
+		jmp dword ptr[dw0x00A4BD99Retn]
+	}
+}
+
+__declspec(naked) void cc0x00A4BDE3() {
+	__asm {
+		jmp dword ptr[dw0x00A4BDE3Retn]
+	}
+}
+
+__declspec(naked) void cc0x00A4BDFE() {
+	__asm {
+		jmp dword ptr[dw0x00A4BDFERetn]
+	}
+}
+
+__declspec(naked) void cc0x00A4BE47() {
+	__asm {
+		jmp dword ptr[dw0x00A4BE47Retn]
+	}
+}
+
 
 const char myWzFile[] = "TamingMob";
 const char* ptrmyWzFile = myWzFile;

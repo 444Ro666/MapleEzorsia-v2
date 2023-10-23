@@ -6,12 +6,28 @@ bool Memory::UseVirtuProtect = true;
 
 bool Memory::SetHook(bool attach, void** ptrTarget, void* ptrDetour)
 {
-	DetourTransactionBegin();
-	DetourUpdateThread(GetCurrentThread());
-	(attach ? DetourAttach : DetourDetach)(ptrTarget, ptrDetour);
-	DetourTransactionCommit();
-	DetourTransactionAbort();
-	return true;
+    if (DetourTransactionBegin() != NO_ERROR)
+    {
+        return false;
+    }
+
+    HANDLE pCurThread = GetCurrentThread();
+
+    if (DetourUpdateThread(pCurThread) == NO_ERROR)
+    {
+        auto pDetourFunc = attach ? DetourAttach : DetourDetach;
+
+        if (pDetourFunc(ptrTarget, ptrDetour) == NO_ERROR)
+        {
+            if (DetourTransactionCommit() == NO_ERROR)
+            {
+                return true;
+            }
+        }
+    }
+
+    DetourTransactionAbort();
+    return false;
 }
 
 void Memory::FillBytes(const DWORD dwOriginAddress, const unsigned char ucValue, const int nCount) {

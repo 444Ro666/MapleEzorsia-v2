@@ -46,14 +46,14 @@ inline void HookCreateWindowExA(bool bEnable) {
 
 DWORD GetFuncAddress(LPCSTR lpModule, LPCSTR lpFunc)	//ty alias!			//multiclient, not currently working, likely cannot hook early enough with nmconew.dll
 {
-	auto mod = LoadLibraryA(lpModule);
+	HMODULE mod = LoadLibraryA(lpModule);
 
 	if (!mod)
 	{
 		return 0;
 	}
 
-	auto address = (DWORD)GetProcAddress(mod, lpFunc);
+	DWORD address = (DWORD)GetProcAddress(mod, lpFunc);
 
 	if (!address)
 	{
@@ -77,6 +77,8 @@ bool Hook_CreateMutexA(bool bEnable)	//ty darter	//ty angel!
 		if (lpName && strstr(lpName, "WvsClientMtx"))
 		{
 			return (HANDLE)0x0BADF00D;
+			//char szMutex[128];
+			//lpName = szMutex;
 		}
 
 		return _CreateMutexA(lpMutexAttributes, bInitialOwner, lpName);
