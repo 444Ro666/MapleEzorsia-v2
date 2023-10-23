@@ -17,7 +17,7 @@ This DLL requires a clean game client like the one provided in [the setup guide]
 This DLL also requires some minor modifications to UI.wz to work optimally because i'm currently not skilled enough to change the game in those areas using only DLL, these are also provided in the setup.  
 (The patch can be used without those UI.wz modifications but you need to turn EzorsiaV2WzIncluded=false and also CustomLoginFrame=false in the `config.ini` file if you aren't using your own custom login frame)
   
-This code can only be compiled on the x86 platform. ([Compilation settings](https://www.mediafire.com/view/6xk7b9bf8qv3gda/buildsettingsEzorsia.png/file))
+This code can only be compiled on the x86 platform. ([Compilation settings](https://www.mediafire.com/view/9ssrqg8eiwbh0k1/buildsettings2.png/file)) (if DLL from compilation settings doesn't work [try this](https://www.mediafire.com/view/6xk7b9bf8qv3gda/buildsettingsEzorsia.png/file))
   
 - [HD client setup instructions/development guide](https://github.com/444Ro666/MapleEzorsia-v2/wiki/v83%E2%80%90Client%E2%80%90Setup%E2%80%90and%E2%80%90Development%E2%80%90Guide)
 - Original Ezorsia: https://github.com/izarooni/MapleEzorsia
