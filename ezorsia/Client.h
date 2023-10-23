@@ -2,7 +2,7 @@
 class Client
 {
 public:
-	static void FunctionReplace();
+	static void UpdateGameStartup();
 	static void EnableNewIGCipher();
 	static void UpdateResolution();
 	static void UpdateLogin();
@@ -17,4 +17,5 @@ public:
 	static bool useTubi;
 	static bool bigLoginFrame;
 	static int speedMovementCap;
+	static std::string ServerIP_AddressFromINI;
 };

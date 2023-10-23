@@ -135,6 +135,9 @@
     <ClInclude Include="MapleClientCollectionTypes\ZXString.h">
       <Filter>Header Files\MapleTypes</Filter>
     </ClInclude>
+    <ClInclude Include="ijl15.h">
+      <Filter>Header Files\innerH</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
@@ -153,6 +156,9 @@
       <Filter>Source Files\innerH</Filter>
     </ClCompile>
     <ClCompile Include="stdafx.cpp">
+      <Filter>Source Files\innerH</Filter>
+    </ClCompile>
+    <ClCompile Include="ijl15.cpp">
       <Filter>Source Files\innerH</Filter>
     </ClCompile>
   </ItemGroup>
