@@ -3,6 +3,8 @@
 
 #### 2023/10/17 - Major update to how the patch loads wz data, YOU NEED THE [NEW WZ FILE](https://www.mediafire.com/file/6bimll8wtpbclmx/EzorsiaV2_UI.wz/file) OR YOUR GAME WILL CRASH (replace old one, works for all res). [setup for more detailed instructions](https://github.com/444Ro666/MapleEzorsia-v2/wiki/v83%E2%80%90Client%E2%80%90Setup%E2%80%90and%E2%80%90Development%E2%80%90Guide). For how to toggle off some Ezorsia V2 wz edits see [Troubleshooting Section](https://github.com/444Ro666/MapleEzorsia-v2/wiki/v83%E2%80%90Client%E2%80%90Setup%E2%80%90and%E2%80%90Development%E2%80%90Guide#troubleshooting)
 
+#### 2023/10/23 - if you used this before this date, nmconew.dll is no longer supported, instead re-follow the instructions and name `ijl15.dll` to `2ijl15.dll`, place new `ijl15.dll` in the folder, delete old nmconew.dll, and rename nmconew2.dll back to nmconew.dll
+
 This DLL modifies addresses in a v83 MapleStory client to change the game window and canvas resolution.  
 Most in-game component boundaries are also modified to scale with the custom resolution. 
   
@@ -27,7 +29,7 @@ The default `config.ini` file is included. put it in your game folder (where the
 
 #### How to use (DLL only)
 In your v83 MapleStory directory,  
-1. Rename file `nmconew.dll` to `nmconew2.dll`  
+1. Rename file `ijl15.dll` to `2ijl15.dll`  
 2. insert [this DLL file](https://github.com/444Ro666/MapleEzorsia-v2/releases) in that directory
 3. insert 'config.ini' in that same directory and check to make the values are as they should be
      - EzorsiaV2WzIncluded=false if you aren't using the UI.wz from the [setup guide](https://github.com/444Ro666/MapleEzorsia-v2/wiki/v83%E2%80%90Client%E2%80%90Setup%E2%80%90and%E2%80%90Development%E2%80%90Guide) or if your UI.wz doesn't contain MapleEzorsiaV2wzfiles.img
