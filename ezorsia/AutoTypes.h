@@ -1,5 +1,8 @@
 #pragma once
 #include "MapleClientCollectionTypes/ZXString.h"
+#include "MapleClientCollectionTypes/ZRef.h"
+#include "MapleClientCollectionTypes/ZArray.h"
+#include "MapleClientCollectionTypes/ZList.h"
 typedef void(__fastcall* _CWndCreateWnd_t)(void* pThis, void* edx, int nLeft, int nTop, int nWidth, int nHeight, int z, int bScreenCoord, void* esi, int bSetFocus);
 static auto _CWndCreateWnd = reinterpret_cast<_CWndCreateWnd_t>(0x009DE4D2); //thanks you teto for helping me on this learning journey
 static _CWndCreateWnd_t _CWndCreateWnd_Hook = [](void* pThis, void* edx, int nLeft, int nTop, int nWidth, int nHeight, int z, int bScreenCoord, void* esi, int bSetFocus)
@@ -130,3 +133,15 @@ static _IWzNameSpace__Mount_t _IWzNameSpace__Mount_Hook = [](void* pThis, void* 
 
 typedef void* (__cdecl* _lpfn_NextLevel_t)(int[]); 
 static auto _lpfn_NextLevel = reinterpret_cast<_lpfn_NextLevel_t>(0x0078C8A6);
+
+//struct CUIStatusBar { struct CChatLog : ZRefCounted { }; };
+typedef void(__fastcall* _CUIStatusBar__ChatLogAdd_t)(void* pThis, void* edx, const char* sChat, int lType, int nChannelID, int bWhisperIcon, ZRef<void>* pItem);
+static auto _CUIStatusBar__ChatLogAdd = reinterpret_cast<_CUIStatusBar__ChatLogAdd_t>(0x008DB070);
+static _CUIStatusBar__ChatLogAdd_t _CUIStatusBar__ChatLogAdd_Hook = [](void* pThis, void* edx, const char* sChat, int lType, int nChannelID, int bWhisperIcon, ZRef<void>* pItem) {
+	//ZArray<ZRef<CUIStatusBar::CChatLog>>* m_aChatLog = reinterpret_cast<ZArray<ZRef<CUIStatusBar::CChatLog>>*>(0x00BF1100);
+	//while (m_aChatLog->GetCount() > 1000) { // you can set your custom limit here //not working, crashes
+	//	auto idx = m_aChatLog->IndexOf(0);	//ty to releaser of forum.ragezone.com/threads/set-any-chat-bar-limit-default-is-64.1209514/
+	//	m_aChatLog->RemoveAt(idx);
+	//}
+	_CUIStatusBar__ChatLogAdd(pThis, edx, sChat, lType, nChannelID, bWhisperIcon, pItem);
+};

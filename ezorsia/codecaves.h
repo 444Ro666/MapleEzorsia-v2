@@ -830,6 +830,16 @@ __declspec(naked) void cc0x00A4BE47() {
 	}
 }
 
+char CUIStatusBarChatLogAddBypassLimit = 0xFF;
+__declspec(naked) void ccCUIStatusBarChatLogAddBypass() {
+	__asm {
+		cmp    DWORD PTR[eax - 0x4], 0xFF
+		jbe CUIStatusBarChatLogAddBypass_Dest
+		jmp dword ptr[dwCUIStatusBarChatLogAddBypassRetn]
+		CUIStatusBarChatLogAddBypass_Dest:
+		jmp dword ptr[dwCUIStatusBarChatLogAddBypass2Retn]
+	}
+}
 
 const char myWzFile[] = "TamingMob";
 const char* ptrmyWzFile = myWzFile;
