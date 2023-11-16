@@ -1,4 +1,5 @@
 #pragma once
+//pushad and pushfd,  and, popad and popfd to push and pop all stack variables and flags to restore after
 int nStatusBarY = 0;
 __declspec(naked) void AdjustStatusBar() {
 	__asm {
@@ -517,320 +518,35 @@ __declspec(naked) void ccStatsSubMov() {
 	}
 }
 //beginning of packed client run caves
-
 __declspec(naked) void ccCLoginSendCheckPasswordPacket() {
 	__asm {
 		jmp dword ptr[dwCLoginSendCheckPasswordPacketRetn]
 	}
 }
 
-__declspec(naked) void cc0x0044E550() {
+__declspec(naked) void cc0x00A63FF3() {
 	__asm {
-		jmp dword ptr[dw0x0044E550Retn]
+		push   ebp
+		mov    ebp, esp
+		push   0xffffffff
+		push   0xb412e0
+		push   0xa62478
+		mov    eax, fs:0x0
+		push   eax
+		mov    DWORD PTR fs : 0x0, esp
+		sub    esp, 0x58
+		push   ebx
+		push   esi
+		push   edi
+		mov    DWORD PTR[ebp - 0x18], esp
+		call   DWORD PTR ds : 0xaf0074
+		xor edx, edx
+		jmp dword ptr[dw0x00A63FF3Retn]
 	}
 }
+//end of packed client run caves
 
-__declspec(naked) void cc0x0044E5BE() {
-	__asm {
-		jmp dword ptr[dw0x0044E5BERetn]
-	}
-}
-
-__declspec(naked) void cc0x0044E5DB() {
-	__asm {
-		jmp dword ptr[dw0x0044E5DBRetn]
-	}
-}
-
-__declspec(naked) void cc0x0044E6AC() {
-	__asm {
-		jmp dword ptr[dw0x0044E6ACRetn]
-	}
-}
-
-__declspec(naked) void cc0x0044E71D() {
-	__asm {
-		jmp dword ptr[dw0x0044E71DRetn]
-	}
-}
-
-__declspec(naked) void cc0x0044E80C() {
-	__asm {
-		jmp dword ptr[dw0x0044E80CRetn]
-	}
-}
-
-__declspec(naked) void cc0x0044E8B4() {
-	__asm {
-		jmp dword ptr[dw0x0044E8B4Retn]
-	}
-}
-
-__declspec(naked) void cc0x0044EA22() {
-	__asm {
-		jmp dword ptr[dw0x0044EA22Retn]
-	}
-}
-
-__declspec(naked) void cc0x0044EA6F() {
-	__asm {
-		jmp dword ptr[dw0x0044EA6FRetn]
-	}
-}
-
-__declspec(naked) void cc0x0044EBD6() {
-	__asm {
-		jmp dword ptr[dw0x0044EBD6Retn]
-	}
-}
-
-__declspec(naked) void cc0x0044ECA1() {
-	__asm {
-		jmp dword ptr[dw0x0044ECA1Retn]
-	}
-}
-
-__declspec(naked) void cc0x0044ED32() {
-	__asm {
-		jmp dword ptr[dw0x0044ED32Retn]
-	}
-}
-
-__declspec(naked) void cc0x0044ED52() {
-	__asm {
-		jmp dword ptr[dw0x0044ED52Retn]
-	}
-}
-
-__declspec(naked) void cc0x0044EED3() {
-	__asm {
-		jmp dword ptr[dw0x0044EED3Retn]
-	}
-}
-
-__declspec(naked) void cc0x00494943() {
-	__asm {
-		jmp dword ptr[dw0x00494943Retn]
-	}
-}
-
-__declspec(naked) void cc0x00494BB6() {
-	__asm {
-		jmp dword ptr[dw0x00494BB6Retn]
-	}
-}
-
-__declspec(naked) void cc0x00494CA9() {
-	__asm {
-		jmp dword ptr[dw0x00494CA9Retn]
-	}
-}
-
-__declspec(naked) void cc0x00494CF0() {
-	__asm {
-		jmp dword ptr[dw0x00494CF0Retn]
-	}
-}
-
-__declspec(naked) void cc0x00494D3B() {
-	__asm {
-		jmp dword ptr[dw0x00494D3BRetn]
-	}
-}
-
-__declspec(naked) void cc0x00494EAF() {
-	__asm {
-		jmp dword ptr[dw0x00494EAFRetn]
-	}
-}
-
-__declspec(naked) void cc0x00494EEC() {
-	__asm {
-		jmp dword ptr[dw0x00494EECRetn]
-	}
-}
-
-__declspec(naked) void cc0x00494F87() {
-	__asm {
-		jmp dword ptr[dw0x00494F87Retn]
-	}
-}
-
-__declspec(naked) void cc0x009F4E84() {
-	__asm {
-		jmp dword ptr[dw0x009F4E84Retn]
-	}
-}
-
-__declspec(naked) void cc0x009F4EC3() {
-	__asm {
-		jmp dword ptr[dw0x009F4EC3Retn]
-	}
-}
-
-__declspec(naked) void cc0x009F4F12() {
-	__asm {
-		jmp dword ptr[dw0x009F4F12Retn]
-	}
-}
-
-__declspec(naked) void cc0x009F4FC6() {
-	__asm {
-		jmp dword ptr[dw0x009F4FC6Retn]
-	}
-}
-
-__declspec(naked) void cc0x009F503C() {
-	__asm {
-		jmp dword ptr[dw0x009F503CRetn]
-	}
-}
-
-__declspec(naked) void cc0x009F51A7() {
-	__asm {
-		jmp dword ptr[dw0x009F51A7Retn]
-	}
-}
-
-__declspec(naked) void cc0x009F526F() {
-	__asm {
-		jmp dword ptr[dw0x009F526FRetn]
-	}
-}
-
-__declspec(naked) void cc0x009F5653() {
-	__asm {
-		jmp dword ptr[dw0x009F5653Retn]
-	}
-}
-
-__declspec(naked) void cc0x009F5833() {
-	__asm {
-		jmp dword ptr[dw0x009F5833Retn]
-	}
-}
-
-__declspec(naked) void cc0x009F5C2C() {
-	__asm {
-		jmp dword ptr[dw0x009F5C2CRetn]
-	}
-}
-
-__declspec(naked) void cc0x009F5CA3() {
-	__asm {
-		jmp dword ptr[dw0x009F5CA3Retn]
-	}
-}
-
-__declspec(naked) void cc0x009F5FBD() {
-	__asm {
-		jmp dword ptr[dw0x009F5FBDRetn]
-	}
-}
-
-__declspec(naked) void cc0x009F631C() {
-	__asm {
-		jmp dword ptr[dw0x009F631CRetn]
-	}
-}
-
-__declspec(naked) void cc0x009F691F() {
-	__asm {
-		jmp dword ptr[dw0x009F691FRetn]
-	}
-}
-
-__declspec(naked) void cc0x009F6F36() {
-	__asm {
-		jmp dword ptr[dw0x009F6F36Retn]
-	}
-}
-
-__declspec(naked) void cc0x009F6F5C() {
-	__asm {
-		jmp dword ptr[dw0x009F6F5CRetn]
-	}
-}
-
-__declspec(naked) void cc0x009F7CFA() {
-	__asm {
-		jmp dword ptr[dw0x009F7CFARetn]
-	}
-}
-
-__declspec(naked) void cc0x009F7D83() {
-	__asm {
-		jmp dword ptr[dw0x009F7D83Retn]
-	}
-}
-
-__declspec(naked) void cc0x009F81FB() {
-	__asm {
-		jmp dword ptr[dw0x009F81FBRetn]
-	}
-}
-
-__declspec(naked) void cc0x009F84E9() {
-	__asm {
-		jmp dword ptr[dw0x009F84E9Retn]
-	}
-}
-
-__declspec(naked) void cc0x009F8AD4() {
-	__asm {
-		jmp dword ptr[dw0x009F8AD4Retn]
-	}
-}
-
-__declspec(naked) void cc0x00A4BB39() {
-	__asm {
-		jmp dword ptr[dw0x00A4BB39Retn]
-	}
-}
-
-__declspec(naked) void cc0x00A4BC79() {
-	__asm {
-		jmp dword ptr[dw0x00A4BC79Retn]
-	}
-}
-
-__declspec(naked) void cc0x00A4BD05() {
-	__asm {
-		jmp dword ptr[dw0x00A4BD05Retn]
-	}
-}
-
-__declspec(naked) void cc0x00A4BD4E() {
-	__asm {
-		jmp dword ptr[dw0x00A4BD4ERetn]
-	}
-}
-
-__declspec(naked) void cc0x00A4BD99() {
-	__asm {
-		jmp dword ptr[dw0x00A4BD99Retn]
-	}
-}
-
-__declspec(naked) void cc0x00A4BDE3() {
-	__asm {
-		jmp dword ptr[dw0x00A4BDE3Retn]
-	}
-}
-
-__declspec(naked) void cc0x00A4BDFE() {
-	__asm {
-		jmp dword ptr[dw0x00A4BDFERetn]
-	}
-}
-
-__declspec(naked) void cc0x00A4BE47() {
-	__asm {
-		jmp dword ptr[dw0x00A4BE47Retn]
-	}
-}
-
-char CUIStatusBarChatLogAddBypassLimit = 0xFF;
+//char CUIStatusBarChatLogAddBypassLimit = 0xFF;
 __declspec(naked) void ccCUIStatusBarChatLogAddBypass() {
 	__asm {
 		cmp    DWORD PTR[eax - 0x4], 0xFF
@@ -845,16 +561,15 @@ const char myWzFile[] = "TamingMob";
 const char* ptrmyWzFile = myWzFile;
 
 int MINT = 51+1;
-const DWORD dwTesting = 0x009F74D2;
-const DWORD dwTestingRetn = 0x009F74EA;
-const int TestingNOPs = 24;
+const DWORD dwTesting = 0x008DDC4F;
+const DWORD dwTestingRetn = 0x008DDC55;
+const int TestingNOPs = 6;
 __declspec(naked) void testingCodeCave() {
 	__asm {
-		mov    DWORD PTR[ebp - 0x78], 0xb3f434
-		mov    DWORD PTR[ebp - 0x74], 0xb3f42c
-		mov    DWORD PTR[ebp - 0x70], 0xb3f428
-		mov    DWORD PTR[ebp - 0x6C], 0xb3f428
-		mov    DWORD PTR[ebp - 0x18], edi
+		push   DWORD PTR[ebp - 0x14]
+		push    eax
+		push    15
+		push	15
 		jmp dword ptr[dwTestingRetn]
 	}
 }

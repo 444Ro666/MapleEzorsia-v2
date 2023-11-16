@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "Memory.h"
 #include "detours.h"
-
+//#pragma optimize("", off) //non-optimized function for testing purposes
 bool Memory::UseVirtuProtect = true;
 
 bool Memory::SetHook(bool attach, void** ptrTarget, void* ptrDetour)
@@ -92,6 +92,7 @@ void Memory::WriteDouble(const DWORD dwOriginAddress, const double dwValue) {
 }
 
 void Memory::WriteByteArray(const DWORD dwOriginAddress, unsigned char* ucValue, const int ucValueSize) {
+    const size_t nSize = sizeof(ucValue);
     if (UseVirtuProtect) {
         for (int i = 0; i < ucValueSize; i++) {
             const DWORD newAddr = dwOriginAddress + i;
@@ -113,3 +114,4 @@ void Memory::CodeCave(void* ptrCodeCave, const DWORD dwOriginAddress, const int 
 		WriteInt(dwOriginAddress + 1, (int)(((int)ptrCodeCave - (int)dwOriginAddress) - 5)); // [jmp(1 byte)][address(4 bytes)] //this means you need to clear a space of at least 5 bytes (nNOPCount bytes)
 	} __except (EXCEPTION_EXECUTE_HANDLER) {}
 }
+//#pragma optimize("", on)

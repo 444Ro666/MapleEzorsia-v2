@@ -36,9 +36,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="dllmain.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="AddyLocations.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -90,9 +87,6 @@
     <ClInclude Include="stdafx.h">
       <Filter>Header Files\innerH</Filter>
     </ClInclude>
-    <ClInclude Include="NMCO.h">
-      <Filter>Header Files\innerH</Filter>
-    </ClInclude>
     <ClInclude Include="MapleClientCollectionTypes\ZRecyclable.h">
       <Filter>Header Files\MapleTypes\ZRecycleable</Filter>
     </ClInclude>
@@ -135,7 +129,13 @@
     <ClInclude Include="MapleClientCollectionTypes\ZXString.h">
       <Filter>Header Files\MapleTypes</Filter>
     </ClInclude>
-    <ClInclude Include="ijl15.h">
+    <ClInclude Include="MapleClientCollectionTypes\winhook_types.h">
+      <Filter>Header Files\MapleTypes</Filter>
+    </ClInclude>
+    <ClInclude Include="MainMain.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="dinput8.h">
       <Filter>Header Files\innerH</Filter>
     </ClInclude>
   </ItemGroup>
@@ -152,13 +152,13 @@
     <ClCompile Include="ZAllocEx.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="NMCO.cpp">
-      <Filter>Source Files\innerH</Filter>
-    </ClCompile>
     <ClCompile Include="stdafx.cpp">
       <Filter>Source Files\innerH</Filter>
     </ClCompile>
-    <ClCompile Include="ijl15.cpp">
+    <ClCompile Include="MainMain.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="dinput8.cpp">
       <Filter>Source Files\innerH</Filter>
     </ClCompile>
   </ItemGroup>
