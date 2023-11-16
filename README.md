@@ -1,20 +1,24 @@
-# MapleEzorsia v2 (HD client patch for v83)
+# MapleEzorsia v2 (Standalone HD dll client/localhost for v83)
 #### Please follow [setup instructions here](https://github.com/444Ro666/MapleEzorsia-v2/wiki/v83%E2%80%90Client%E2%80%90Setup%E2%80%90and%E2%80%90Development%E2%80%90Guide) for optimal setup, [gameplay after optimal setup](https://www.youtube.com/watch?v=HxGKn0EjPC0). see the [change log to make sure you're up to date](https://github.com/444Ro666/MapleEzorsia-v2/wiki/Change-Log).     Is your game not working? [Go to Troubleshooting Section](https://github.com/444Ro666/MapleEzorsia-v2/wiki/v83%E2%80%90Client%E2%80%90Setup%E2%80%90and%E2%80%90Development%E2%80%90Guide#troubleshooting) of the setup guide and see if any fixes help  
 
-#### 2023/10/17 - Major update to how the patch loads wz data, YOU NEED THE [NEW WZ FILE](https://www.mediafire.com/file/6bimll8wtpbclmx/EzorsiaV2_UI.wz/file) OR YOUR GAME WILL CRASH (replace old one, works for all res). [setup for more detailed instructions](https://github.com/444Ro666/MapleEzorsia-v2/wiki/v83%E2%80%90Client%E2%80%90Setup%E2%80%90and%E2%80%90Development%E2%80%90Guide). For how to toggle off some Ezorsia V2 wz edits see [Troubleshooting Section](https://github.com/444Ro666/MapleEzorsia-v2/wiki/v83%E2%80%90Client%E2%80%90Setup%E2%80%90and%E2%80%90Development%E2%80%90Guide#troubleshooting)
+#### 2023/11/17 - in addition to its original functionality, this DLL is now an independent standalone localhost that will work when dropped into any fresh install along with the config
+
+#### 2023/11/17 - if you used this before this date, ijl15.dll.dll is no longer supported, instead re-follow the instructions and put dinput8.dll in the folder, delete `ijl15.dll`, and rename `2ijl15.dll`(the original) back to `ijl15.dll`
 
 #### 2023/10/23 - if you used this before this date, nmconew.dll is no longer supported, instead re-follow the instructions and name `ijl15.dll` to `2ijl15.dll`, place new `ijl15.dll` in the folder, delete old nmconew.dll, and rename nmconew2.dll back to nmconew.dll
 
-This DLL modifies addresses in a v83 MapleStory client to change the game window and canvas resolution.  
+#### 2023/10/17 - Major update to how the patch loads wz data, YOU NEED THE [NEW WZ FILE](https://www.mediafire.com/file/6bimll8wtpbclmx/EzorsiaV2_UI.wz/file) OR YOUR GAME WILL CRASH (replace old one, works for all res). [setup for more detailed instructions](https://github.com/444Ro666/MapleEzorsia-v2/wiki/v83%E2%80%90Client%E2%80%90Setup%E2%80%90and%E2%80%90Development%E2%80%90Guide). For how to toggle off some Ezorsia V2 wz edits see [Troubleshooting Section](https://github.com/444Ro666/MapleEzorsia-v2/wiki/v83%E2%80%90Client%E2%80%90Setup%E2%80%90and%E2%80%90Development%E2%80%90Guide#troubleshooting)
+
+This DLL modifies addresses in a default, packed, v83 MapleStory client fresh from installation to enable the game to run; as well as changes the game window and canvas resolution to HD.  
 Most in-game component boundaries are also modified to scale with the custom resolution. 
   
-The goal of this DLL patch is to allow an old 4:3 aspect ratio game to work on 16:9 aspect ratio modern monitors while perserving the original gameplay experience as much as possible. However i also do believe that it is the individual player's choice on how they wish to play the game so i am willing to be flexible regarding optional functionality.
+The original goal of this DLL patch is to allow an old 4:3 aspect ratio game to work on 16:9 aspect ratio modern monitors while perserving the original gameplay experience as much as possible. However i also do believe that it is the individual player's choice on how they wish to play the game so i am willing to be flexible regarding optional functionality. As such this project has expanded into also becoming a development base that allows plenty of room for expansion and allows the user to play the game their way.
   
-This DLL patch is designed to provide a quality, relatively safe, open source client setup to work alongside open source servers. I do not have the skill or resources available to make a fully working custom client from scratch so this is the best i can do
+This standalone DLL client is designed to provide a quality, relatively safe, open source client setup to work alongside open source servers. I do not have the skill or resources available to make a fully working custom client from scratch so this is the best i can do
   
-This DLL requires a clean game client like the one provided in [the setup guide](https://github.com/444Ro666/MapleEzorsia-v2/wiki/v83%E2%80%90Client%E2%80%90Setup%E2%80%90and%E2%80%90Development%E2%80%90Guide), or at least one in which the binary edits are known to avoid potential execution conflicts and instability. using a client with unknown binary edits can result in unstable and unpredictable behavior!  
+This DLL will work with any client or localhost, including the one that comes from a default installation of the game. Deletion of files that come from a default installation is also unnecessary for it to work.
   
-This DLL also requires some minor modifications to UI.wz to work optimally because i'm currently not skilled enough to change the game in those areas using only DLL, these are also provided in the setup.  
+This DLL requires some minor modifications to UI.wz to work optimally because i'm currently not skilled enough to change the game in those areas using only DLL, these are also provided in the setup.  
 (The patch can be used without those UI.wz modifications but you need to turn EzorsiaV2WzIncluded=false and also CustomLoginFrame=false in the `config.ini` file if you aren't using your own custom login frame)
   
 This code can only be compiled on the x86 platform. ([Compilation settings](https://www.mediafire.com/view/9ssrqg8eiwbh0k1/buildsettings2.png/file)) (if DLL from compilation settings doesn't work [try this](https://www.mediafire.com/view/6xk7b9bf8qv3gda/buildsettingsEzorsia.png/file))
@@ -22,22 +26,24 @@ This code can only be compiled on the x86 platform. ([Compilation settings](http
 - [HD client setup instructions/development guide](https://github.com/444Ro666/MapleEzorsia-v2/wiki/v83%E2%80%90Client%E2%80%90Setup%E2%80%90and%E2%80%90Development%E2%80%90Guide)
 - Original Ezorsia: https://github.com/izarooni/MapleEzorsia
 - Current most frequently updated open source v83 server source (checked 2023/10/10): [cosmic](https://github.com/P0nk/Cosmic)
+- Coming from another version and need a good localhost? [check out hendi's releases](https://forum.ragezone.com/threads/localhost-workshop.1202021/)
 
 #### Default config.ini
-The default `config.ini` file is included. put it in your game folder (where the .dll is) and the program will try to use it. try to avoid extending the comments (behind ;comment) inside of it or INIReader will be unable to read from it and cause the patch to default to default values for all of the toggle-able values
+The default `config.ini` file is included. put it in your game folder (where the .dll is) and the program will try to use it. try to avoid extending the comments (behind ;comment) inside of it or INIReader will be unable to read from it and crash you
 
 
 #### How to use (DLL only)
 In your v83 MapleStory directory,  
-1. Rename file `ijl15.dll` to `2ijl15.dll`  
-2. insert [this ijl15.dll from here](https://github.com/444Ro666/MapleEzorsia-v2/releases) in that directory
-3. insert 'config.ini' in that same directory and check to make the values are as they should be
+1. insert [this dinput8.dll from here](https://github.com/444Ro666/MapleEzorsia-v2/releases) in the game directory
+2. insert `config.ini` in that same directory and check to make the values are as they should be
      - EzorsiaV2WzIncluded=false if you aren't using the UI.wz from the [setup guide](https://github.com/444Ro666/MapleEzorsia-v2/wiki/v83%E2%80%90Client%E2%80%90Setup%E2%80%90and%E2%80%90Development%E2%80%90Guide) or if your UI.wz doesn't contain MapleEzorsiaV2wzfiles.img
           - also CustomLoginFrame=false if there are no login frame modifications at all (note: MapleEzorsiaV2wzfiles.img counts as a modification even if it doesn't directly touch the original login frame, so CustomLoginFrame=true if EzorsiaV2WzIncluded=true)  
                - for compatibility with your own wz edits see the [troubleshooting section](https://github.com/444Ro666/MapleEzorsia-v2/wiki/v83%E2%80%90Client%E2%80%90Setup%E2%80%90and%E2%80%90Development%E2%80%90Guide#troubleshooting)
-4. Run your client!
+3. Run your client! (try again if it doesn't work, if it is always failing too much then change sleepTime=42 in `config.ini` to another number within the recommended range until you it always runs for you)
 
 ## Features
+- the first publically released standalone dll client for v83 (functionality added on 11/16/2023)
+- the ability to load 3 custom third party dll that you can specify in the config, these must be in the game folder; Ezorsia v2's edits will take precedence over conflicting edits (sometimes a good thing if those dll files have things that prevent the game running, and Ezorsia v2 overwrites those same things)
 - pick up and exp gain messages that were centered on the character in the original ezorsia is fixed and moved to the bottom right  
 	- the messages also no longer appear cut off at the beginning  
 	- the functionality of announcing the messages has been improved, and the player can now configure how many pick up and exp gain messages they want to display	instead of being stuck with 6 maximum (the recommended maximum amount is half your resolution height divided by 14, this will make the messages go up to half your screen)  
@@ -60,6 +66,7 @@ In your v83 MapleStory directory,
 
 
 #### improvements in source from original:
+- too many changes to count, see [change log](https://github.com/444Ro666/MapleEzorsia-v2/wiki/Change-Log) and source xD
 - contains examples of function replacement and codecaves  
 - occasional helpful comments for further development  
 - numerous addresses, some of which aren't used because they aren't related to resolution  
@@ -74,7 +81,7 @@ My [To-do](https://github.com/444Ro666/MapleEzorsia-v2/wiki/my-to%E2%80%90do-lis
 
 
 ## Credits
-i'd like to thank the members of the [maple dev community](https://discord.gg/DU8j6xrW) who took the time to help me when they did. I'd also like to thank the creator of the [original ezorsia](https://github.com/izarooni/MapleEzorsia) for creating the base i used to work off of and learn from. A special mention to the creators of [MapleClientEditTemplate](https://github.com/MapleStory-Archive/MapleClientEditTemplate) whose re-written utility functions and type definitions helped transition this project towards more advanced client modifications. Finally, I'd like to thank the people who provided the releases and resources in the [setup and development](https://github.com/444Ro666/MapleEzorsia-v2/wiki/v83%E2%80%90Client%E2%80%90Setup%E2%80%90and%E2%80%90Development%E2%80%90Guide) page; i would not have been able to do this work without the work that which was done before me.
+i'd like to thank the members of the [maple dev community](https://discord.gg/DU8j6xrW) who took the time to help me when they did. I'd also like to thank the creator of the [original ezorsia](https://github.com/izarooni/MapleEzorsia) for creating the base i used to work off of and learn from. A special mention to the creators of [MapleClientEditTemplate](https://github.com/MapleStory-Archive/MapleClientEditTemplate) whose re-written utility functions and type definitions helped transition this project towards more advanced client modifications. Another special mention to [hendi's localhost workshop](https://forum.ragezone.com/threads/localhost-workshop.1202021/) for the guidance about which functions to re-write in order to implement a working standalone client dll, and for providing a unvirtualized localhost to analyze. Finally, I'd like to thank everyone who provided the releases and resources in the [setup and development](https://github.com/444Ro666/MapleEzorsia-v2/wiki/v83%E2%80%90Client%E2%80%90Setup%E2%80%90and%E2%80%90Development%E2%80%90Guide) page; i would not have been able to do this work without the work that which was done before me.
 
 ## License
 
