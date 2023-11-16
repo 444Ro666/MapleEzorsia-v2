@@ -16,9 +16,9 @@ The original goal of this DLL patch is to allow an old 4:3 aspect ratio game to 
   
 This standalone DLL client is designed to provide a quality, relatively safe, open source client setup to work alongside open source servers. I do not have the skill or resources available to make a fully working custom client from scratch so this is the best i can do
   
-This DLL requires will work with any client or localhost, including the one that comes from a default installation of the game. Deletion of files that come from a default installation is also unnecessary for it to work.
+This DLL will work with any client or localhost, including the one that comes from a default installation of the game. Deletion of files that come from a default installation is also unnecessary for it to work.
   
-This DLL also requires some minor modifications to UI.wz to work optimally because i'm currently not skilled enough to change the game in those areas using only DLL, these are also provided in the setup.  
+This DLL requires some minor modifications to UI.wz to work optimally because i'm currently not skilled enough to change the game in those areas using only DLL, these are also provided in the setup.  
 (The patch can be used without those UI.wz modifications but you need to turn EzorsiaV2WzIncluded=false and also CustomLoginFrame=false in the `config.ini` file if you aren't using your own custom login frame)
   
 This code can only be compiled on the x86 platform. ([Compilation settings](https://www.mediafire.com/view/9ssrqg8eiwbh0k1/buildsettings2.png/file)) (if DLL from compilation settings doesn't work [try this](https://www.mediafire.com/view/6xk7b9bf8qv3gda/buildsettingsEzorsia.png/file))
