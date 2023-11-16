@@ -369,6 +369,11 @@ const int dw0x00A4BE47Nops = 18;
 //0x0044E550 //0x0044E5DB //0x0044E71D //0x0044E8B4 //0x0044EA6F //0x0044ECA1 //0x0044ED52 //0x00494D3B //0x00494EEC //0x009F4E84
 //0x009F4F12 //0x009F503C //0x009F526F //0x009F6F36 //0x009F7CFA //0x009F84E9 //0x00A4BDFE //0x00A4BD99 //0x00A4BD05 //0x00A4BB39
 
+const DWORD dwCUIStatusBarChatLogAddBypass = 0x008DB387;
+const DWORD dwCUIStatusBarChatLogAddBypassRetn = 0x008DB38D;
+const DWORD dwCUIStatusBarChatLogAddBypass2Retn = 0x008DB39A;
+const int dwCUIStatusBarChatLogAddBypassNops = 6;
+
 //my cash shop fix
 const DWORD dwCashFix1 = 0x00469414;
 const DWORD dwCashFix1Rtm = 0x00469420;

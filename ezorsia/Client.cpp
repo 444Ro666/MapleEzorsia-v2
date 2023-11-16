@@ -104,6 +104,9 @@ void Client::UpdateGameStartup() {
 	//unsigned char CA_00E93220[] = { 0x00, 0x00, 0x00, 0x43, 0x6F, 0x43, 0x72, 0x65,  0x61, 0x74, 0x65, 0x47, 0x75, 0x69, 0x64, 0x00 }; //run from packed client //addr 00E93220 //??
 	//Memory::WriteByteArray(0x00E93220, CA_00E93220, sizeof(CA_00E93220)); //run from packed client //addr 00E93220 //??
 
+	//Memory::WriteByte(0x008DB387 + 3, 0xFF);
+	//Memory::CodeCave(ccCUIStatusBarChatLogAddBypass, dwCUIStatusBarChatLogAddBypass, dwCUIStatusBarChatLogAddBypassNops); //set charbar limit
+
 	Memory::FillBytes(0x00C08459, 0x20, 0x00C0846E - 0x00C08459);//remove elevation requests
 	Memory::WriteByte(0x00C08459, 0x22);//remove elevation requests	//thanks stelmo for showing me how to do this
 	Memory::WriteString(0x00C08459 + 1, "asInvoker");//remove elevation requests	//not working from dll
@@ -127,6 +130,31 @@ void Client::UpdateGameStartup() {
 	Memory::WriteInt(0x00780743 + 3, speedMovementCap); //set speed cap //ty ronan
 	Memory::WriteInt(0x008C4286 + 1, speedMovementCap); //set speed cap //ty ronan
 	Memory::WriteInt(0x0094D91E + 1, speedMovementCap); //set speed cap //ty ronan
+
+	//other potential resolution edits/etc
+	Memory::WriteByte(0x004001B4, 0xDC);  //??
+	Memory::WriteByte(0x00400250, 0xDC);  //??
+	Memory::WriteByte(0x0040013E, 0x2F);  //??
+	//0043D260 //0043D3E2 //0043D5C8	//CAnimationDisplayer::Effect_RewardRullet
+	//0048B96A	//CChatBalloon::MakeScreenBalloon
+	//0049D105 //0049D218 //CConfig::
+	//004D584D //CCtrlMLEdit::CreateIMECandWnd
+	//0053EFC3 //x and y //SP_4371_UI_UIWINDOWIMG_ARIANTMATCH_RESULT
+	//0055BEE6 //0055BEEC //0055C07F //0055C086 //0055C1C5 //0055C1CD //CField_LimitedView::DrawViewRange !!!!!
+	//005EB45A //005EB464 //CItemSpeakerDlg::CItemSpeakerDlg
+	//00663079 //CMob::Init
+	//007C252C //007C2531 //CTradingRoomDlg::OnCreate
+	//007E15BE //CSlideNotice::CSlideNotice
+	//007E19CA //CSlideNotice::SetMsg
+	//007E9ABC //007E9ACD //sub_7E99BC
+	//007EB409 //007EB41A //sub_7EB303
+	//007F2007 //007F201B //sub_7F1F25
+	//0085F341 //0085F361 //sub_85F303
+	//008C7FEA //NOP at +2,+3,+4,+5 //sub_8C7FB6  related to CUIStat::Draw(tagRECT const *) //dunno what they were trying to do here, noping jumps
+	//008D2C03 //008D2EED //008D2FB3 //008D305B //008D3124 //008D31EC //008D3273 //008D32FA //008D3381 //008D3408 //008D348F //008D358B //008D369B //CUIStatusBar::OnCreate
+	//008D405E //008D40D4 //sub_8D3B2F
+	//008D4B93 //008D4BBC //CUIStatusBar::SetChatType
+	//00960581 //00960839 //00960C67 //00960DED //CUserLocal::DrawCombo
 }
 
 void Client::UpdateResolution() {
@@ -424,7 +452,8 @@ void Client::UpdateResolution() {
 
 	Memory::WriteInt(0x007C2531 + 1, m_nGameHeight - 80);//??
 
-	//Memory::WriteInt(0x0089B796 + 2, m_nGameHeight - 18);//???related to exp gain/item pick up msg
+	Memory::WriteInt(0x0089B796 + 1, m_nGameHeight - 18);//???related to exp gain/item pick up msg //??!!found in another diff also !!!!!!!!!!!!
+
 	//Memory::WriteInt(0x0089BA03 + 1, m_nGameHeight - 96); //??related to exp gain/item pick up msg
 	//Memory::WriteInt(0x008D3F73 + 1, m_nGameHeight - 93);//bottom frame, white area
 	//Memory::WriteInt(0x008D3FE5 + 1, m_nGameHeight - 93);//bottom frame, grey area
@@ -432,11 +461,13 @@ void Client::UpdateResolution() {
 	//Memory::WriteInt(0x008D83D1 + 1, m_nGameHeight - 55); //role
 	//Memory::WriteInt(0x008D8470 + 1, m_nGameHeight - 40); //name of character
 
-	//Memory::WriteInt(0x008DE850 + 1, 580);//quickslotcheckX//interactivity of bottom buttoms
-	//Memory::WriteInt(0x008DE896 + 1, 647);//quickslotcheckX//interactivity of bottom buttoms
-	//Memory::WriteInt(0x008DE82B + 1, 507);///quickslotcheckY //interactivity of bottom buttoms
+	//Memory::WriteInt(0x008DE850 + 1, 580);//quickslotcheckX//interactivity of bottom buttoms	//test, could be wrong
+	//Memory::WriteInt(0x008DE896 + 1, 647);//quickslotcheckX//interactivity of bottom buttoms	//test, could be wrong
+	//Memory::WriteInt(0x008DE82B + 1, 507);///quickslotcheckY //interactivity of bottom buttoms //test, could be wrong
+	//008DE8A9 //CUIStatusBar::HitTest //related to prev^
 
 	//Memory::WriteInt(0x008DA11C + 1, m_nGameHeight - 19);//??likely various status bar UI components
+	//008DA115 //sub_8D850B //related to prev^ 
 	//Memory::WriteInt(0x008DA3D4 + 1, m_nGameHeight - 56); //exphpmp % labels
 	//Memory::WriteInt(0x008DA463 + 1, m_nGameHeight - 51); //stat bar gradient or bracket
 	//Memory::WriteInt(0x008DA4F2 + 1, m_nGameHeight - 51);//stat bar gradient or bracket
@@ -472,8 +503,11 @@ void Client::UpdateResolution() {
 	//Memory::WriteInt(0x008D3056 + 1, m_nGameHeight - 57);
 	//Memory::WriteInt(0x008D311F + 1, m_nGameHeight - 57);
 	//Memory::WriteInt(0x008D31E7 + 1, m_nGameHeight - 57);//bottom 4 large buttons
+
 	Memory::WriteInt(0x00849E39 + 1, m_nGameHeight - 177); //system menu pop up
+	//00849E3F related to previous^
 	Memory::WriteInt(0x0084A5B7 + 1, m_nGameHeight - 281); //shortcuts pop up	//0x84A5BD -  System Options "X" Position. if needed
+	//0084A5BD related to previous^
 
 	Memory::WriteInt(0x00522C73 + 1, m_nGameHeight - 92);// ??various requests like party, guild, friend, family, invites that pop up
 	Memory::WriteInt(0x00522E65 + 1, m_nGameHeight - 92); // ??various requests like party, guild, friend, family, invites that pop up
@@ -487,9 +521,10 @@ void Client::UpdateResolution() {
 	Memory::WriteInt(0x00523FA3 + 1, m_nGameHeight - 92);// various requests like party, guild, friend, family, invites that pop up
 	Memory::WriteInt(0x005243DB + 1, m_nGameHeight - 92);// various requests like party, guild, friend, family, invites that pop up
 	Memory::WriteInt(0x00523154 + 1, m_nGameHeight - 102);//?? various requests like party, guild, friend, family, invites that pop up
+	//0052315C part of the previous^
 
 	Memory::WriteInt(0x0052418C + 1, m_nGameHeight - 102);//party quest available pop-up y axis		my first address find own my own
-
+	//005241A0 //SP_1299_UI_UIWINDOWIMG_FADEYESNO_BACKGRND5 //no idea what this is for, but if you notice broken things in pop up requests, this could be your addy
 	Memory::WriteInt(0x00523092 + 1, m_nGameWidth - 942);//various requests like party, guild, friend, family, invites that pop up	//trade		 //thank you Rain for the width addresses
 	Memory::WriteInt(0x0052336D + 1, m_nGameWidth - 942);//various requests like party, guild, friend, family, invites that pop up //Party Invite
 	Memory::WriteInt(0x00522E79 + 1, m_nGameWidth - 942);//various requests like party, guild, friend, family, invites that pop up //friend request
@@ -510,8 +545,10 @@ void Client::UpdateResolution() {
 	//Memory::WriteInt(0x008D3586 + 1, m_nGameHeight - 85);
 	//Memory::WriteInt(0x008D3696 + 1, m_nGameHeight - 85);
 	//Memory::WriteInt(0x008D4058 + 1, m_nGameHeight - 85);
-	//Memory::WriteInt(0x008DF903 + 1, m_nGameHeight - 85);
-	//Memory::WriteInt(0x008DFFCF + 1, m_nGameHeight - 85);
+	//Memory::WriteInt(0x008DF903 + 1, m_nGameHeight - 85);	
+	//008DF908 addr of related^ //CUIStatusBar::ToggleQuickSlot 
+	//Memory::WriteInt(0x008DFFCF + 1, m_nGameHeight - 85);	//CUIStatusBar::SetButtonBlink
+	//008DFFD4 //related to^
 	//Memory::WriteInt(0x008D40CE + 1, m_nGameHeight - 81);//smol buttoms right of chat box (all - 85 ones)
 
 	//Memory::CodeCave(PositionBossBarY2, 0x007E169B, 6);//boss bar, check for server msg, looking in wrong address...

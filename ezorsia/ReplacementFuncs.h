@@ -44,7 +44,7 @@ inline void HookCreateWindowExA(bool bEnable) {
 	Memory::SetHook(bEnable, reinterpret_cast<void**>(&create_window_ex_a), hook);
 }
 
-DWORD GetFuncAddress(LPCSTR lpModule, LPCSTR lpFunc)	//ty alias!			//multiclient, not currently working, likely cannot hook early enough with nmconew.dll
+DWORD GetFuncAddress(LPCSTR lpModule, LPCSTR lpFunc)	//ty alias!			//multiclient
 {
 	HMODULE mod = LoadLibraryA(lpModule);
 
@@ -269,4 +269,8 @@ bool Hook_lpfn_NextLevel(bool bEnable)
 {
 	return Memory::SetHook(bEnable, reinterpret_cast<void**>(&_lpfn_NextLevel), _lpfn_NextLevel_Hook);
 	//return Memory::SetHook(bEnable, reinterpret_cast<void**>(&_lpfn_NextLevel), _lpfn_NextLevel_v62_Hook);
+}
+bool Hook_CUIStatusBar__ChatLogAdd(bool bEnable)
+{
+	return Memory::SetHook(bEnable, reinterpret_cast<void**>(&_CUIStatusBar__ChatLogAdd), _CUIStatusBar__ChatLogAdd_Hook);
 }
