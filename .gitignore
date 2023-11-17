@@ -1,0 +1,44 @@
+# Prerequisites
+*.d
+
+# User-specific files
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Compiled Object files
+*.slo
+*.lo
+*.o
+*.obj
+*.opensdf
+
+# Precompiled Headers
+*.gch
+*.pch
+
+# Compiled Dynamic libraries
+*.so
+*.dylib
+*.dll
+
+# Fortran module files
+*.mod
+*.smod
+
+# Compiled Static libraries
+*.lai
+*.la
+*.a
+
+# Executables
+*.exe
+*.out
+*.app
+
+# Directories
+Debug/
+Release/
+.vs/
+.idea
