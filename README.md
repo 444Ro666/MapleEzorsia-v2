@@ -3,6 +3,11 @@
 
 #### 2023/11/17 - in addition to its original functionality, this DLL is now an independent standalone localhost that will work when dropped into any fresh install along with the config
 
+##### NOTE:     so i've notice some ppl dunno what this is. to clarify: this is a cr@ck that turns the default .exe (from NXXXON) into a HD client/localhost useable for singleplayer or with any server.
+##### it still works for it's original design of turning any previously released localhost into HD as well, and also has a few other configurable capabilities specified by the user
+##### it doesn't need an injector or other extra .exe file to work because MapleStory already loads up dinput8.dll automatically. just needs the dll to be in the same folder. i did this purposely because so many .exe files in the hacking scene are viruses that make you mine coin
+##### first to be released, one of a kind, and truly unique in this scene(or any hacking scene): a cr@ck that is open source, with zero strings attached, designed to be the safest, most transparent setup any end user can get
+
 #### 2023/11/17 - if you used this before this date, `ijl15.dll` is no longer supported, instead re-follow the instructions and put `dinput8.dll` in the folder, delete `ijl15.dll`, and rename `2ijl15.dll`(the original) back to `ijl15.dll`
 
 #### 2023/10/23 - if you used this before this date, `nmconew.dll` is no longer supported, instead re-follow the instructions and name `ijl15.dll` to `2ijl15.dll`, place new `ijl15.dll` in the folder, delete old `nmconew.dll`, and rename `nmconew2.dll` back to `nmconew.dll`
