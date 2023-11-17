@@ -3,9 +3,9 @@
 
 #### 2023/11/17 - in addition to its original functionality, this DLL is now an independent standalone localhost that will work when dropped into any fresh install along with the config
 
-#### 2023/11/17 - if you used this before this date, ijl15.dll.dll is no longer supported, instead re-follow the instructions and put dinput8.dll in the folder, delete `ijl15.dll`, and rename `2ijl15.dll`(the original) back to `ijl15.dll`
+#### 2023/11/17 - if you used this before this date, `ijl15.dll` is no longer supported, instead re-follow the instructions and put `dinput8.dll` in the folder, delete `ijl15.dll`, and rename `2ijl15.dll`(the original) back to `ijl15.dll`
 
-#### 2023/10/23 - if you used this before this date, nmconew.dll is no longer supported, instead re-follow the instructions and name `ijl15.dll` to `2ijl15.dll`, place new `ijl15.dll` in the folder, delete old nmconew.dll, and rename nmconew2.dll back to nmconew.dll
+#### 2023/10/23 - if you used this before this date, `nmconew.dll` is no longer supported, instead re-follow the instructions and name `ijl15.dll` to `2ijl15.dll`, place new `ijl15.dll` in the folder, delete old `nmconew.dll`, and rename `nmconew2.dll` back to `nmconew.dll`
 
 #### 2023/10/17 - Major update to how the DLL client loads wz data, YOU NEED THE [NEW WZ FILE](https://www.mediafire.com/file/6bimll8wtpbclmx/EzorsiaV2_UI.wz/file) OR YOUR GAME WILL CRASH (replace old one, works for all res). [setup for more detailed instructions](https://github.com/444Ro666/MapleEzorsia-v2/wiki/v83%E2%80%90Client%E2%80%90Setup%E2%80%90and%E2%80%90Development%E2%80%90Guide). For how to toggle off some Ezorsia V2 wz edits see [Troubleshooting Section](https://github.com/444Ro666/MapleEzorsia-v2/wiki/v83%E2%80%90Client%E2%80%90Setup%E2%80%90and%E2%80%90Development%E2%80%90Guide#troubleshooting)
 
