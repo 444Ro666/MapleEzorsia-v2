@@ -44,7 +44,7 @@ MainMain::MainMain(std::function<void()> pPostMutexFunc)
 	MainMain::useV62_ExpTable = reader.GetBoolean("optional", "useV62_ExpTable", false);
 	const char* serverIP_Address = Client::ServerIP_AddressFromINI.c_str();
 	MainMain::m_sRedirectIP = serverIP_Address; MainMain::m_sOriginalIP = "63.251.217.2"; //NXXXON's old IP address here
-	unsigned int sleepySleepy = reader.GetInteger("debug", "sleepTime", 42); sleepySleepy *= 3;//timer value mult
+	unsigned int sleepySleepy = reader.GetInteger("debug", "sleepTime", 42); sleepySleepy *= 1;//timer value mult
 	std::string use_custom_dll_1s = reader.Get("optional", "use_custom_dll_1", "CUSTOM.dll");
 	std::string use_custom_dll_2s = reader.Get("optional", "use_custom_dll_2", "CUSTOM2.dll");
 	std::string use_custom_dll_3s = reader.Get("optional", "use_custom_dll_3", "CUSTOM3.dll");
