@@ -15,7 +15,6 @@ public:
 	static bool EzorsiaV2WzIncluded;
 	static bool useV62_ExpTable;
 	static const char* m_sRedirectIP;
-	static const char* m_sOriginalIP;
 	static SOCKET m_GameSock;
 	static WSPPROC_TABLE m_ProcTable;
 	static unsigned int v83ArrayForCustomEXP[];
