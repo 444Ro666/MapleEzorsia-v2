@@ -129,6 +129,7 @@ bool Hook_FindFirstFileA(bool bEnable)
 {
 	return Memory::SetHook(bEnable, reinterpret_cast<void**>(&FindFirstFileA_Original), FindFirstFileA_Hook);
 }
+sockaddr_in default_nXXXON_if;
 #define WSAAddressToString  WSAAddressToStringA
 bool WSPStartup_initialized = true; ////credits to the creators of https://github.com/MapleStory-Archive/MapleClientEditTemplate
 INT WSPAPI WSPConnect_Hook(SOCKET s, const struct sockaddr* name, int namelen, LPWSABUF	lpCallerData, LPWSABUF lpCalleeData, LPQOS lpSQOS, LPQOS lpGQOS, LPINT lpErrno) {
@@ -137,10 +138,12 @@ INT WSPAPI WSPConnect_Hook(SOCKET s, const struct sockaddr* name, int namelen, L
 	WSAAddressToString((sockaddr*)name, namelen, NULL, szAddr, &dwLen);
 
 	sockaddr_in* service = (sockaddr_in*)name;
-
-	if (strstr(szAddr, MainMain::m_sOriginalIP))
+	//hardcoded NXXON IP addies in default client
+	if (strstr(szAddr, "63.251.217.2") || strstr(szAddr, "63.251.217.3") || strstr(szAddr, "63.251.217.4"))
 	{
+		default_nXXXON_if = *service;
 		service->sin_addr.S_un.S_addr = inet_addr(MainMain::m_sRedirectIP);
+		//service->sin_port = htons(MainMain::porthere);
 		MainMain::m_GameSock = s;
 	}
 
@@ -148,29 +151,11 @@ INT WSPAPI WSPConnect_Hook(SOCKET s, const struct sockaddr* name, int namelen, L
 }
 INT WSPAPI WSPGetPeerName_Hook(SOCKET s, struct sockaddr* name, LPINT namelen, LPINT lpErrno) {
 	int nRet = MainMain::m_ProcTable.lpWSPGetPeerName(s, name, namelen, lpErrno);//credits to the creators of https://github.com/MapleStory-Archive/MapleClientEditTemplate
-
-	if (nRet != SOCKET_ERROR)
+	if (nRet != SOCKET_ERROR && s == MainMain::m_GameSock)
 	{
-		char szAddr[50];
-		DWORD dwLen = 50;
-		WSAAddressToString((sockaddr*)name, *namelen, NULL, szAddr, &dwLen);
-
-		sockaddr_in* service = (sockaddr_in*)name;
-
-		USHORT nPort = ntohs(service->sin_port);
-
-		if (s == MainMain::m_GameSock)
-		{
-			char szAddr[50];
-			DWORD dwLen = 50;
-			WSAAddressToString((sockaddr*)name, *namelen, NULL, szAddr, &dwLen);
-
-			sockaddr_in* service = (sockaddr_in*)name;
-
-			u_short nPort = ntohs(service->sin_port);
-
-			service->sin_addr.S_un.S_addr = inet_addr(MainMain::m_sRedirectIP);
-		}
+		sockaddr_in* service = (sockaddr_in*)name; //suspecting this is for checking rather than actually connecting
+		service->sin_addr.S_un.S_addr = default_nXXXON_if.sin_addr.S_un.S_addr;//inet_addr(MainMain::m_sRedirectIP)
+		//service->sin_port = htons(MainMain::porthere);
 	}
 	return nRet;
 }
@@ -266,6 +251,12 @@ bool HookPcCreateObject_IWzFileSystem(bool bEnable)
 }
 bool HookCWvsApp__Dir_BackSlashToSlash(bool bEnable)
 {
+#define firstval 0x56  //this part is necessary for hooking a client that is themida packed
+	DWORD dwRetAddr = 0x009F95FE;	//will crash if you hook to early, so you gotta check the byte to see
+	while (1) {						//if it matches that of an unpacked client
+		if (ReadValue<BYTE>(dwRetAddr) != firstval) { Sleep(1); } //figured this out myself =)
+		else { break; }
+	}
 	return Memory::SetHook(bEnable, reinterpret_cast<void**>(&_sub_9F95FE), _CWvsApp__Dir_BackSlashToSlash_rewrite);
 }
 bool HookCWvsApp__Dir_upDir(bool bEnable)
@@ -382,6 +373,12 @@ _StringPool__GetString_t _StringPool__GetString_rewrite = [](void* pThis, void* 
 };
 bool Hook_StringPool__GetString(bool bEnable)	//hook stringpool modification //ty !! popcorn //ty darter
 {
+#define firstval 0xB8  //this part is necessary for hooking a client that is themida packed
+	DWORD dwRetAddr = 0x0079E993;	//will crash if you hook to early, so you gotta check the byte to see
+	while (1) {						//if it matches that of an unpacked client
+		if (ReadValue<BYTE>(dwRetAddr) != firstval) { Sleep(1); } //figured this out myself =)
+		else { break; }
+	}
 	return Memory::SetHook(bEnable, reinterpret_cast<void**>(&_sub_79E993), _StringPool__GetString_rewrite);//_StringPool__GetString_t
 }
 bool HookMyTestHook(bool bEnable)
@@ -426,6 +423,12 @@ static _sub_78C8A6_t _sub_78C8A6_rewrite = [](unsigned int NEXTLEVEL[maxLevel], 
 //}
 bool Hook_sub_78C8A6(bool bEnable)
 {
+#define firstval 0x55  //this part is necessary for hooking a client that is themida packed
+	DWORD dwRetAddr = 0x0078C8A6;	//will crash if you hook to early, so you gotta check the byte to see
+	while (1) {						//if it matches that of an unpacked client
+		if (ReadValue<BYTE>(dwRetAddr) != firstval) { Sleep(1); } //figured this out myself =)
+		else { break; }
+	}
 	return Memory::SetHook(bEnable, reinterpret_cast<void**>(&_sub_78C8A6), _sub_78C8A6_rewrite);
 	//return Memory::SetHook(bEnable, reinterpret_cast<void**>(&_lpfn_NextLevel), _lpfn_NextLevel_v62_Hook);
 }
@@ -780,6 +783,11 @@ static _sub_44E88E_t _sub_44E88E_rewrite = [](HINSTANCE__* hModule, const char* 
 };
 bool Hook_sub_44E88E(bool bEnable)
 {
+	#define firstval 0x55  //this part is necessary for hooking a client that is themida packed
+	DWORD dwRetAddr = 0x0044E88E;	//will crash if you hook to early, so you gotta check the byte to see
+	while (1) {						//if it matches that of an unpacked client
+		if (ReadValue<BYTE>(dwRetAddr) != firstval) { Sleep(1); } //figured this out myself =)
+		else { break; } }
 	return Memory::SetHook(bEnable, reinterpret_cast<void**>(&_sub_44E88E), _sub_44E88E_rewrite);
 }
 //bool Hook_sub_44EA64(bool bEnable)
@@ -1125,6 +1133,12 @@ static _sub_494D07_t _sub_494D07_rewrite = [](CClientSocket_CONNECTCONTEXT* pThi
 };	//2
 bool Hook_sub_494D07(bool bEnable)
 {
+#define firstval 0x56  //this part is necessary for hooking a client that is themida packed
+	DWORD dwRetAddr = 0x00494D07;	//will crash if you hook to early, so you gotta check the byte to see
+	while (1) {						//if it matches that of an unpacked client
+		if (ReadValue<BYTE>(dwRetAddr) != firstval) { Sleep(1); } //figured this out myself =)
+		else { break; }
+	}
 	return Memory::SetHook(bEnable, reinterpret_cast<void**>(&_sub_494D07), _sub_494D07_rewrite);	//2
 }
 bool sub_494D2F_initialized = true;//void__thiscall CClientSocket::Connect(CClientSocket *this, sockaddr_in *pAddr)
@@ -1158,6 +1172,12 @@ static _sub_494D2F_t _sub_494D2F_rewrite = [](CClientSocket* pThis, void* edx, s
 };	//2
 bool Hook_sub_494D2F(bool bEnable)
 {
+#define firstval 0x55  //this part is necessary for hooking a client that is themida packed
+	DWORD dwRetAddr = 0x00494D2F;	//will crash if you hook to early, so you gotta check the byte to see
+	while (1) {						//if it matches that of an unpacked client
+		if (ReadValue<BYTE>(dwRetAddr) != firstval) { Sleep(1); } //figured this out myself =)
+		else { break; }
+	}
 	return Memory::SetHook(bEnable, reinterpret_cast<void**>(&_sub_494D2F), _sub_494D2F_rewrite);	//2
 }
 bool sub_494CA3_initialized = true;//void __thiscall CClientSocket::Connect(CClientSocket *this, CClientSocket::CONNECTCONTEXT *ctx)
@@ -1195,6 +1215,12 @@ static _sub_494CA3_t _sub_494CA3_rewrite = [](CClientSocket* pThis, void* edx, C
 };	//2
 bool Hook_sub_494CA3(bool bEnable)
 {
+#define firstval 0x55  //this part is necessary for hooking a client that is themida packed
+	DWORD dwRetAddr = 0x00494CA3;	//will crash if you hook to early, so you gotta check the byte to see
+	while (1) {						//if it matches that of an unpacked client
+		if (ReadValue<BYTE>(dwRetAddr) != firstval) { Sleep(1); } //figured this out myself =)
+		else { break; }
+	}
 	return Memory::SetHook(bEnable, reinterpret_cast<void**>(&_sub_494CA3), _sub_494CA3_rewrite);	//2
 }
 //int __thiscall CClientSocket::OnConnect(CClientSocket * this, int bSuccess) 	//1//will try this again later, seems it's not require to rewrite this to run from default client
@@ -1610,6 +1636,12 @@ static _sub_9F7CE1_t _sub_9F7CE1_rewrite = [](CWvsApp* pThis, void* edx) {
 };
 bool Hook_sub_9F7CE1(bool bEnable)
 {
+#define firstval 0xB8  //this part is necessary for hooking a client that is themida packed
+	DWORD dwRetAddr = 0x009F7CE1;	//will crash if you hook to early, so you gotta check the byte to see
+	while (1) {						//if it matches that of an unpacked client
+		if (ReadValue<BYTE>(dwRetAddr) != firstval) { Sleep(1); } //figured this out myself =)
+		else { break; }
+	}
 	return Memory::SetHook(bEnable, reinterpret_cast<void**>(&_sub_9F7CE1), _sub_9F7CE1_rewrite);
 }
 bool sub_9F84D0_initialized = true;	//void __thiscall CWvsApp::CallUpdate(CWvsApp *this, int tCurTime)
@@ -1682,6 +1714,12 @@ static _sub_9F84D0_t _sub_9F84D0_rewrite = [](CWvsApp* pThis, void* edx, int tCu
 };
 bool Hook_sub_9F84D0(bool bEnable)
 {
+#define firstval 0xB8  //this part is necessary for hooking a client that is themida packed
+	DWORD dwRetAddr = 0x009F84D0;	//will crash if you hook to early, so you gotta check the byte to see
+	while (1) {						//if it matches that of an unpacked client
+		if (ReadValue<BYTE>(dwRetAddr) != firstval) { Sleep(1); } //figured this out myself =)
+		else { break; }
+	}
 	return Memory::SetHook(bEnable, reinterpret_cast<void**>(&_sub_9F84D0), _sub_9F84D0_rewrite);
 }
 bool sub_9F5239_initialized = true;	//void __thiscall CWvsApp::SetUp(CWvsApp *this)
@@ -1821,6 +1859,12 @@ static _sub_9F5239_t _sub_9F5239_rewrite = [](CWvsApp* pThis, void* edx) {
 };
 bool Hook_sub_9F5239(bool bEnable)
 {
+#define firstval 0xB8  //this part is necessary for hooking a client that is themida packed
+	DWORD dwRetAddr = 0x009F5239;	//will crash if you hook to early, so you gotta check the byte to see
+	while (1) {						//if it matches that of an unpacked client
+		if (ReadValue<BYTE>(dwRetAddr) != firstval) { Sleep(1); } //figured this out myself =)
+		else { break; }
+	}
 	return Memory::SetHook(bEnable, reinterpret_cast<void**>(&_sub_9F5239), _sub_9F5239_rewrite);
 }
 bool sub_9F5C50_initialized = true;//void __thiscall CWvsApp::Run(CWvsApp *this, int *pbTerminate)
@@ -1968,6 +2012,12 @@ static _sub_9F5C50_t _sub_9F5C50_rewrite = [](CWvsApp* pThis, void* edx, int* pb
 };
 bool Hook_sub_9F5C50(bool bEnable)
 {
+#define firstval 0xB8  //this part is necessary for hooking a client that is themida packed
+	DWORD dwRetAddr = 0x009F5C50;	//will crash if you hook to early, so you gotta check the byte to see
+	while (1) {						//if it matches that of an unpacked client
+		if (ReadValue<BYTE>(dwRetAddr) != firstval) { Sleep(1); } //figured this out myself =)
+		else { break; }
+	}
 	return Memory::SetHook(bEnable, reinterpret_cast<void**>(&_sub_9F5C50), _sub_9F5C50_rewrite);
 }
 bool sub_9F4FDA_initialized = true;
@@ -2069,6 +2119,12 @@ static _sub_9F4FDA_t _sub_9F4FDA_rewrite = [](CWvsApp* pThis, void* edx, const c
 };	//2 //^part of part to skip
 bool Hook_sub_9F4FDA(bool bEnable)	//1
 {
+#define firstval 0x7D  //this part is necessary for hooking a client that is themida packed
+	DWORD dwRetAddr = 0x009F4FDC;	//will crash if you hook to early, so you gotta check the byte to see
+	while (1) {						//if it matches that of an unpacked client
+		if (ReadValue<BYTE>(dwRetAddr) != firstval) { Sleep(1); } //figured this out myself =)
+		else { break; }
+	}
 	return Memory::SetHook(bEnable, reinterpret_cast<void**>(&_sub_9F4FDA), _sub_9F4FDA_rewrite);	//2
 }
 //#pragma optimize("", on)

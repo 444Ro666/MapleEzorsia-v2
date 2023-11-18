@@ -3,8 +3,7 @@
 #include "ReplacementFuncs.h"
 #include "dinput8.h"
 
-//!!!pre-release notes for self: 
-//! turn off useV62_ExpTable=true in config.ini
+//NOTE: ideally order hooks by execution order in exe to best bypass themida but im lazy...
 
 //executed after the client is unpacked
 void MainFunc() {
@@ -79,7 +78,7 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD  ul_reason_for_call, LPVOID lpReser
 	switch (ul_reason_for_call) {
 	case DLL_PROCESS_ATTACH:
 	{	//MainMain::CreateConsole(MainMain::stream);//console for devs, use this to log stuff if you want
-		
+
 		//windows API hooks(for ones that are called by the maplestory client)//there is more than this, but the default ones in the client template mostly do logging
 		//note: these are likely not all the Windows API maple uses, for everything it uses you need to look at the dlls it imports on the system and kernel level
 		//it's possible to make hooks for some of these that change how maplestory interacts with the operating system, for example possibly loading up modern-made
