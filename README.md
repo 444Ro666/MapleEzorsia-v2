@@ -44,7 +44,7 @@ In your v83 MapleStory directory,
      - EzorsiaV2WzIncluded=false if you aren't using the UI.wz from the [setup guide](https://github.com/444Ro666/MapleEzorsia-v2/wiki/v83%E2%80%90Client%E2%80%90Setup%E2%80%90and%E2%80%90Development%E2%80%90Guide) or if your UI.wz doesn't contain MapleEzorsiaV2wzfiles.img
           - also CustomLoginFrame=false if there are no login frame modifications at all (note: MapleEzorsiaV2wzfiles.img counts as a modification even if it doesn't directly touch the original login frame, so CustomLoginFrame=true if EzorsiaV2WzIncluded=true)  
                - for compatibility with your own wz edits see the [troubleshooting section](https://github.com/444Ro666/MapleEzorsia-v2/wiki/v83%E2%80%90Client%E2%80%90Setup%E2%80%90and%E2%80%90Development%E2%80%90Guide#troubleshooting)
-3. Run your client! (try again if it doesn't work, still trying to figure out occasional error 0 on launch)
+3. Run your client!
 
 ## Features
 - the first publically released standalone dll client for v83 (functionality added on 11/16/2023)
