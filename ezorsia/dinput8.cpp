@@ -13,7 +13,7 @@ void dinput8::CreateHook() {
 		DirectInput8Create_Proc = GetProcAddress(hModule, "DirectInput8Create"); 
 		GetdfDIJoystick_Proc = GetProcAddress(hModule, "GetdfDIJoystick");
 	}
-	else { MessageBox(NULL, L"Failed to find dinput8.dll, please follow Ezorsia v2 installation instructions and remember to have dinput8.dll in the game directory", L"Missing file", 0); ExitProcess(0); }
+	else { MessageBox(NULL, L"Failed to find original dinput8.dll, verify that a non-Ezorsia v2 dinput8.dll exists in your system directory", L"Missing file", 0); ExitProcess(0); }
 }
 extern "C" __declspec(dllexport) __declspec(naked) void DirectInput8Create()
 {

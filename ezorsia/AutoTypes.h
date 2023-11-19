@@ -6,14 +6,20 @@
 #include "MapleClientCollectionTypes/TSecType.h"
 #include "MapleClientCollectionTypes/ZFatalSection.h"
 #include "MapleClientCollectionTypes/winhook_types.h"
-#include "comutil.h"
+//#include "comutil.h"
 #include "winsock2.h"
 //#include "winsock.h"
 #include "timeapi.h"
 #include "comdef.h"
 //#include "winnt.h"
 template <typename TType> TType ReadValue(DWORD dwAddr) { return *((TType*)dwAddr); }
-
+struct _bstr_t__Data_t
+{
+	wchar_t* m_wstr;
+	char* m_str;
+	unsigned int m_RefCount;
+};
+struct _bstr_t2 { _bstr_t__Data_t* m_Data; };
 //std::vector<unsigned int> vMaxLevel(MainMain::maxLevel, 0);//std::vector<unsigned long long> vMaxLevel(MainMain::maxLevel, 0);
 //typedef struct NEXTLEVEL	//dynamic struct of level function that can use over 2.1 bil exp (x64 number range)
 //{//functions identified that use the s_nextLevel (incomplete)//sub_78D166 //sub_792D21     _sub_78C8A6 (this one is currently implemtned
@@ -40,7 +46,7 @@ struct ZException { HRESULT m_hr; };
 
 //section start: ty to bubbling/Bia10 for the definitions/classes in this section; their release is at https://github.com/MapleDevelopers/MaplestoryV95.1
 struct Ztl_variant_t : _variant_t { };
-struct Ztl_bstr_t : _bstr_t { int m_Data; };
+struct Ztl_bstr_t : _bstr_t2 { };
 class ZSyncAutoUnlock
 {
 public:
@@ -325,7 +331,7 @@ enum RESMAN_PARAM {
 
 // DWORD Address
 auto g_rm = (void*)0x00BF14E8; //static?	//ptr to
-auto g_root = (void*)0x00BF14E0; //ptr to
+auto g_root = (void**)0x00BF14E0; //ptr to	//_com_ptr_t<_com_IIID<IWzNameSpace,&_GUID_2aeeeb36_a4e1_4e2b_8f6f_2e7bdec5c53d> > g_root
 auto pNameSpace = 0x00BF0CD0;//converted to int ptr then deref to get val
 
 // Generic
@@ -343,14 +349,14 @@ static _PcCreateObject_IWzResMan_t _PcCreateObject_IWzResMan_Hook = [](const wch
 };
 
 typedef void(__cdecl* _PcCreateObject_IWzNameSpace_t)(const wchar_t* sUOL, void* pObj, void* pUnkOuter);    //sub_9FAFBA    end 009FB01E
-static auto _sub_9FAFBA = reinterpret_cast<_PcCreateObject_IWzNameSpace_t>(0x009FAFBA);
+static auto _sub_9FAFBA = reinterpret_cast<_PcCreateObject_IWzNameSpace_t>(0x009FAFBA);//void __cdecl PcCreateObject(const wchar_t* sUOL, _com_ptr_t<_com_IIID<IWzNameSpace, &_GUID_2aeeeb36_a4e1_4e2b_8f6f_2e7bdec5c53d> > *pObj, IUnknown * pUnkOuter)
 static _PcCreateObject_IWzNameSpace_t _PcCreateObject_IWzNameSpace_Hook = [](const wchar_t* sUOL, void* pObj, void* pUnkOuters) {
 //-> void {_PcCreateObject_IWzNameSpace(sUOL, pObj, pUnkOuter);
 	_sub_9FAFBA(sUOL, pObj, pUnkOuter);
 };
 
 typedef void(__cdecl* _PcCreateObject_IWzFileSystem_t)(const wchar_t* sUOL, void* pObj, void* pUnkOuter);   //sub_9FB01F    end 009FB083
-static auto _sub_9FB01F = reinterpret_cast<_PcCreateObject_IWzFileSystem_t>(0x009FB01F);
+static auto _sub_9FB01F = reinterpret_cast<_PcCreateObject_IWzFileSystem_t>(0x009FB01F);//void __cdecl PcCreateObject(const wchar_t *sUOL, _com_ptr_t<_com_IIID<IWzFileSystem,&_GUID_352d8655_51e4_4668_8ce4_0866e2b6a5b5> > *pObj, IUnknown *pUnkOuter)
 static _PcCreateObject_IWzFileSystem_t _PcCreateObject_IWzFileSystem_Hook = [](const wchar_t* sUOL, void* pObj, void* pUnkOuters) {
 //-> void {_PcCreateObject_IWzFileSystem(sUOL, pObj, pUnkOuter);
 	_sub_9FB01F(sUOL, pObj, pUnkOuter);
@@ -374,13 +380,15 @@ typedef void(__cdecl* _CWvsApp__Dir_upDir_t)(char* sDir);
 static auto _sub_9F9644 = reinterpret_cast<_CWvsApp__Dir_upDir_t>(0x009F9644);  //sub_9F9644	end 009F9679
 static _CWvsApp__Dir_upDir_t _CWvsApp__Dir_upDir_Hook = [](char* sDir) {
 //-> void {_CWvsApp__Dir_upDir(sDir); 
-	_sub_9F9644(sDir);
-};
+	_sub_9F9644(sDir); };
 
-typedef char*(__fastcall* _bstr_ctor_t)(void* pThis, void* edx, const char* str);   //sub_406301	end	00406356
-static auto _sub_406301 = reinterpret_cast<_bstr_ctor_t>(0x00406301);
-static _bstr_ctor_t _bstr_ctor_Hook = [](void* pThis, void* edx, const char* str) {
+typedef void*(__fastcall* _bstr_ctor_t)(void* pThis, void* edx, const char* str); //dont use comutil.h bstr_t, nXXXon's is different   //sub_406301	end	00406356
+static auto _sub_406301 = reinterpret_cast<_bstr_ctor_t>(0x00406301);	//void __thiscall _bstr_t::_bstr_t(_bstr_t *this, const char *s)
+static _bstr_ctor_t _bstr_ctor_Hook = [](void* pThis, void* edx, const char* str) { //can make it return the ptr of inserted val
 	return _sub_406301(pThis, nullptr, str); };
+
+typedef void*(__fastcall* _sub_425ADD_t)(void* pThis, void* edx, const char* str); //can make it return the ptr of inserted val   //sub_425ADD
+static auto _sub_425ADD = reinterpret_cast<_sub_425ADD_t>(0x00425ADD);//void __thiscall Ztl_bstr_t::Ztl_bstr_t(Ztl_bstr_t *this, const char *s) //Ztl_bstr_t ctor
 
 //Ztl_bstr_t
 //Ztl_variant_t
@@ -412,17 +420,17 @@ static _bstr_ctor_t _bstr_ctor_Hook = [](void* pThis, void* edx, const char* str
 //static _com_ptr_t_IWzProperty__dtor_t _com_ptr_t_IWzProperty__dtor_Hook = [](_com_ptr_t* pThis) {
 //	return _com_ptr_t_IWzProperty__dtor(pThis); };
 
-typedef HRESULT(__fastcall* _IWzFileSystem__Init_t)(void* pThis, void* edx, void* sPath); //sub_9F7964	//HRESULT
-static auto _sub_9F7964 = reinterpret_cast<_IWzFileSystem__Init_t>(0x009F7964);
-static _IWzFileSystem__Init_t _IWzFileSystem__Init_Hook = [](void* pThis, void* edx, void* sPath) {
+typedef HRESULT(__fastcall* _IWzFileSystem__Init_t)(void* pThis, void* edx, Ztl_bstr_t sPath); //sub_9F7964	//HRESULT
+static auto _sub_9F7964 = reinterpret_cast<_IWzFileSystem__Init_t>(0x009F7964);//HRESULT __thiscall IWzFileSystem::Init(IWzFileSystem *this, Ztl_bstr_t sPath)
+static _IWzFileSystem__Init_t _IWzFileSystem__Init_Hook = [](void* pThis, void* edx, Ztl_bstr_t sPath) {
 //-> HRESULT {_IWzFileSystem__Init(pThis, edx, sPath);	//HRESULT
 //std::cout << "_IWzFileSystem__Init " << " pThis: " << pThis << " edx: " << edx << " sPath: " << sPath << std::endl;
 	return _sub_9F7964(pThis, nullptr, sPath);
 };
 
-typedef HRESULT(__fastcall* _IWzNameSpace__Mount_t)(void* pThis, void* edx, void* sPath, void* pDown, int nPriority); //HRESULT
-static auto _sub_9F790A = reinterpret_cast<_IWzNameSpace__Mount_t>(0x009F790A);    //sub_9F790A
-static _IWzNameSpace__Mount_t _IWzNameSpace__Mount_Hook = [](void* pThis, void* edx, void* sPath, void* pDown, int nPriority) {
+typedef HRESULT(__fastcall* _IWzNameSpace__Mount_t)(void* pThis, void* edx, Ztl_bstr_t sPath, void* pDown, int nPriority); //HRESULT
+static auto _sub_9F790A = reinterpret_cast<_IWzNameSpace__Mount_t>(0x009F790A);    //sub_9F790A	//HRESULT __thiscall IWzNameSpace::Mount(IWzNameSpace *this, Ztl_bstr_t sPath, IWzNameSpace *pDown, int nPriority)
+static _IWzNameSpace__Mount_t _IWzNameSpace__Mount_Hook = [](void* pThis, void* edx, Ztl_bstr_t sPath, void* pDown, int nPriority) {
 //-> HRESULT {_IWzNameSpace__Mount(pThis, edx, sPath, pDown, nPriority); //HRESULT //return _IWzNameSpace__Mount(pThis, edx, sPath, pDown, nPriority);
 	return _sub_9F790A(pThis, nullptr, sPath, pDown, nPriority);
 };
@@ -939,6 +947,8 @@ static auto _sub_474414 = reinterpret_cast<_sub_474414_t>(0x00474414);
 typedef HANDLE(WINAPI* FindFirstFileA_t)(LPCSTR lpFileName, LPWIN32_FIND_DATAA lpFindFileData);
 extern FindFirstFileA_t FindFirstFileA_Original; //HANDLE FindFirstFileA([in] LPCSTR lpFileName,[out] LPWIN32_FIND_DATAA lpFindFileData);
 
+typedef void(__fastcall* _sub_9F51F6_t)(CWvsApp* pThis, void* edx);
+static auto _sub_9F51F6 = reinterpret_cast<_sub_9F51F6_t>(0x009F51F6);//void __thiscall CWvsApp::~CWvsApp(CWvsApp *this)
 
 //auto _sub_9F9621 = (void(__cdecl*)(char*))0x009F9621;//XXXXXXXXXXXXX
 //auto _unk_BF0B00 = (ZAllocEx<ZAllocAnonSelector>*)0x00BF0B00;//XXXXXXXXXXXXX00B3F3E8

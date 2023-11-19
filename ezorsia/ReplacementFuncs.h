@@ -26,6 +26,7 @@ bool Hook_GetModuleFileNameW(bool bEnable) {
 		if (!len) {
 			// Try again without the provided module for a fixed result
 			len = _GetModuleFileNameW(nullptr, lpFileName, dwSize);
+			std::cout << "HookGetModuleFileName null file name" << std::endl;
 		}
 		return len;
 	};
@@ -45,18 +46,22 @@ HWND WINAPI CreateWindowExA_Hook(DWORD dwExStyle, LPCSTR lpClassName, LPCSTR lpW
 		std::cout << "HookCreateWindowExA started" << std::endl;
 		HookCreateWindowExA_initialized = false;
 	}
-	if(strstr(lpClassName, "MapleStoryClass"))
+	if(strstr(lpClassName, "MapleStoryClass"))//"StartUpDlgClass"
 	{
 		dwStyle |= WS_MINIMIZEBOX; // enable minimize button
-		return CreateWindowExA_Original(dwExStyle, lpClassName, lpWindowName, dwStyle, X, Y, nWidth, nHeight, hWndParent, hMenu, hInstance, lpParam);
+		HWND ret = nullptr;
+		while (!ret) { //error 0 was caused by CreateWindowExA hook not returning the right value, keep trying until we get it right
+			ret = CreateWindowExA_Original(dwExStyle, lpClassName, lpWindowName, dwStyle, X, Y, nWidth, nHeight, hWndParent, hMenu, hInstance, lpParam); }
+		return ret;
 	}
 	//if(Client::WindowedMode)
 	//{ //unfortunately doesnt work, reverting to old window mode fix
 	//	dwExStyle = 0;
 	//}
+	std::cout << "HookCreateWindowExA killing other window" << std::endl;
 	return NULL; //will kill any windows that arent the game window
 };
-bool HookCreateWindowExA(bool bEnable) {
+bool Hook_CreateWindowExA(bool bEnable) {
 	return Memory::SetHook(bEnable, reinterpret_cast<void**>(&CreateWindowExA_Original), CreateWindowExA_Hook);
 }
 bool CreateMutexA_initialized = true; ////credits to the creators of https://github.com/MapleStory-Archive/MapleClientEditTemplate
@@ -120,8 +125,16 @@ HANDLE WINAPI FindFirstFileA_Hook(LPCSTR lpFileName, LPWIN32_FIND_DATAA lpFindFi
 	else if (lpFileName && strstr(lpFileName, "*") && FindFirstFileA_initialized)
 	{
 		FindFirstFileA_initialized = false;
+		//std::cout << "FindFirstFileA dinput8.dll spoofed" << std::endl;
 		return FindFirstFileA_Original("*.wz", lpFindFileData);
 	}
+	//else if (FindFirstFileA_initialized)
+	//{
+	//	std::cout << "FindFirstFileA failed... trying again" << std::endl;
+	//	Sleep(1); //keep trying to find the file instead of failing
+	//	return FindFirstFileA_Hook;
+	//}
+	//std::cout << "FindFirstFileA failed... unable to try again" << lpFileName << std::endl;
 	FindFirstFileA_initialized = false;
 	return FindFirstFileA_Original(lpFileName, lpFindFileData);
 }
@@ -275,60 +288,107 @@ bool HookIWzNameSpace__Mount(bool bEnable)
 {
 	return Memory::SetHook(bEnable, reinterpret_cast<void**>(&_sub_9F790A), _IWzNameSpace__Mount_Hook);
 }
-bool HookCWvsApp__InitializeResMan(bool bEnable)	//resman hook that does nothing, kept for analysis and referrence //not skilled enough to rewrite to load custom wz files
-{
-	static _CWvsApp__InitializeResMan_t _CWvsApp__InitializeResMan_Hook = [](CWvsApp* pThis, void* edx) {
-		//-> void {_CWvsApp__InitializeResMan(pThis, edx);
-		_sub_9F7159(pThis, nullptr);	//comment this out and uncomment below if testing, supposed to load from .img files in folders but i never got to test it
-		//void* pData = nullptr;
-		//void* pFileSystem = nullptr;
-		//void* pUnkOuter = 0;
-		//void* nPriority = 0;
-		//void* sPath;
-		//edx = nullptr
-		// 
-		//// Resman
-		//_PcCreateObject_IWzResMan(L"ResMan", &g_rm, pUnkOuter);	//?(void*) //?&g
+void loadMyShA() {	//partial credits to blackwings v95
+	void* pDataFileSystem = nullptr;
+	//void* pThePackage = nullptr; //9FB0E9
+	//@_com_ptr_t<_com_IIID<IWzNameSpace,&_GUID_2aeeeb36_a4e1_4e2b_8f6f_2e7bdec5c53d> > g_root
+	//_sub_9FAFBA(L"NameSpace", g_root, NULL);//void __cdecl PcCreateObject(const wchar_t* sUOL, _com_ptr_t<_com_IIID<IWzNameSpace, &_GUID_2aeeeb36_a4e1_4e2b_8f6f_2e7bdec5c53d> > *pObj, IUnknown * pUnkOuter)
 
-		//void* pIWzResMan_Instance = *&g_rm;	//?&g	//custom added, find existing instance
-		//!!auto IWzResMan__SetResManParam = *(void(__fastcall**)(void*, void*, void*, int, int, int))((*(int*)pIWzResMan_Instance) + 20); // Hard Coded
-		//!!IWzResMan__SetResManParam(nullptr, nullptr, pIWzResMan_Instance, RC_AUTO_REPARSE | RC_AUTO_SERIALIZE, -1, -1);
+	void* pIWzNameSpace_Instance = g_root; //partial credits to https://github.com/MapleMyth/ClientImageLoader
+	//auto PcSetRootNameSpace = (void(__cdecl*)(void*, int)) * (int*)pNameSpace;//Hard Coded//HRESULT __cdecl PcSetRootNameSpace(IUnknown *pNameSpace)
+	//PcSetRootNameSpace(pIWzNameSpace_Instance, 1);
 
-		//// NameSpace
-		//_PcCreateObject_IWzNameSpace(L"NameSpace", &g_root, pUnkOuter);
+	char sStartPath[MAX_PATH];
+	GetModuleFileNameA(NULL, sStartPath, MAX_PATH);
+	_CWvsApp__Dir_BackSlashToSlash_rewrite(sStartPath);	//_sub_9F95FE
+	_sub_9F9644(sStartPath);//_CWvsApp__Dir_upDir
 
-		//void* pIWzNameSpace_Instance = &g_root;
-		//auto PcSetRootNameSpace = (void(__cdecl*)(void*, int)) * (int*)pNameSpace; // Hard Coded
-		//PcSetRootNameSpace(pIWzNameSpace_Instance, 1);
+	strcat(sStartPath, "/Ezorsia_v2_files");//sStartPath += "./Ezorsia_v2_files";
+	//char sStartPath2[MAX_PATH]; strcpy(sStartPath2, sStartPath);
+	//strcat(sStartPath2, "/");//sStartPath += "./Ezorsia_v2_files";
 
-		//// Game FileSystem
-		//_PcCreateObject_IWzFileSystem(L"NameSpace#FileSystem", &pFileSystem, pUnkOuter);
+	Ztl_bstr_t BsStartPath = Ztl_bstr_t();
+	_sub_425ADD(&BsStartPath, nullptr, sStartPath);//void __thiscall Ztl_bstr_t::Ztl_bstr_t(Ztl_bstr_t *this, const char *s) //Ztl_bstr_t ctor
+	//Ztl_bstr_t BsStartPath2 = Ztl_bstr_t();
+	//_sub_425ADD(&BsStartPath2, nullptr, "/");//void __thiscall Ztl_bstr_t::Ztl_bstr_t(Ztl_bstr_t *this, const char *s) //Ztl_bstr_t ctor
 
-		//char sStartPath[MAX_PATH];
-		//GetModuleFileNameA(NULL, sStartPath, MAX_PATH);
-		//_CWvsApp__Dir_BackSlashToSlash(sStartPath);
-		//_CWvsApp__Dir_upDir(sStartPath);
+	_sub_9FB01F(L"NameSpace#FileSystem", &pDataFileSystem, NULL);//void __cdecl PcCreateObject(const wchar_t *sUOL, _com_ptr_t<_com_IIID<IWzFileSystem,&_GUID_352d8655_51e4_4668_8ce4_0866e2b6a5b5> > *pObj, IUnknown *pUnkOuter)
 
-		//_bstr_ctor(&sPath, pData, sStartPath);
+	HRESULT v0 =_sub_9F7964(pDataFileSystem, nullptr, BsStartPath);//HRESULT __thiscall IWzFileSystem::Init(IWzFileSystem *this, Ztl_bstr_t sPath)
+	std::cout << v0 << " Hook_sub_9F7159 HRESULT 1: " << *((BsStartPath.m_Data)->m_str) << "   " << sStartPath << std::endl;
 
-		//auto iGameFS = _IWzFileSystem__Init(pFileSystem, pData, sPath);
+	_sub_425ADD(&BsStartPath, nullptr, "/");//void __thiscall Ztl_bstr_t::Ztl_bstr_t(Ztl_bstr_t *this, const char *s) //Ztl_bstr_t ctor
+	std::cout << v0 << " Hook_sub_9F7159 HRESULT 1: " << *((BsStartPath.m_Data)->m_str) << "   " << sStartPath << std::endl;
 
-		//_bstr_ctor(&sPath, pData, "/");
+	HRESULT v1 = _sub_9F790A(pIWzNameSpace_Instance, nullptr, BsStartPath, pDataFileSystem, 0); //HRESULT __thiscall IWzNameSpace::Mount(IWzNameSpace *this, Ztl_bstr_t sPath, IWzNameSpace *pDown, int nPriority)
+	std::cout << v1 << " Hook_sub_9F7159 HRESULT 2: " << *((BsStartPath.m_Data)->m_str) << "   " << sStartPath << std::endl;
+} bool Hook_sub_9F7159_initialized = true;
+static _CWvsApp__InitializeResMan_t _sub_9F7159_append = [](CWvsApp* pThis, void* edx) {
+	//-> void {_CWvsApp__InitializeResMan(pThis, edx);
+	if (Hook_sub_9F7159_initialized)
+	{
+		std::cout << "_sub_9F7159 started" << std::endl;
+		Hook_sub_9F7159_initialized = false;
+	}
+	_sub_9F7159(pThis, nullptr);	//comment this out and uncomment below if testing, supposed to load from .img files in folders but i never got to test it
+	//loadMyShA();
+	//void* pData = nullptr;
+	//void* pFileSystem = nullptr;
+	//void* pUnkOuter = 0;
+	//void* nPriority = 0;
+	//void* sPath;
+	//edx = nullptr
+	// 
+	//// Resman
+	//_PcCreateObject_IWzResMan(L"ResMan", &g_rm, pUnkOuter);	//?(void*) //?&g
 
-		//auto mGameFS = _IWzNameSpace__Mount(*&g_root, pData, sPath, pFileSystem, (int)nPriority);
+	//void* pIWzResMan_Instance = *&g_rm;	//?&g	//custom added, find existing instance
+	//!!auto IWzResMan__SetResManParam = *(void(__fastcall**)(void*, void*, void*, int, int, int))((*(int*)pIWzResMan_Instance) + 20); // Hard Coded
+	//!!IWzResMan__SetResManParam(nullptr, nullptr, pIWzResMan_Instance, RC_AUTO_REPARSE | RC_AUTO_SERIALIZE, -1, -1);
 
-		//// Data FileSystem
-		//_PcCreateObject_IWzFileSystem(L"NameSpace#FileSystem", &pFileSystem, pUnkOuter);
+	//// NameSpace
+	//_PcCreateObject_IWzNameSpace(L"NameSpace", &g_root, pUnkOuter);
 
-		//_bstr_ctor(&sPath, pData, "./Data");
+	//void* pIWzNameSpace_Instance = &g_root;
+	//auto PcSetRootNameSpace = (void(__cdecl*)(void*, int)) * (int*)pNameSpace; // Hard Coded
+	//PcSetRootNameSpace(pIWzNameSpace_Instance, 1);
 
-		//auto iDataFS = _IWzFileSystem__Init(pFileSystem, pData, sPath);
+	//// Game FileSystem
+	//_PcCreateObject_IWzFileSystem(L"NameSpace#FileSystem", &pFileSystem, pUnkOuter);
 
-		//_bstr_ctor(&sPath, pData, "/");
+	//char sStartPath[MAX_PATH];
+	//GetModuleFileNameA(NULL, sStartPath, MAX_PATH);
+	//_CWvsApp__Dir_BackSlashToSlash(sStartPath);
+	//_CWvsApp__Dir_upDir(sStartPath);
 
-		//auto mDataFS = _IWzNameSpace__Mount(*&g_root, pData, sPath, pFileSystem, (int)nPriority);
+	//_bstr_ctor(&sPath, pData, sStartPath);
+
+	//auto iGameFS = _IWzFileSystem__Init(pFileSystem, pData, sPath);
+
+	//_bstr_ctor(&sPath, pData, "/");
+
+	//auto mGameFS = _IWzNameSpace__Mount(*&g_root, pData, sPath, pFileSystem, (int)nPriority);
+
+	//// Data FileSystem
+	//_PcCreateObject_IWzFileSystem(L"NameSpace#FileSystem", &pFileSystem, pUnkOuter);
+
+	//_bstr_ctor(&sPath, pData, "./Data");
+
+	//auto iDataFS = _IWzFileSystem__Init(pFileSystem, pData, sPath);
+
+	//_bstr_ctor(&sPath, pData, "/");
+
+	//auto mDataFS = _IWzNameSpace__Mount(*&g_root, pData, sPath, pFileSystem, (int)nPriority);
 	};
-	return Memory::SetHook(bEnable, reinterpret_cast<void**>(&_sub_9F7159), _CWvsApp__InitializeResMan_Hook);
+bool Hook_sub_9F7159(bool bEnable)	//resman hook that does nothing, kept for analysis and referrence //not skilled enough to rewrite to load custom wz files
+{
+#define firstval 0xB8  //this part is necessary for hooking a client that is themida packed
+	DWORD dwRetAddr = 0x009F7159;	//will crash if you hook to early, so you gotta check the byte to see
+	while (1) {						//if it matches that of an unpacked client
+		if (ReadValue<BYTE>(dwRetAddr) != firstval) { Sleep(1); } //figured this out myself =)
+		else { break; }
+	}
+	return Memory::SetHook(bEnable, reinterpret_cast<void**>(&_sub_9F7159), _sub_9F7159_append);
 }
 bool Hook_StringPool__GetString_initialized = true;
 _StringPool__GetString_t _StringPool__GetString_rewrite = [](void* pThis, void* edx, ZXString<char>* result, unsigned int nIdx, char formal) ->  ZXString<char>*
@@ -1160,6 +1220,7 @@ static _sub_494D2F_t _sub_494D2F_rewrite = [](CClientSocket* pThis, void* edx, s
 	if ((TheClientSocket->m_sock)._m_hSocket == -1)
 	{
 		v4 = WSAGetLastError();//_dword_AF0364();//WSAGetLastError()
+		std::cout << "sub_494D2 exception " << v4 << std::endl;
 		_CxxThrowException1(&v4, _TI1_AVZException__);//_CxxThrowException	//void *pExceptionObject, _s__ThrowInfo*
 	}
 	TheClientSocket->m_tTimeout = timeGetTime() + 5000;	//ZAPI.timeGetTime() //_dword_BF060C
@@ -1750,7 +1811,7 @@ static _sub_9F5239_t _sub_9F5239_rewrite = [](CWvsApp* pThis, void* edx) {
 	_sub_9F9E98();//CFuncKeyMappedMan *__cdecl TSingleton<CFuncKeyMappedMan>::CreateInstance()
 	_sub_9FA0CB();//CQuickslotKeyMappedMan *__cdecl TSingleton<CQuickslotKeyMappedMan>::CreateInstance()
 	_sub_9F9EEE();//CMacroSysMan *__cdecl TSingleton<CMacroSysMan>::CreateInstance()
-	_sub_9F7159(v14, nullptr);//void __thiscall CWvsApp::InitializeResMan(CWvsApp *this)
+	_sub_9F7159_append(v14, nullptr);//void __thiscall CWvsApp::InitializeResMan(CWvsApp *this)
 
 		//displays ad pop-up window before or after the game, cancelling
 	//HWND__* v2 = _dword_BF0448();// HWND__ *(__stdcall *GetDesktopWindow)();
@@ -1793,6 +1854,7 @@ static _sub_9F5239_t _sub_9F5239_rewrite = [](CWvsApp* pThis, void* edx) {
 		//v12 = &v22;
 		//v35 = 1;//zref counter
 		int v23 = 570425350;
+		std::cout << "sub_9F5239 exception " << std::endl;
 		_CxxThrowException1(&v23, _TI3_AVCTerminateException__);//_CxxThrowException	//void *pExceptionObject, _s__ThrowInfo*
 	}
 	_sub_723341(v5);//void __thiscall CQuestMan::LoadPartyQuestInfo(CQuestMan *this) //_dword_BED614
@@ -1804,6 +1866,7 @@ static _sub_9F5239_t _sub_9F5239_rewrite = [](CWvsApp* pThis, void* edx) {
 		//v11 = &v20;
 		//v35 = 2;//zref counter
 		int v21 = 570425350;
+		std::cout << "sub_9F5239 exception " << std::endl;
 		_CxxThrowException1(&v21, _TI3_AVCTerminateException__);//_CxxThrowException	//void *pExceptionObject, _s__ThrowInfo*
 	}
 	_sub_9FA078();//CRadioManager *__cdecl TSingleton<CRadioManager>::CreateInstance()
@@ -1958,6 +2021,7 @@ static _sub_9F5C50_t _sub_9F5C50_rewrite = [](CWvsApp* pThis, void* edx, int* pb
 						//void* v24 = _ReturnAddress();//v24 = 0; //address of current frame but idk what it's for
 						//int v13;
 						//memcpy(&v13, v2, 0x508u);
+						std::cout << "sub_9F5C50 exception" << std::endl;
 						_CxxThrowException1(&v12, _TI3_AVCPatchException__);//&v13
 					}
 					if (v15 >= 553648128 && v15 <= 553648134)
@@ -1965,6 +2029,7 @@ static _sub_9F5C50_t _sub_9F5C50_rewrite = [](CWvsApp* pThis, void* edx, int* pb
 						//v10 = v15;
 						//v24 = 1;//address of one frame up but idk what it's for
 						int v11 = v15;
+						std::cout << "sub_9F5C50 exception" << std::endl;
 						_CxxThrowException1(&v11, _TI3_AVCDisconnectException__);
 					}
 					if (v15 >= 570425344 && v15 <= 570425357)
@@ -1972,9 +2037,11 @@ static _sub_9F5C50_t _sub_9F5C50_rewrite = [](CWvsApp* pThis, void* edx, int* pb
 						//v8 = v15;
 						//v24 = 2;//address of 2 frames up but idk what it's for
 						int v9 = v15;
+						std::cout << "sub_9F5C50 exception " << v9 << _TI3_AVCTerminateException__ << std::endl;
 						_CxxThrowException1(&v9, _TI3_AVCTerminateException__);
 					}
 					int v7 = v15;
+					std::cout << "sub_9F5C50 exception " << v7 << _TI1_AVZException__ << std::endl;
 					_CxxThrowException1(&v7, _TI1_AVZException__);
 				}
 			} while (!*pbTerminate && v17.message != 18);
@@ -2126,5 +2193,19 @@ bool Hook_sub_9F4FDA(bool bEnable)	//1
 		else { break; }
 	}
 	return Memory::SetHook(bEnable, reinterpret_cast<void**>(&_sub_9F4FDA), _sub_9F4FDA_rewrite);	//2
+}
+static _sub_9F51F6_t _sub_9F51F6_Hook = [](CWvsApp* pThis, void* edx) {
+	std::cout << "sub_9F51F6 started: CWvsapp dieing" << std::endl;
+	_sub_9F51F6(pThis, nullptr);
+};
+bool Hook_sub_9F51F6(bool bEnable)	//1
+{
+#define firstval 0xB8  //this part is necessary for hooking a client that is themida packed
+	DWORD dwRetAddr = 0x009F51F6;	//will crash if you hook to early, so you gotta check the byte to see
+	while (1) {						//if it matches that of an unpacked client
+		if (ReadValue<BYTE>(dwRetAddr) != firstval) { Sleep(1); } //figured this out myself =)
+		else { break; }
+	}
+	return Memory::SetHook(bEnable, reinterpret_cast<void**>(&_sub_9F51F6), _sub_9F51F6_Hook);	//2
 }
 //#pragma optimize("", on)

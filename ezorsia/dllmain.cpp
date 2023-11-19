@@ -52,10 +52,11 @@ void MainFunc() {
 	//Hookbstr_ctor(true);//not rewritten //sub_406301	end	00406356
 	//HookIWzFileSystem__Init(true);//not rewritten
 	//HookIWzNameSpace__Mount(true);//not rewritten
-	//HookCWvsApp__InitializeResMan(true);//not rewritten//sub_9F7159    end 009F7909 //experimental //ty to all the contributors of the ragezone release: Client load .img instead of .wz v62~v92
+	//Hook_sub_9F7159(true);//added on some stuff//void __thiscall CWvsApp::InitializeResMan(CWvsApp *this)//sub_9F7159 end 009F7909 //experimental //ty to all the contributors of the ragezone release: Client load .img instead of .wz v62~v92
 	Hook_StringPool__GetString(true);//no conflicts, only modifies return //hook stringpool modification //ty !! popcorn //ty darter
 	Hook_sub_78C8A6(true);//potential conflicts //sub_78C8A6	end 0078D165 //custom exp table client side
 	Hook_CUIStatusBar__ChatLogAdd(false);//@@still crashes	//potential conflicts //sub_8DB070	end 008DB45A //custom Set Any Chat Bar Limit (default is 64) //ty Spiderman
+	Hook_sub_9F51F6(true);//not re-written, just tracking process exist for tests//void __thiscall CWvsApp::~CWvsApp(CWvsApp *this)
 	//Hook_get_unknown(true);
 	//Hook_get_resource_object(true); //helper function hooks  //ty teto for helping me get started
 	//Hook_com_ptr_t_IWzProperty__ctor(true);
@@ -85,7 +86,7 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD  ul_reason_for_call, LPVOID lpReser
 		//anti-cheat(that you bought from the anti-cheat company) into the exe. or could potentially be used to install miners or kill registry (dont do these last 2)
 		Hook_CreateMutexA(true);//Sleep(42);//not in-game edit //multiclient //ty darter, angel, and alias! //new one: credits to the creators of https://github.com/MapleStory-Archive/MapleClientEditTemplate
 		Hook_WSPStartup(true);//allows to set IP for default installed client//credits to the creators of https://github.com/MapleStory-Archive/MapleClientEditTemplate
-		HookCreateWindowExA(true);//not in-game edit//enables minimize button //default ezorsia
+		Hook_CreateWindowExA(true);//not in-game edit//enables minimize button //default ezorsia
 		Hook_FindFirstFileA(true);//kills check for .dll already in dir//ty joo for advice with this, check out their releases: https://github.com/OpenRustMS
 		Hook_GetACP(true);//either kills locale checks or feeds the server custom data//credits to the creators of https://github.com/MapleStory-Archive/MapleClientEditTemplate
 		Hook_GetModuleFileNameW(true);//not in-game edit//better call _GetModuleFileNameW more flexible//default ezorsia
