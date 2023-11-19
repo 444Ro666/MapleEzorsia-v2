@@ -640,7 +640,7 @@ typedef unsigned int(__fastcall* _sub_4959B8_t)(void* pThis, void* edx, void* pD
 static auto _sub_4959B8 = reinterpret_cast<_sub_4959B8_t>(0x004959B8);	//unsigned int __thiscall ZFileStream::Read(ZFileStream *this, void *pData, unsigned int uSize)
 
 auto _sub_49583A = (int(__cdecl*)(int a1, int a2, int a3, int a4))0x0049583A;
-auto _dword_BF03A4 = (int(__cdecl*)(DWORD))0x00BF03A4;
+auto _dword_BF03A4 = (int(__cdecl*)(DWORD))0x00BF03A4;// GetLastError Windows API call
 auto _dword_BF0358 = (int(__thiscall*)(DWORD, DWORD, DWORD, DWORD, void*, DWORD))0x00BF0358;
 
 typedef char* (__thiscall* _sub_496CA9_t)(ZArray<unsigned char>* pThis, unsigned int u);	//char *__thiscall ZArray<unsigned char>::_Alloc(ZArray<unsigned char> *this, unsigned int u, ZAllocHelper *_ALLOC)
@@ -946,6 +946,8 @@ static auto _sub_474414 = reinterpret_cast<_sub_474414_t>(0x00474414);
 
 typedef HANDLE(WINAPI* FindFirstFileA_t)(LPCSTR lpFileName, LPWIN32_FIND_DATAA lpFindFileData);
 extern FindFirstFileA_t FindFirstFileA_Original; //HANDLE FindFirstFileA([in] LPCSTR lpFileName,[out] LPWIN32_FIND_DATAA lpFindFileData);
+
+typedef DWORD(WINAPI* GetLastError_t)(); extern GetLastError_t GetLastError_Original;
 
 typedef void(__fastcall* _sub_9F51F6_t)(CWvsApp* pThis, void* edx);
 static auto _sub_9F51F6 = reinterpret_cast<_sub_9F51F6_t>(0x009F51F6);//void __thiscall CWvsApp::~CWvsApp(CWvsApp *this)
