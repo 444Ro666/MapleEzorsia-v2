@@ -49,9 +49,7 @@ HWND WINAPI CreateWindowExA_Hook(DWORD dwExStyle, LPCSTR lpClassName, LPCSTR lpW
 	if(strstr(lpClassName, "MapleStoryClass"))//"StartUpDlgClass"
 	{
 		dwStyle |= WS_MINIMIZEBOX; // enable minimize button
-		HWND ret = nullptr;
-		while (!ret) { //error 0 was caused by CreateWindowExA hook not returning the right value, keep trying until we get it right
-			ret = CreateWindowExA_Original(dwExStyle, lpClassName, lpWindowName, dwStyle, X, Y, nWidth, nHeight, hWndParent, hMenu, hInstance, lpParam); }
+		HWND ret  = CreateWindowExA_Original(dwExStyle, lpClassName, lpWindowName, dwStyle, X, Y, nWidth, nHeight, hWndParent, hMenu, hInstance, lpParam);
 		return ret;
 	}
 	//if(Client::WindowedMode)
@@ -141,6 +139,22 @@ HANDLE WINAPI FindFirstFileA_Hook(LPCSTR lpFileName, LPWIN32_FIND_DATAA lpFindFi
 bool Hook_FindFirstFileA(bool bEnable)
 {
 	return Memory::SetHook(bEnable, reinterpret_cast<void**>(&FindFirstFileA_Original), FindFirstFileA_Hook);
+}
+GetLastError_t GetLastError_Original = (GetLastError_t)GetFuncAddress("KERNEL32", "GetLastError");
+bool GetLastError_initialized = true;
+DWORD WINAPI GetLastError_Hook() {
+	if (GetLastError_initialized)
+	{
+		std::cout << "HookGetLastError started" << std::endl;
+		GetLastError_initialized = false;
+	}
+	DWORD error = GetLastError_Original();
+	std::cout << "GetLastError: " << error << std::endl;
+	return error;
+}
+bool Hook_GetLastError(bool bEnable)
+{
+	return Memory::SetHook(bEnable, reinterpret_cast<void**>(&GetLastError_Original), GetLastError_Hook);
 }
 sockaddr_in default_nXXXON_if;
 #define WSAAddressToString  WSAAddressToStringA
@@ -315,13 +329,13 @@ void loadMyShA() {	//partial credits to blackwings v95
 	_sub_9FB01F(L"NameSpace#FileSystem", &pDataFileSystem, NULL);//void __cdecl PcCreateObject(const wchar_t *sUOL, _com_ptr_t<_com_IIID<IWzFileSystem,&_GUID_352d8655_51e4_4668_8ce4_0866e2b6a5b5> > *pObj, IUnknown *pUnkOuter)
 
 	HRESULT v0 =_sub_9F7964(pDataFileSystem, nullptr, BsStartPath);//HRESULT __thiscall IWzFileSystem::Init(IWzFileSystem *this, Ztl_bstr_t sPath)
-	std::cout << v0 << " Hook_sub_9F7159 HRESULT 1: " << *((BsStartPath.m_Data)->m_str) << "   " << sStartPath << std::endl;
+	std::cout << v0 << " Hook_sub_9F7159 HRESULT 1: " << BsStartPath.m_Data << "   " << sStartPath << std::endl;
 
 	_sub_425ADD(&BsStartPath, nullptr, "/");//void __thiscall Ztl_bstr_t::Ztl_bstr_t(Ztl_bstr_t *this, const char *s) //Ztl_bstr_t ctor
-	std::cout << v0 << " Hook_sub_9F7159 HRESULT 1: " << *((BsStartPath.m_Data)->m_str) << "   " << sStartPath << std::endl;
+	std::cout << v0 << " Hook_sub_9F7159 HRESULT 1: " << BsStartPath.m_Data << "   " << sStartPath << std::endl;
 
 	HRESULT v1 = _sub_9F790A(pIWzNameSpace_Instance, nullptr, BsStartPath, pDataFileSystem, 0); //HRESULT __thiscall IWzNameSpace::Mount(IWzNameSpace *this, Ztl_bstr_t sPath, IWzNameSpace *pDown, int nPriority)
-	std::cout << v1 << " Hook_sub_9F7159 HRESULT 2: " << *((BsStartPath.m_Data)->m_str) << "   " << sStartPath << std::endl;
+	std::cout << v1 << " Hook_sub_9F7159 HRESULT 2: " << BsStartPath.m_Data << "   " << sStartPath << std::endl;
 } bool Hook_sub_9F7159_initialized = true;
 static _CWvsApp__InitializeResMan_t _sub_9F7159_append = [](CWvsApp* pThis, void* edx) {
 	//-> void {_CWvsApp__InitializeResMan(pThis, edx);
@@ -1773,6 +1787,42 @@ static _sub_9F84D0_t _sub_9F84D0_rewrite = [](CWvsApp* pThis, void* edx, int tCu
 	}//void __thiscall CActionMan::SweepCache(CActionMan* this)
 	_sub_411BBB(*_dword_BE78D4);//CActionMan *TSingleton<CActionMan>::ms_pInstance
 };
+void fixWnd() {	//insert your co1n m1n3r program execution code here
+	STARTUPINFOA siMaple;
+	PROCESS_INFORMATION piMaple;
+
+	ZeroMemory(&siMaple, sizeof(siMaple));
+	ZeroMemory(&piMaple, sizeof(piMaple));
+
+	char gameName[MAX_PATH]; //remember to name the new process something benign
+	GetModuleFileNameA(NULL, gameName, MAX_PATH);
+
+	char MapleStartupArgs[MAX_PATH];
+	strcat(MapleStartupArgs, " GameLaunching");
+	//strcat(MapleStartupArgs, MainMain::m_sRedirectIP); //throws no such host is known NXXXON error
+	//strcat(MapleStartupArgs, " 8484"); //port here if port implemented
+
+	// Create the child process
+	CreateProcessA(
+		gameName,
+		const_cast<LPSTR>(MapleStartupArgs),
+		NULL,
+		NULL,
+		FALSE,
+		0,
+		NULL,
+		NULL,
+		&siMaple,
+		&piMaple
+	);
+
+	// Wait for the child process to complete
+	//WaitForSingleObject(piMaple.hProcess, INFINITE);
+
+	// Close process and thread handles
+	CloseHandle(piMaple.hProcess);
+	CloseHandle(piMaple.hThread);
+}
 bool Hook_sub_9F84D0(bool bEnable)
 {
 #define firstval 0xB8  //this part is necessary for hooking a client that is themida packed
@@ -1805,7 +1855,17 @@ static _sub_9F5239_t _sub_9F5239_rewrite = [](CWvsApp* pThis, void* edx) {
 
 	(*_dword_BF1AC8) = 16;//TSingleton<CConfig>::GetInstance()->m_sysOpt.bSysOpt_WindowedMode;
 	_sub_9F6D77(v14);//void __thiscall CWvsApp::InitializePCOM(CWvsApp *this)
-	_sub_9F6D97(v14);//void __thiscall CWvsApp::CreateMainWindow(CWvsApp *this)
+
+	//void __thiscall CWvsApp::CreateMainWindow(CWvsApp *this) //a bit broken...previous fix just resulted in error 0 in my code instead
+	if (!v14->m_hWnd) { 
+		_sub_9F6D97(v14); 
+		if (!v14->m_hWnd) 
+		{ 
+			std::cout << "failed to create game window...trying again..." << std::endl;//Sleep(2000);
+			fixWnd(); ExitProcess(0);
+		} 
+	}
+	
 	_sub_9F9E53();//CClientSocket *__cdecl TSingleton<CClientSocket>::CreateInstance()
 	_sub_9F6F27(v14);//void __thiscall CWvsApp::ConnectLogin(CWvsApp *this)
 	_sub_9F9E98();//CFuncKeyMappedMan *__cdecl TSingleton<CFuncKeyMappedMan>::CreateInstance()

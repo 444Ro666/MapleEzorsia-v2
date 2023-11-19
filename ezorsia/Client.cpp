@@ -28,6 +28,8 @@ void Client::UpdateGameStartup() {
 	//^might not work for packed client since the window seems to be run before the edit can take place, keeping in case
 	Memory::WriteByte(0x009F242F, 0xEB); //run from packed client //WinMain: jz->jmp for ShowADBalloon code (pretty much at the end of method, above push with small number)
 
+	Memory::WriteByte(0x009F6EDC, 0xEB); //kill if statement in broken //void __thiscall CWvsApp::CreateMainWindow(CWvsApp *this)
+
 	//Memory::WriteByte(0x008DB387 + 3, 0xFF); //set charbar limit
 	//Memory::CodeCave(ccCUIStatusBarChatLogAddBypass, dwCUIStatusBarChatLogAddBypass, dwCUIStatusBarChatLogAddBypassNops); //set charbar limit
 
