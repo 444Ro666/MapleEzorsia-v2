@@ -41,7 +41,7 @@ In your v83 MapleStory directory,
 3. Run your Game and enjoy!
 4. Game still not working? Try manually downloading [the config and WZ/IMG files here](https://github.com/444Ro666/MapleEzorsia-v2/releases) and inserting them into the appropriate locations manually
    - all files except .IMG go into the same folder as your game, .IMG file is only for ppl who use .IMG files, and goes in the Data folder (which only exists for .IMG users)
-- Optional stuff:  [if you want borderless fullscreen and better graphics check out magpie](https://github.com/Blinue/Magpie) i personally use this when playing on 1280x720 to force it to cover my screen without graphic quality loss
+- Optional stuff:  [if you want borderless fullscreen and better graphics check out magpie](https://github.com/Blinue/Magpie) i personally use this when playing on 1280x720 to force it to cover my screen without graphic quality loss. [default v83 client with admin elevation request removed, and 4G flag enabled](https://mega.nz/file/9uNmHIAZ#zzE7t7T6wQyDbJrHJxgw-AOlmzzwCpLrOKmoUlec_5E): this is the default client but doesn't request admin, and can use 4g memory instead of 2g [see my setup instructions here if you want to do the edits yourself for verification](https://github.com/444Ro666/MapleEzorsia-v2/wiki/v83%E2%80%90Client%E2%80%90Setup%E2%80%90and%E2%80%90Development%E2%80%90Guide)
 
 ## Features
 - the first publically released standalone dll client for v83 (functionality added on 11/16/2023)
