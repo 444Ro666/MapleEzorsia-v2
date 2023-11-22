@@ -25,7 +25,7 @@ void MainFunc() {
 	Hook_sub_494D07(true);//seems to work//unlikely conflict, section virtualized by default //sub_494D07	end	00494D2C //unnamed function, part of CClientSocket::Connect in v83, merged together with connect in v95
 	Hook_sub_494D2F(true);//seems to work//unlikely conflict, section virtualized by default //sub_494D2F	end	00494ECE //CClientSocket::Connect(CClientSocket *this, sockaddr_in *pAddr)
 	//Hook_sub_494ED1(false);//not rewritten//unlikely conflict, section virtualized by default //sub_494ED1  end 004954C4 //CClientSocket::OnConnect(CClientSocket * this, int bSuccess)
-	//Hook_sub_9F4E54(false);//not rewritten//unlikely conflict, section virtualized by default //sub_9F4E54  end 009F4F08	//likely: unsigned int __cdecl Crc32_GetCrc32(unsigned int *pmem, unsigned int size, unsigned int *pcheck, unsigned int base1, unsigned int *pCrc32, unsigned int base2), or unsigned int __cdecl Crc32_GetCrc32_VMCRC(unsigned int *pmem, unsigned int size, unsigned int *pcheck, unsigned int base1, unsigned int *pCrc32, unsigned int base2)
+	Hook_sub_9F4E54(true);//rewritten friendly CrC non-checker//unlikely conflict, section virtualized by default //sub_9F4E54  end 009F4F08	//likely: unsigned int __cdecl Crc32_GetCrc32_VMTable(unsigned int* pmem, unsigned int size, unsigned int* pcheck, unsigned int *pCrc32) 
 	//Hook_sub_9F4F09(false);//not rewritten//unlikely conflict, section virtualized by default //sub_9F4F09  end 009F4FD9 //unknown func, built into cwvsapp::run in v95 //not called by anything
 	Hook_sub_9F4FDA(true);//seems to work//unlikely conflict, section virtualized by default //sub_9F4FDA end 009F51D3 //void __thiscall CWvsApp::CWvsApp(CWvsApp *this, const char *sCmdLine)
 	Hook_sub_9F5239(true);//seems to work//unlikely conflict, section virtualized by default //sub_9F5239 end 009F5C4F //void __thiscall CWvsApp::SetUp(CWvsApp *this)
@@ -50,13 +50,17 @@ void MainFunc() {
 	HookCWvsApp__Dir_BackSlashToSlash(true);//rewritten but minor utility //sub_9F95FE	end 009F9620
 	//HookCWvsApp__Dir_upDir(true);//not rewritten //sub_9F9644	end 009F9679
 	//Hookbstr_ctor(true);//not rewritten //sub_406301	end	00406356
-	//HookIWzFileSystem__Init(true);//not rewritten
+	Hook_sub_9F7964(true);//re-written for testing//HRESULT __thiscall IWzFileSystem::Init(IWzFileSystem *this, Ztl_bstr_t sPath)
 	//HookIWzNameSpace__Mount(true);//not rewritten
-	//Hook_sub_9F7159(true);//added on some stuff//void __thiscall CWvsApp::InitializeResMan(CWvsApp *this)//sub_9F7159 end 009F7909 //experimental //ty to all the contributors of the ragezone release: Client load .img instead of .wz v62~v92
+	Hook_sub_9F7159(true);//added on some stuff//void __thiscall CWvsApp::InitializeResMan(CWvsApp *this)//sub_9F7159 end 009F7909 //experimental //ty to all the contributors of the ragezone release: Client load .img instead of .wz v62~v92
 	Hook_StringPool__GetString(true);//no conflicts, only modifies return //hook stringpool modification //ty !! popcorn //ty darter
 	Hook_sub_78C8A6(true);//potential conflicts //sub_78C8A6	end 0078D165 //custom exp table client side
 	Hook_CUIStatusBar__ChatLogAdd(false);//@@still crashes	//potential conflicts //sub_8DB070	end 008DB45A //custom Set Any Chat Bar Limit (default is 64) //ty Spiderman
-	Hook_sub_9F51F6(true);//not re-written, just tracking process exist for tests//void __thiscall CWvsApp::~CWvsApp(CWvsApp *this)
+	Hook_sub_425ADD(true);//not re-written, just tracking//void __thiscall Ztl_bstr_t::Ztl_bstr_t(Ztl_bstr_t *this, const char *s)
+	Hook_sub_9F51F6(true);//not re-written, just tracking process exit for tests//void __thiscall CWvsApp::~CWvsApp(CWvsApp *this)
+	Hook_sub_9FCD88(true);//not re-written, just tracking process exit for tests//void __thiscall <IWzSeekableArchive(IWzSeekableArchive* this, IUnknown* p)
+	Hook_sub_5D995B(true);//re-written!!may conflict//Ztl_variant_t *__thiscall IWzNameSpace::Getitem(IWzNameSpace *this, Ztl_variant_t *result, Ztl_bstr_t sPath)
+	Hook_sub_4032B2(true);//not re-written, just tracking process exit for tests//IUnknown* __thiscall Ztl_variant_t::GetUnknown(Ztl_variant_t* this, bool fAddRef, bool fTryChangeType)
 	//Hook_get_unknown(true);
 	//Hook_get_resource_object(true); //helper function hooks  //ty teto for helping me get started
 	//Hook_com_ptr_t_IWzProperty__ctor(true);
@@ -78,7 +82,8 @@ void MainProc() { MainMain::CreateInstance(MainFunc); }
 BOOL APIENTRY DllMain(HMODULE hModule, DWORD  ul_reason_for_call, LPVOID lpReserved) {
 	switch (ul_reason_for_call) {
 	case DLL_PROCESS_ATTACH:
-	{	//MainMain::CreateConsole(MainMain::stream);//console for devs, use this to log stuff if you want
+	{	MainMain::CreateConsole(MainMain::stream);//console for devs, use this to log stuff if you want
+		MainMain::mainTHread = OpenThread(THREAD_SUSPEND_RESUME, FALSE, GetCurrentThreadId());
 
 		//windows API hooks(for ones that are called by the maplestory client)//there is more than this, but the default ones in the client template mostly do logging
 		//note: these are likely not all the Windows API maple uses, for everything it uses you need to look at the dlls it imports on the system and kernel level

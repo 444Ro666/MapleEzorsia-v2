@@ -63,9 +63,6 @@
     <ClInclude Include="AutoTypes.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="resource.h">
-      <Filter>Header Files\innerH</Filter>
-    </ClInclude>
     <ClInclude Include="targetver.h">
       <Filter>Header Files\innerH</Filter>
     </ClInclude>
@@ -138,6 +135,9 @@
     <ClInclude Include="dinput8.h">
       <Filter>Header Files\innerH</Filter>
     </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>Header Files\innerH</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
@@ -163,13 +163,13 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="ezorsia.rc">
+    <ResourceCompile Include="Resource.rc">
       <Filter>Resource Files</Filter>
     </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
-    <CopyFileToFolders Include="config.ini">
-      <Filter>Source Files\innerH</Filter>
-    </CopyFileToFolders>
+    <CopyFileToFolders Include="config.ini" />
+    <CopyFileToFolders Include="EzorsiaV2_UI.wz" />
+    <CopyFileToFolders Include="MapleEzorsiaV2wzfiles.img" />
   </ItemGroup>
 </Project>

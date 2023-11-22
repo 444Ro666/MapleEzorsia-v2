@@ -12,8 +12,6 @@
 
 #### 2023/10/23 - if you used this before this date, `nmconew.dll` is no longer supported, instead re-follow the instructions and name `ijl15.dll` to `2ijl15.dll`, place new `ijl15.dll` in the folder, delete old `nmconew.dll`, and rename `nmconew2.dll` back to `nmconew.dll`
 
-#### 2023/10/17 - Major update to how the DLL client loads wz data, YOU NEED THE [NEW WZ FILE](https://www.mediafire.com/file/6bimll8wtpbclmx/EzorsiaV2_UI.wz/file) OR YOUR GAME WILL CRASH (replace old one, works for all res). [setup for more detailed instructions](https://github.com/444Ro666/MapleEzorsia-v2/wiki/v83%E2%80%90Client%E2%80%90Setup%E2%80%90and%E2%80%90Development%E2%80%90Guide). For how to toggle off some Ezorsia V2 wz edits see [Troubleshooting Section](https://github.com/444Ro666/MapleEzorsia-v2/wiki/v83%E2%80%90Client%E2%80%90Setup%E2%80%90and%E2%80%90Development%E2%80%90Guide#troubleshooting)
-
 This DLL modifies addresses in a default, packed, v83 MapleStory client fresh from installation to enable the game to run; as well as changes the game window and canvas resolution to HD.  
 Most in-game component boundaries are also modified to scale with the custom resolution. 
   
@@ -22,9 +20,6 @@ The original goal of this DLL is to allow an old 4:3 aspect ratio game to work o
 This standalone DLL client is designed to provide a quality, relatively safe, open source client setup to work alongside open source servers. I do not have the skill or resources available to make a fully working custom client from scratch so this is the best i can do
   
 This DLL will work with any client or localhost, including the one that comes from a default installation of the game. Deletion of files that come from a default installation is also unnecessary for it to work.
-  
-This DLL requires some minor modifications to UI.wz to work optimally because i'm currently not skilled enough to change the game in those areas using only DLL, these are also provided in the setup.  
-(The DLL can be used without those UI.wz modifications but you need to turn EzorsiaV2WzIncluded=false and also CustomLoginFrame=false in the `config.ini` file if you aren't using your own custom login frame)
   
 This code can only be compiled on the x86 platform. ([Compilation settings](https://www.mediafire.com/view/9ssrqg8eiwbh0k1/buildsettings2.png/file)) (if DLL from compilation settings doesn't work [try this](https://www.mediafire.com/view/6xk7b9bf8qv3gda/buildsettingsEzorsia.png/file))
   
@@ -40,14 +35,17 @@ The default `config.ini` file is included. put it in your game folder (where the
 #### How to use (DLL only)
 In your v83 MapleStory directory,  
 1. insert [this dinput8.dll from here](https://github.com/444Ro666/MapleEzorsia-v2/releases) in the game directory
-2. insert `config.ini` in that same directory and check to make the values are as they should be
-     - EzorsiaV2WzIncluded=false if you aren't using the UI.wz from the [setup guide](https://github.com/444Ro666/MapleEzorsia-v2/wiki/v83%E2%80%90Client%E2%80%90Setup%E2%80%90and%E2%80%90Development%E2%80%90Guide) or if your UI.wz doesn't contain MapleEzorsiaV2wzfiles.img
-          - also CustomLoginFrame=false if there are no login frame modifications at all (note: MapleEzorsiaV2wzfiles.img counts as a modification even if it doesn't directly touch the original login frame, so CustomLoginFrame=true if EzorsiaV2WzIncluded=true)  
-               - for compatibility with your own wz edits see the [troubleshooting section](https://github.com/444Ro666/MapleEzorsia-v2/wiki/v83%E2%80%90Client%E2%80%90Setup%E2%80%90and%E2%80%90Development%E2%80%90Guide#troubleshooting)
-3. Run your client!
+2. Run your Game and see how it looks. if you are satisfied then play!
+   - if not satisfied or if the game didnt open, close the game, and open the `config.ini` that is generated and edit the values to your liking!
+      - for compatibility with your own wz edits see the [troubleshooting section](https://github.com/444Ro666/MapleEzorsia-v2/wiki/v83%E2%80%90Client%E2%80%90Setup%E2%80%90and%E2%80%90Development%E2%80%90Guide#troubleshooting). i suggest doing all your edits in your own EzorsiaV2_UI.wz or MapleEzorsiaV2wzfiles.img (if using .IMG) file to avoid WZ conflicts with the base game, and to ensure you can keep track of them. You can load your edits from these custom files by using the stringpool hook provided in the release source code.
+3. Run your Game and enjoy!
+4. Game still not working? Try manually downloading [the config and WZ/IMG files here](https://github.com/444Ro666/MapleEzorsia-v2/releases) and inserting them into the appropriate locations manually
+   - all files except .IMG go into the same folder as your game, .IMG file is only for ppl who use .IMG files, and goes in the Data folder (which only exists for .IMG users)
+- Optional stuff:  [if you want borderless fullscreen and better graphics check out magpie](https://github.com/Blinue/Magpie) i personally use this when playing on 1280x720 to force it to cover my screen without graphic quality loss. [default v83 client with admin elevation request removed, and 4G flag enabled](https://mega.nz/file/9uNmHIAZ#zzE7t7T6wQyDbJrHJxgw-AOlmzzwCpLrOKmoUlec_5E): this is the default client but doesn't request admin, and can use 4g memory instead of 2g [see my setup instructions here if you want to do the edits yourself for verification](https://github.com/444Ro666/MapleEzorsia-v2/wiki/v83%E2%80%90Client%E2%80%90Setup%E2%80%90and%E2%80%90Development%E2%80%90Guide)
 
 ## Features
 - the first publically released standalone dll client for v83 (functionality added on 11/16/2023)
+- no WZ/IMG conflicts; Ezorsia V2 will generate its only WZ/IMG file, compatible with any set of WZ or IMG files, provided it is configured correctly!
 - the ability to load 3 custom third party dll that you can specify in the config, these must be in the game folder; Ezorsia v2's edits will take precedence over conflicting edits (sometimes a good thing if those dll files have things that prevent the game running, and Ezorsia v2 overwrites those same things)
 - pick up and exp gain messages that were centered on the character in the original ezorsia is fixed and moved to the bottom right  
 	- the messages also no longer appear cut off at the beginning  
@@ -76,7 +74,6 @@ In your v83 MapleStory directory,
 - occasional helpful comments for further development  
 - numerous addresses, some of which aren't used because they aren't related to resolution  
 - key edits/addresses have functionality identified (these cause noticeable issues when messed with)
-
 
     (note: i have not fully identified all address functionality but i have playtested the game and commented out or modified ones that caused issues; i've also reorganized a lot of the addresses to be closer other addresses in the same memory region)
 

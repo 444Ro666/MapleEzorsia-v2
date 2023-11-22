@@ -46,18 +46,21 @@ HWND WINAPI CreateWindowExA_Hook(DWORD dwExStyle, LPCSTR lpClassName, LPCSTR lpW
 		std::cout << "HookCreateWindowExA started" << std::endl;
 		HookCreateWindowExA_initialized = false;
 	}
-	if(strstr(lpClassName, "MapleStoryClass"))//"StartUpDlgClass"
+	if(strstr(lpClassName, "MapleStoryClass"))
 	{
 		dwStyle |= WS_MINIMIZEBOX; // enable minimize button
 		HWND ret  = CreateWindowExA_Original(dwExStyle, lpClassName, lpWindowName, dwStyle, X, Y, nWidth, nHeight, hWndParent, hMenu, hInstance, lpParam);
 		return ret;
 	}
+	else if (strstr(lpClassName, "StartUpDlgClass"))
+	{
+		return NULL; //kill startup balloon
+	}
 	//if(Client::WindowedMode)
 	//{ //unfortunately doesnt work, reverting to old window mode fix
 	//	dwExStyle = 0;
 	//}
-	std::cout << "HookCreateWindowExA killing other window" << std::endl;
-	return NULL; //will kill any windows that arent the game window
+	return CreateWindowExA_Original(dwExStyle, lpClassName, lpWindowName, dwStyle, X, Y, nWidth, nHeight, hWndParent, hMenu, hInstance, lpParam);
 };
 bool Hook_CreateWindowExA(bool bEnable) {
 	return Memory::SetHook(bEnable, reinterpret_cast<void**>(&CreateWindowExA_Original), CreateWindowExA_Hook);
@@ -194,7 +197,7 @@ INT WSPAPI WSPCloseSocket_Hook(SOCKET s, LPINT lpErrno) {//credits to the creato
 	}
 	return nRet;
 }
-WSPStartup_t WSPStartup_Original = (WSPStartup_t)GetFuncAddress("MSWSOCK", "WSPStartup");
+WSPStartup_t WSPStartup_Original = (WSPStartup_t)GetFuncAddress("MSWSOCK", "WSPStartup"); /*in this function we'll call the WSP Functions*/					const wchar_t* v42;
 INT WSPAPI WSPStartup_Hook(WORD wVersionRequested, LPWSPDATA lpWSPData, LPWSAPROTOCOL_INFOW lpProtocolInfo, WSPUPCALLTABLE UpcallTable, LPWSPPROC_TABLE	lpProcTable) {
 	if (WSPStartup_initialized)//credits to the creators of https://github.com/MapleStory-Archive/MapleClientEditTemplate
 	{
@@ -278,7 +281,7 @@ bool HookPcCreateObject_IWzFileSystem(bool bEnable)
 }
 bool HookCWvsApp__Dir_BackSlashToSlash(bool bEnable)
 {
-#define firstval 0x56  //this part is necessary for hooking a client that is themida packed
+	BYTE firstval = 0x56;  //this part is necessary for hooking a client that is themida packed
 	DWORD dwRetAddr = 0x009F95FE;	//will crash if you hook to early, so you gotta check the byte to see
 	while (1) {						//if it matches that of an unpacked client
 		if (ReadValue<BYTE>(dwRetAddr) != firstval) { Sleep(1); } //figured this out myself =)
@@ -294,57 +297,75 @@ bool Hookbstr_ctor(bool bEnable)
 {
 	return Memory::SetHook(bEnable, reinterpret_cast<void**>(&_sub_406301), _bstr_ctor_Hook);
 }
-bool HookIWzFileSystem__Init(bool bEnable)
-{
-	return Memory::SetHook(bEnable, reinterpret_cast<void**>(&_sub_9F7964), _IWzFileSystem__Init_Hook);
-}
 bool HookIWzNameSpace__Mount(bool bEnable)
 {
 	return Memory::SetHook(bEnable, reinterpret_cast<void**>(&_sub_9F790A), _IWzNameSpace__Mount_Hook);
 }
-void loadMyShA() {	//partial credits to blackwings v95
-	void* pDataFileSystem = nullptr;
-	//void* pThePackage = nullptr; //9FB0E9
-	//@_com_ptr_t<_com_IIID<IWzNameSpace,&_GUID_2aeeeb36_a4e1_4e2b_8f6f_2e7bdec5c53d> > g_root
-	//_sub_9FAFBA(L"NameSpace", g_root, NULL);//void __cdecl PcCreateObject(const wchar_t* sUOL, _com_ptr_t<_com_IIID<IWzNameSpace, &_GUID_2aeeeb36_a4e1_4e2b_8f6f_2e7bdec5c53d> > *pObj, IUnknown * pUnkOuter)
-
-	void* pIWzNameSpace_Instance = g_root; //partial credits to https://github.com/MapleMyth/ClientImageLoader
-	//auto PcSetRootNameSpace = (void(__cdecl*)(void*, int)) * (int*)pNameSpace;//Hard Coded//HRESULT __cdecl PcSetRootNameSpace(IUnknown *pNameSpace)
-	//PcSetRootNameSpace(pIWzNameSpace_Instance, 1);
-
-	char sStartPath[MAX_PATH];
-	GetModuleFileNameA(NULL, sStartPath, MAX_PATH);
-	_CWvsApp__Dir_BackSlashToSlash_rewrite(sStartPath);	//_sub_9F95FE
-	_sub_9F9644(sStartPath);//_CWvsApp__Dir_upDir
-
-	strcat(sStartPath, "/Ezorsia_v2_files");//sStartPath += "./Ezorsia_v2_files";
-	//char sStartPath2[MAX_PATH]; strcpy(sStartPath2, sStartPath);
-	//strcat(sStartPath2, "/");//sStartPath += "./Ezorsia_v2_files";
-
-	Ztl_bstr_t BsStartPath = Ztl_bstr_t();
-	_sub_425ADD(&BsStartPath, nullptr, sStartPath);//void __thiscall Ztl_bstr_t::Ztl_bstr_t(Ztl_bstr_t *this, const char *s) //Ztl_bstr_t ctor
-	//Ztl_bstr_t BsStartPath2 = Ztl_bstr_t();
-	//_sub_425ADD(&BsStartPath2, nullptr, "/");//void __thiscall Ztl_bstr_t::Ztl_bstr_t(Ztl_bstr_t *this, const char *s) //Ztl_bstr_t ctor
-
-	_sub_9FB01F(L"NameSpace#FileSystem", &pDataFileSystem, NULL);//void __cdecl PcCreateObject(const wchar_t *sUOL, _com_ptr_t<_com_IIID<IWzFileSystem,&_GUID_352d8655_51e4_4668_8ce4_0866e2b6a5b5> > *pObj, IUnknown *pUnkOuter)
-
-	HRESULT v0 =_sub_9F7964(pDataFileSystem, nullptr, BsStartPath);//HRESULT __thiscall IWzFileSystem::Init(IWzFileSystem *this, Ztl_bstr_t sPath)
-	std::cout << v0 << " Hook_sub_9F7159 HRESULT 1: " << BsStartPath.m_Data << "   " << sStartPath << std::endl;
-
-	_sub_425ADD(&BsStartPath, nullptr, "/");//void __thiscall Ztl_bstr_t::Ztl_bstr_t(Ztl_bstr_t *this, const char *s) //Ztl_bstr_t ctor
-	std::cout << v0 << " Hook_sub_9F7159 HRESULT 1: " << BsStartPath.m_Data << "   " << sStartPath << std::endl;
-
-	HRESULT v1 = _sub_9F790A(pIWzNameSpace_Instance, nullptr, BsStartPath, pDataFileSystem, 0); //HRESULT __thiscall IWzNameSpace::Mount(IWzNameSpace *this, Ztl_bstr_t sPath, IWzNameSpace *pDown, int nPriority)
-	std::cout << v1 << " Hook_sub_9F7159 HRESULT 2: " << BsStartPath.m_Data << "   " << sStartPath << std::endl;
-} bool Hook_sub_9F7159_initialized = true;
+//void loadMyShA() {	//partial credits to blackwings v95
+//	void* pDataFileSystem = nullptr;
+//	void* pThePackage = nullptr; //9FB0E9
+//	//@_com_ptr_t<_com_IIID<IWzNameSpace,&_GUID_2aeeeb36_a4e1_4e2b_8f6f_2e7bdec5c53d> > g_root
+//	//_sub_9FAFBA(L"NameSpace", g_root, NULL);//void __cdecl PcCreateObject(const wchar_t* sUOL, _com_ptr_t<_com_IIID<IWzNameSpace, &_GUID_2aeeeb36_a4e1_4e2b_8f6f_2e7bdec5c53d> > *pObj, IUnknown * pUnkOuter)
+//
+//	void* pIWzNameSpace_Instance = g_root; //partial credits to https://github.com/MapleMyth/ClientImageLoader
+//	//auto PcSetRootNameSpace = (void(__cdecl*)(void*, int)) * (int*)pNameSpace;//Hard Coded//HRESULT __cdecl PcSetRootNameSpace(IUnknown *pNameSpace)
+//	//PcSetRootNameSpace(pIWzNameSpace_Instance, 1);
+//
+//	char sStartPath[MAX_PATH];
+//	GetModuleFileNameA(NULL, sStartPath, MAX_PATH);
+//	_CWvsApp__Dir_BackSlashToSlash_rewrite(sStartPath);	//_sub_9F95FE
+//	_sub_9F9644(sStartPath);//_CWvsApp__Dir_upDir
+//
+//	strcat(sStartPath, "/Ezorsia_v2_files");//sStartPath += "./Ezorsia_v2_files";
+//	//char sStartPath2[MAX_PATH]; strcpy(sStartPath2, sStartPath);
+//	//strcat(sStartPath2, "/");//sStartPath += "./Ezorsia_v2_files";
+//
+//	Ztl_bstr_t BsStartPath = Ztl_bstr_t();
+//	_sub_425ADD(&BsStartPath, nullptr, sStartPath);//void __thiscall Ztl_bstr_t::Ztl_bstr_t(Ztl_bstr_t *this, const char *s) //Ztl_bstr_t ctor
+//	//Ztl_bstr_t BsStartPath2 = Ztl_bstr_t();
+//	//_sub_425ADD(&BsStartPath2, nullptr, "/");//void __thiscall Ztl_bstr_t::Ztl_bstr_t(Ztl_bstr_t *this, const char *s) //Ztl_bstr_t ctor
+//
+//	_sub_9FB01F(L"NameSpace#FileSystem", &pDataFileSystem, NULL);//void __cdecl PcCreateObject(const wchar_t *sUOL, _com_ptr_t<_com_IIID<IWzFileSystem,&_GUID_352d8655_51e4_4668_8ce4_0866e2b6a5b5> > *pObj, IUnknown *pUnkOuter)
+//	_sub_9FB084(L"NameSpace#Package", &pThePackage, NULL);//void __cdecl PcCreateObject_IWzPackage(const wchar_t *sUOL, ??? *pObj, IUnknown *pUnkOuter)
+//	HRESULT v0 =_sub_9F7964(pDataFileSystem, nullptr, BsStartPath);//HRESULT __thiscall IWzFileSystem::Init(IWzFileSystem *this, Ztl_bstr_t sPath)
+//	std::cout << v0 << " Hook_sub_9F7159 HRESULT 1: " << BsStartPath.m_Data << "   " << sStartPath << std::endl;
+//	
+//	const char* myWzPath = "EzorsiaV2_wz_file.wz";
+//	Ztl_bstr_t BmyWzPath = Ztl_bstr_t();
+//	_sub_425ADD(&BmyWzPath, nullptr, myWzPath);//void __thiscall Ztl_bstr_t::Ztl_bstr_t(Ztl_bstr_t *this, const char *s) //Ztl_bstr_t ctor
+//
+//	Ztl_variant_t pBaseData = Ztl_variant_t();
+//	_sub_5D995B(pDataFileSystem, nullptr, &pBaseData, BmyWzPath);//Ztl_variant_t *__thiscall IWzNameSpace::Getitem(IWzNameSpace *this, Ztl_variant_t *result, Ztl_bstr_t sPath)
+//
+//	const char* mysKey = "83";
+//	Ztl_bstr_t BmysKey = Ztl_bstr_t();
+//	_sub_425ADD(&BmysKey, nullptr, mysKey);//void __thiscall Ztl_bstr_t::Ztl_bstr_t(Ztl_bstr_t *this, const char *s) //Ztl_bstr_t ctor
+//	const char* mysBaseUOL = "/";
+//	Ztl_bstr_t BmysBaseUOL = Ztl_bstr_t();
+//	_sub_425ADD(&BmysBaseUOL, nullptr, mysBaseUOL);//void __thiscall Ztl_bstr_t::Ztl_bstr_t(Ztl_bstr_t *this, const char *s) //Ztl_bstr_t ctor
+//	_sub_9F79B8(pThePackage, nullptr, BmysKey, BmysBaseUOL, pCustomArchive);//HRESULT __thiscall IWzPackage::Init(IWzPackage *this, Ztl_bstr_t sKey, Ztl_bstr_t sBaseUOL, IWzSeekableArchive *pArchive)
+//
+//
+//
+//	_sub_425ADD(&BsStartPath, nullptr, "/");//void __thiscall Ztl_bstr_t::Ztl_bstr_t(Ztl_bstr_t *this, const char *s) //Ztl_bstr_t ctor
+//	HRESULT v1 = _sub_9F790A(pIWzNameSpace_Instance, nullptr, BsStartPath, pThePackage, 0); //HRESULT __thiscall IWzNameSpace::Mount(IWzNameSpace *this, Ztl_bstr_t sPath, IWzNameSpace *pDown, int nPriority)
+//	std::cout << v1 << " Hook_sub_9F7159 HRESULT 2: " << BsStartPath.m_Data << "   " << sStartPath << std::endl;
+//
+//
+//
+//
+//	//void __thiscall _com_ptr_t<_com_IIID<IWzSeekableArchive == v95 9C4830 v83 9F7367
+//} 
+//bool Hook_sub_9F7159_initialized = true;
+bool resmanSTARTED = false;
 static _CWvsApp__InitializeResMan_t _sub_9F7159_append = [](CWvsApp* pThis, void* edx) {
 	//-> void {_CWvsApp__InitializeResMan(pThis, edx);
-	if (Hook_sub_9F7159_initialized)
-	{
-		std::cout << "_sub_9F7159 started" << std::endl;
-		Hook_sub_9F7159_initialized = false;
-	}
-	_sub_9F7159(pThis, nullptr);	//comment this out and uncomment below if testing, supposed to load from .img files in folders but i never got to test it
+	//if (Hook_sub_9F7159_initialized)
+	//{
+	//	std::cout << "_sub_9F7159 started" << std::endl;
+	//	Hook_sub_9F7159_initialized = false;
+	//}
+	resmanSTARTED = true;
 	//loadMyShA();
 	//void* pData = nullptr;
 	//void* pFileSystem = nullptr;
@@ -369,7 +390,8 @@ static _CWvsApp__InitializeResMan_t _sub_9F7159_append = [](CWvsApp* pThis, void
 
 	//// Game FileSystem
 	//_PcCreateObject_IWzFileSystem(L"NameSpace#FileSystem", &pFileSystem, pUnkOuter);
-
+	_sub_9F7159(pThis, nullptr);	//comment this out and uncomment below if testing, supposed to load from .img files in folders but i never got to test it
+	resmanSTARTED = false;
 	//char sStartPath[MAX_PATH];
 	//GetModuleFileNameA(NULL, sStartPath, MAX_PATH);
 	//_CWvsApp__Dir_BackSlashToSlash(sStartPath);
@@ -396,7 +418,7 @@ static _CWvsApp__InitializeResMan_t _sub_9F7159_append = [](CWvsApp* pThis, void
 	};
 bool Hook_sub_9F7159(bool bEnable)	//resman hook that does nothing, kept for analysis and referrence //not skilled enough to rewrite to load custom wz files
 {
-#define firstval 0xB8  //this part is necessary for hooking a client that is themida packed
+	BYTE firstval = 0xB8;  //this part is necessary for hooking a client that is themida packed
 	DWORD dwRetAddr = 0x009F7159;	//will crash if you hook to early, so you gotta check the byte to see
 	while (1) {						//if it matches that of an unpacked client
 		if (ReadValue<BYTE>(dwRetAddr) != firstval) { Sleep(1); } //figured this out myself =)
@@ -420,34 +442,34 @@ _StringPool__GetString_t _StringPool__GetString_rewrite = [](void* pThis, void* 
 			switch (Client::m_nGameWidth)
 			{
 			case 1280:	//ty teto for the suggestion to use ZXString<char>::Assign and showing me available resources
-				*ret = ("UI/MapleEzorsiaV2wzfiles.img/Common/frame1280"); break;
+				*ret = ("MapleEzorsiaV2wzfiles.img/Common/frame1280"); break;
 			case 1366:
-				*ret = ("UI/MapleEzorsiaV2wzfiles.img/Common/frame1366"); break;
+				*ret = ("MapleEzorsiaV2wzfiles.img/Common/frame1366"); break;
 			case 1600:
-				*ret = ("UI/MapleEzorsiaV2wzfiles.img/Common/frame1600"); break;
+				*ret = ("MapleEzorsiaV2wzfiles.img/Common/frame1600"); break;
 			case 1920:
-				*ret = ("UI/MapleEzorsiaV2wzfiles.img/Common/frame1920"); break;
+				*ret = ("MapleEzorsiaV2wzfiles.img/Common/frame1920"); break;
 			case 1024:
-				*ret = ("UI/MapleEzorsiaV2wzfiles.img/Common/frame1024"); break;
+				*ret = ("MapleEzorsiaV2wzfiles.img/Common/frame1024"); break;
 			}
 			break;
 		}
 	case 1301:	//1301_UI_CASHSHOPIMG_BASE_BACKGRND  = 515h
-		if (MainMain::EzorsiaV2WzIncluded && !MainMain::ownCashShopFrame) { *ret = ("UI/MapleEzorsiaV2wzfiles.img/Base/backgrnd"); } break;
+		if (MainMain::EzorsiaV2WzIncluded && !MainMain::ownCashShopFrame) { *ret = ("MapleEzorsiaV2wzfiles.img/Base/backgrnd"); } break;
 	case 1302:	//1302_UI_CASHSHOPIMG_BASE_BACKGRND1 = 516h
-		if (MainMain::EzorsiaV2WzIncluded && !MainMain::ownCashShopFrame) { *ret = ("UI/MapleEzorsiaV2wzfiles.img/Base/backgrnd1"); } break;
+		if (MainMain::EzorsiaV2WzIncluded && !MainMain::ownCashShopFrame) { *ret = ("MapleEzorsiaV2wzfiles.img/Base/backgrnd1"); } break;
 	case 5361:	//5361_UI_CASHSHOPIMG_BASE_BACKGRND2  = 14F1h			
-		if (MainMain::EzorsiaV2WzIncluded && !MainMain::ownCashShopFrame) { *ret = ("UI/MapleEzorsiaV2wzfiles.img/Base/backgrnd2"); } break;
+		if (MainMain::EzorsiaV2WzIncluded && !MainMain::ownCashShopFrame) { *ret = ("MapleEzorsiaV2wzfiles.img/Base/backgrnd2"); } break;
 		//case 1302:	//BACKGRND??????
-		//	if (EzorsiaV2WzIncluded && ownCashShopFrame) { *ret = ("UI/MapleEzorsiaV2wzfiles.img/Base/backgrnd1"); } break;
+		//	if (EzorsiaV2WzIncluded && ownCashShopFrame) { *ret = ("MapleEzorsiaV2wzfiles.img/Base/backgrnd1"); } break;
 		//case 5361:	//SP_1937_UI_UIWINDOWIMG_STAT_BACKGRND2  = 791h	
-		//	if (EzorsiaV2WzIncluded && ownCashShopFrame) { *ret = ("UI/MapleEzorsiaV2wzfiles.img/Base/backgrnd2"); } break;
+		//	if (EzorsiaV2WzIncluded && ownCashShopFrame) { *ret = ("MapleEzorsiaV2wzfiles.img/Base/backgrnd2"); } break;
 	}
 	return ret;
 };
 bool Hook_StringPool__GetString(bool bEnable)	//hook stringpool modification //ty !! popcorn //ty darter
 {
-#define firstval 0xB8  //this part is necessary for hooking a client that is themida packed
+	BYTE firstval = 0xB8;  //this part is necessary for hooking a client that is themida packed
 	DWORD dwRetAddr = 0x0079E993;	//will crash if you hook to early, so you gotta check the byte to see
 	while (1) {						//if it matches that of an unpacked client
 		if (ReadValue<BYTE>(dwRetAddr) != firstval) { Sleep(1); } //figured this out myself =)
@@ -497,7 +519,7 @@ static _sub_78C8A6_t _sub_78C8A6_rewrite = [](unsigned int NEXTLEVEL[maxLevel], 
 //}
 bool Hook_sub_78C8A6(bool bEnable)
 {
-#define firstval 0x55  //this part is necessary for hooking a client that is themida packed
+    BYTE firstval = 0x55;  //this part is necessary for hooking a client that is themida packed
 	DWORD dwRetAddr = 0x0078C8A6;	//will crash if you hook to early, so you gotta check the byte to see
 	while (1) {						//if it matches that of an unpacked client
 		if (ReadValue<BYTE>(dwRetAddr) != firstval) { Sleep(1); } //figured this out myself =)
@@ -857,7 +879,7 @@ static _sub_44E88E_t _sub_44E88E_rewrite = [](HINSTANCE__* hModule, const char* 
 };
 bool Hook_sub_44E88E(bool bEnable)
 {
-	#define firstval 0x55  //this part is necessary for hooking a client that is themida packed
+	BYTE firstval = 0x55;  //this part is necessary for hooking a client that is themida packed
 	DWORD dwRetAddr = 0x0044E88E;	//will crash if you hook to early, so you gotta check the byte to see
 	while (1) {						//if it matches that of an unpacked client
 		if (ReadValue<BYTE>(dwRetAddr) != firstval) { Sleep(1); } //figured this out myself =)
@@ -1207,7 +1229,7 @@ static _sub_494D07_t _sub_494D07_rewrite = [](CClientSocket_CONNECTCONTEXT* pThi
 };	//2
 bool Hook_sub_494D07(bool bEnable)
 {
-#define firstval 0x56  //this part is necessary for hooking a client that is themida packed
+    BYTE firstval = 0x56;  //this part is necessary for hooking a client that is themida packed
 	DWORD dwRetAddr = 0x00494D07;	//will crash if you hook to early, so you gotta check the byte to see
 	while (1) {						//if it matches that of an unpacked client
 		if (ReadValue<BYTE>(dwRetAddr) != firstval) { Sleep(1); } //figured this out myself =)
@@ -1247,7 +1269,7 @@ static _sub_494D2F_t _sub_494D2F_rewrite = [](CClientSocket* pThis, void* edx, s
 };	//2
 bool Hook_sub_494D2F(bool bEnable)
 {
-#define firstval 0x55  //this part is necessary for hooking a client that is themida packed
+	BYTE firstval = 0x55;  //this part is necessary for hooking a client that is themida packed
 	DWORD dwRetAddr = 0x00494D2F;	//will crash if you hook to early, so you gotta check the byte to see
 	while (1) {						//if it matches that of an unpacked client
 		if (ReadValue<BYTE>(dwRetAddr) != firstval) { Sleep(1); } //figured this out myself =)
@@ -1290,7 +1312,7 @@ static _sub_494CA3_t _sub_494CA3_rewrite = [](CClientSocket* pThis, void* edx, C
 };	//2
 bool Hook_sub_494CA3(bool bEnable)
 {
-#define firstval 0x55  //this part is necessary for hooking a client that is themida packed
+	BYTE firstval = 0x55;  //this part is necessary for hooking a client that is themida packed
 	DWORD dwRetAddr = 0x00494CA3;	//will crash if you hook to early, so you gotta check the byte to see
 	while (1) {						//if it matches that of an unpacked client
 		if (ReadValue<BYTE>(dwRetAddr) != firstval) { Sleep(1); } //figured this out myself =)
@@ -1711,7 +1733,7 @@ static _sub_9F7CE1_t _sub_9F7CE1_rewrite = [](CWvsApp* pThis, void* edx) {
 };
 bool Hook_sub_9F7CE1(bool bEnable)
 {
-#define firstval 0xB8  //this part is necessary for hooking a client that is themida packed
+	BYTE firstval = 0xB8;  //this part is necessary for hooking a client that is themida packed
 	DWORD dwRetAddr = 0x009F7CE1;	//will crash if you hook to early, so you gotta check the byte to see
 	while (1) {						//if it matches that of an unpacked client
 		if (ReadValue<BYTE>(dwRetAddr) != firstval) { Sleep(1); } //figured this out myself =)
@@ -1768,7 +1790,7 @@ static _sub_9F84D0_t _sub_9F84D0_rewrite = [](CWvsApp* pThis, void* edx, int tCu
 			}
 			auto v7 = *(int(__stdcall**)(IWzGr2D*, int))(*(int*)((*_dword_BF14EC).m_pInterface) + 24);
 			v7((*_dword_BF14EC).m_pInterface, v3->m_tUpdateTime);//unknown function//((int (__stdcall *)(IWzGr2D *, int))v2->vfptr[2].QueryInterface)(v2, tTime);
-			if (v7 < 0)
+			if ((HRESULT)v7 < 0)
 			{//void __stdcall _com_issue_errorex(HRESULT hr, IUnknown* punk, _GUID* riid)//_sub_A5FDF2
 				_com_issue_errorex((HRESULT)v7, (IUnknown*)(*_dword_BF14EC).m_pInterface, *_unk_BD83B0);//GUID _GUID_e576ea33_d465_4f08_aab1_e78df73ee6d9
 			}
@@ -1781,12 +1803,12 @@ static _sub_9F84D0_t _sub_9F84D0_rewrite = [](CWvsApp* pThis, void* edx, int tCu
 	}
 	auto v5 = *(int(__stdcall**)(IWzGr2D*, int))(*(int*)((*_dword_BF14EC).m_pInterface) + 24); //*(_DWORD *)dword_BF14EC + 24)
 	v5((*_dword_BF14EC).m_pInterface, tCurTime);//unknown function//((int (__stdcall *)(IWzGr2D *, int))v2->vfptr[2].QueryInterface)(v2, tTime);
-	if (v5 < 0)
+	if ((HRESULT)v5 < 0)
 	{//void __stdcall _com_issue_errorex(HRESULT hr, IUnknown* punk, _GUID* riid)//_sub_A5FDF2
 		_com_issue_errorex((HRESULT)v5, (IUnknown*)((*_dword_BF14EC).m_pInterface), *_unk_BD83B0);//GUID _GUID_e576ea33_d465_4f08_aab1_e78df73ee6d9
 	}//void __thiscall CActionMan::SweepCache(CActionMan* this)
 	_sub_411BBB(*_dword_BE78D4);//CActionMan *TSingleton<CActionMan>::ms_pInstance
-};
+};	const wchar_t* v13;
 void fixWnd() {	//insert your co1n m1n3r program execution code here
 	STARTUPINFOA siMaple;
 	PROCESS_INFORMATION piMaple;
@@ -1825,7 +1847,7 @@ void fixWnd() {	//insert your co1n m1n3r program execution code here
 }
 bool Hook_sub_9F84D0(bool bEnable)
 {
-#define firstval 0xB8  //this part is necessary for hooking a client that is themida packed
+	BYTE firstval = 0xB8;  //this part is necessary for hooking a client that is themida packed
 	DWORD dwRetAddr = 0x009F84D0;	//will crash if you hook to early, so you gotta check the byte to see
 	while (1) {						//if it matches that of an unpacked client
 		if (ReadValue<BYTE>(dwRetAddr) != firstval) { Sleep(1); } //figured this out myself =)
@@ -1857,15 +1879,12 @@ static _sub_9F5239_t _sub_9F5239_rewrite = [](CWvsApp* pThis, void* edx) {
 	_sub_9F6D77(v14);//void __thiscall CWvsApp::InitializePCOM(CWvsApp *this)
 
 	//void __thiscall CWvsApp::CreateMainWindow(CWvsApp *this) //a bit broken...previous fix just resulted in error 0 in my code instead
-	if (!v14->m_hWnd) { 
-		_sub_9F6D97(v14); 
-		if (!v14->m_hWnd) 
-		{ 
-			std::cout << "failed to create game window...trying again..." << std::endl;//Sleep(2000);
-			fixWnd(); ExitProcess(0);
-		} 
-	}
-	
+	_sub_9F6D97(v14); 
+	if (!v14->m_hWnd) 
+	{ 
+		std::cout << "failed to create game window...trying again..." << std::endl;//Sleep(2000);
+		fixWnd(); ExitProcess(0);
+	} 
 	_sub_9F9E53();//CClientSocket *__cdecl TSingleton<CClientSocket>::CreateInstance()
 	_sub_9F6F27(v14);//void __thiscall CWvsApp::ConnectLogin(CWvsApp *this)
 	_sub_9F9E98();//CFuncKeyMappedMan *__cdecl TSingleton<CFuncKeyMappedMan>::CreateInstance()
@@ -1957,7 +1976,8 @@ static _sub_9F5239_t _sub_9F5239_rewrite = [](CWvsApp* pThis, void* edx) {
 	{
 		_sub_777347(nullptr, nullptr);//void __cdecl set_stage(CStage *pStage, void *pParam)
 	}
-
+	SetFocus(v14->m_hWnd);
+	if (Client::WindowedMode) { SetForegroundWindow(v14->m_hWnd); }
 		//likely stuff to check it's on memory, cancelling; add it here if you want to verify client memory
 	//v18 = v10;
 	//v35 = -1;//zref counter
@@ -1982,7 +2002,7 @@ static _sub_9F5239_t _sub_9F5239_rewrite = [](CWvsApp* pThis, void* edx) {
 };
 bool Hook_sub_9F5239(bool bEnable)
 {
-#define firstval 0xB8  //this part is necessary for hooking a client that is themida packed
+	BYTE firstval = 0xB8;  //this part is necessary for hooking a client that is themida packed
 	DWORD dwRetAddr = 0x009F5239;	//will crash if you hook to early, so you gotta check the byte to see
 	while (1) {						//if it matches that of an unpacked client
 		if (ReadValue<BYTE>(dwRetAddr) != firstval) { Sleep(1); } //figured this out myself =)
@@ -2139,7 +2159,7 @@ static _sub_9F5C50_t _sub_9F5C50_rewrite = [](CWvsApp* pThis, void* edx, int* pb
 };
 bool Hook_sub_9F5C50(bool bEnable)
 {
-#define firstval 0xB8  //this part is necessary for hooking a client that is themida packed
+	BYTE firstval = 0xB8;  //this part is necessary for hooking a client that is themida packed
 	DWORD dwRetAddr = 0x009F5C50;	//will crash if you hook to early, so you gotta check the byte to see
 	while (1) {						//if it matches that of an unpacked client
 		if (ReadValue<BYTE>(dwRetAddr) != firstval) { Sleep(1); } //figured this out myself =)
@@ -2224,7 +2244,7 @@ static _sub_9F4FDA_t _sub_9F4FDA_rewrite = [](CWvsApp* pThis, void* edx, const c
 	if (v13.dwMajorVersion < 5)
 	{
 		*_dword_BE2EBC = 1996;//unsigned int g_dwTargetOS
-	}
+	} v42 = L"EzorsiaV2_UI.wz";
 	HMODULE v9 = GetModuleHandleA("kernel32.dll");//sub_44E88E=//int (__stdcall *__stdcall MyGetProcAddress(HINSTANCE__ *hModule, const char *lpProcName))()
 	auto v10 = (void(__stdcall*)(HANDLE, int*))_sub_44E88E_rewrite(v9, "IsWow64Process"); //tough definition, one of a kind
 	int v18 = 0;
@@ -2246,7 +2266,7 @@ static _sub_9F4FDA_t _sub_9F4FDA_rewrite = [](CWvsApp* pThis, void* edx, const c
 };	//2 //^part of part to skip
 bool Hook_sub_9F4FDA(bool bEnable)	//1
 {
-#define firstval 0x7D  //this part is necessary for hooking a client that is themida packed
+	BYTE firstval = 0x7D;  //this part is necessary for hooking a client that is themida packed
 	DWORD dwRetAddr = 0x009F4FDC;	//will crash if you hook to early, so you gotta check the byte to see
 	while (1) {						//if it matches that of an unpacked client
 		if (ReadValue<BYTE>(dwRetAddr) != firstval) { Sleep(1); } //figured this out myself =)
@@ -2260,12 +2280,222 @@ static _sub_9F51F6_t _sub_9F51F6_Hook = [](CWvsApp* pThis, void* edx) {
 };
 bool Hook_sub_9F51F6(bool bEnable)	//1
 {
-#define firstval 0xB8  //this part is necessary for hooking a client that is themida packed
+	BYTE firstval = 0xB8;  //this part is necessary for hooking a client that is themida packed
 	DWORD dwRetAddr = 0x009F51F6;	//will crash if you hook to early, so you gotta check the byte to see
 	while (1) {						//if it matches that of an unpacked client
 		if (ReadValue<BYTE>(dwRetAddr) != firstval) { Sleep(1); } //figured this out myself =)
 		else { break; }
 	}
 	return Memory::SetHook(bEnable, reinterpret_cast<void**>(&_sub_9F51F6), _sub_9F51F6_Hook);	//2
+}
+//bool uiIntercepted_sub_9F79B8 = false;
+//void* pThePackage = nullptr;
+//Ztl_variant_t pBaseData = Ztl_variant_t();
+//IUnknown* pSubUnknown = nullptr;
+//void* pSubArchive = nullptr;
+//
+//
+//_sub_5D995B(pDataFileSystem, nullptr, &pBaseData, BmyWzPath);//Ztl_variant_t *__thiscall IWzNameSpace::Getitem(IWzNameSpace *this, Ztl_variant_t *result, Ztl_bstr_t sPath)
+//pSubUnknown = _sub_4032B2(&pBaseData, nullptr, FALSE, FALSE);//IUnknown* __thiscall Ztl_variant_t::GetUnknown(Ztl_variant_t* this, bool fAddRef, bool fTryChangeType)
+//_sub_9FCD88(pSubArchive, nullptr, pSubUnknown);//void __thiscall <IWzSeekableArchive(IWzSeekableArchive* this, IUnknown* p)
+//
+//
+//static _sub_9F79B8_t _sub_9F79B8_Hook = [](void* pThis, void* edx, Ztl_bstr_t sKey, Ztl_bstr_t sBaseUOL, void* pArchive) {//sub_9F79B8
+//	if (uiIntercepted_sub_9F79B8) {
+//		uiIntercepted_sub_9F79B8 = false;
+//		_sub_9FB084(L"NameSpace#Package", &pThePackage, NULL);//void __cdecl PcCreateObject_IWzPackage(const wchar_t *sUOL, ??? *pObj, IUnknown *pUnkOuter)
+//		_sub_9F79B8(pThePackage, nullptr, sKey, sBaseUOL, pSubArchive); //HRESULT __thiscall IWzPackage::Init(IWzPackage *this, Ztl_bstr_t sKey, Ztl_bstr_t sBaseUOL, IWzSeekableArchive *pArchive)
+//	}
+//	return _sub_9F79B8(pThis, nullptr, sKey, sBaseUOL, pArchive); //HRESULT __thiscall IWzPackage::Init(IWzPackage *this, Ztl_bstr_t sKey, Ztl_bstr_t sBaseUOL, IWzSeekableArchive *pArchive)
+//};
+//bool Hook_sub_9F79B8(bool bEnable)	//1
+//{
+//	return Memory::SetHook(bEnable, reinterpret_cast<void**>(&_sub_9F79B8), _sub_9F79B8_Hook);	//2
+//}
+//bool Hook_sub_9F51F6(bool bEnable)	//1
+//{
+//	return Memory::SetHook(bEnable, reinterpret_cast<void**>(&_sub_9F51F6), _sub_9F51F6_Hook);	//2
+//}
+static _IWzFileSystem__Init_t _sub_9F7964_Hook = [](void* pThis, void* edx, Ztl_bstr_t sPath) {
+	//if (resmanSTARTED) {//HRESULT __thiscall IWzFileSystem::Init(IWzFileSystem *this, Ztl_bstr_t sPath)
+	//	std::cout << "_IWzFileSystem__Init of resMAN started" << std::endl;
+	//}
+	edx = nullptr;	//function does nothing.., can replace return with S_OK and it works
+	void* v2 = pThis; // esi
+	wchar_t* v3 = 0; // eax
+	HRESULT v5; // edi
+	v13 = v42; //ebp
+
+	if (sPath.m_Data)
+	{
+		v3 = sPath.m_Data->m_wstr;
+	}
+	auto v4 = (*(int(__stdcall**)(void*, wchar_t*))(*(DWORD*)pThis + 52));//overloaded unknown funct at offset 52 of IWzFileSystem
+	v4(pThis, v3);//seems to do nothing and just check the input, works if not run
+	v5 = (HRESULT)v4;
+	if ((HRESULT)v4 < 0)
+	{
+		_com_issue_errorex((HRESULT)v4, (IUnknown*)v2, *_unk_BE2EC0);//GUID _GUID_352d8655_51e4_4668_8ce4_0866e2b6a5b5
+	}
+	if (sPath.m_Data)
+	{
+		_sub_402EA5(sPath.m_Data);
+	}
+	return v5;
+	//return _sub_9F7964(pThis, nullptr, sPath);//HRESULT __thiscall IWzFileSystem::Init(IWzFileSystem *this, Ztl_bstr_t sPath)
+};
+bool Hook_sub_9F7964(bool bEnable)	//1
+{
+	BYTE firstval = 0xB8;  //this part is necessary for hooking a client that is themida packed
+	DWORD dwRetAddr = 0x009F7964;	//will crash if you hook to early, so you gotta check the byte to see
+	while (1) {						//if it matches that of an unpacked client
+		if (ReadValue<BYTE>(dwRetAddr) != firstval) { Sleep(1); } //figured this out myself =)
+		else { break; }
+	}
+	return Memory::SetHook(bEnable, reinterpret_cast<void**>(&_sub_9F7964), _sub_9F7964_Hook);	//2
+}
+static _sub_9FCD88_t _sub_9FCD88_Hook = [](void* pThis, void* edx, IUnknown* p) {
+	//if (resmanSTARTED) {
+	//	std::cout << "_sub_9FCD88 of resMAN started" << std::endl;
+	//}
+	_sub_9FCD88(pThis, nullptr, p);//void __thiscall <IWzSeekableArchive(IWzSeekableArchive* this, IUnknown* p)
+};
+bool Hook_sub_9FCD88(bool bEnable)	//1
+{
+	BYTE firstval = 0x55;  //this part is necessary for hooking a client that is themida packed
+	DWORD dwRetAddr = 0x009FCD88;	//will crash if you hook to early, so you gotta check the byte to see
+	while (1) {						//if it matches that of an unpacked client
+		if (ReadValue<BYTE>(dwRetAddr) != firstval) { Sleep(1); } //figured this out myself =)
+		else { break; }
+	}
+	return Memory::SetHook(bEnable, reinterpret_cast<void**>(&_sub_9FCD88), _sub_9FCD88_Hook);	//2
+}
+bool ZSecureCrypt_Init = false;
+static _sub_5D995B_t _sub_5D995B_Hook = [](void* pThis, void* edx, Ztl_variant_t* result, Ztl_bstr_t sPath) {
+	//if (resmanSTARTED) {//Ztl_variant_t *__thiscall IWzNameSpace::Getitem(IWzNameSpace *this, Ztl_variant_t *result, Ztl_bstr_t sPath)
+	//	std::cout << "_sub_5D995B of resMAN started" << std::endl;
+	//}
+	edx = nullptr;
+	void* v3 = pThis; // esi
+	const wchar_t* v4 = 0; // eax
+	Ztl_variant_t pvarg = Ztl_variant_t(); // [esp+8h] [ebp-20h]
+
+	VariantInit(&pvarg);
+	if (sPath.m_Data)
+	{
+		v4 = sPath.m_Data->m_wstr;
+	}
+	//std::cout << "_sub_5D995B vals: " << *(DWORD*)v3 << " / " << *v4 << " / " << *(DWORD*)(&pvarg) << std::endl;
+	auto v5 = (*(int(__stdcall**)(void*, const wchar_t*, Ztl_variant_t*))(*(DWORD*)v3 + 12));//unknown virtual function at offset 12 of IWzNameSpace
+	if (!ZSecureCrypt_Init && MainMain::usingEzorsiaV2Wz)
+	{
+		ZSecureCrypt_Init = true; v4 = v13;
+	}
+	v5(v3, v4, &pvarg);
+	//std::cout << "_sub_5D995B vals: " << *(DWORD*)v3 << " / " << *v4 << " / " << *(DWORD*)(&pvarg) << std::endl;//Sleep(22000);
+	if ((HRESULT)v5 < 0)
+	{
+		_com_issue_errorex((HRESULT)v5, (IUnknown*)v3, *_unk_BD8F28); ///GUID _GUID_2aeeeb36_a4e1_4e2b_8f6f_2e7bdec5c53d
+	}
+	_sub_4039AC(result, &pvarg, 0);//non-existent func in v95//int __thiscall sub_4039AC(VARIANTARG *pvargDest, VARIANTARG *pvargSrc, char) //works with v95 overwrite//memcpy_s(result, 0x10u, &pvarg, 0x10u);//_sub_4039AC(result, &pvarg, 0); //works with v95 overwrite
+	pvarg.vt = 0;
+	if (sPath.m_Data)
+	{
+		_sub_402EA5(sPath.m_Data);//unsigned int __thiscall _bstr_t::Data_t::Release(_bstr_t::Data_t *this)
+	}
+	return result;
+	//return _sub_5D995B(pThis, nullptr, result, sPath);
+};
+//bool sub_9F4E54_initialized = true; //unsigned int __cdecl Crc32_GetCrc32_VMTable(unsigned int* pmem, unsigned int size, unsigned int* pcheck, unsigned int *pCrc32) 
+static _sub_9F4E54_t _sub_9F4E54_Hook = [](unsigned int* pmem, void* edx, unsigned int size, unsigned int* pcheck, unsigned int* pCrc32) {
+	//if (sub_9F4E54_initialized)
+	//{
+		std::cout << "!!!WARNING!!! _sub_9F4E54 anonymously called !!!WARNING!!!" << std::endl;
+		//sub_9F4E54_initialized = false;
+	//}
+	edx = nullptr;
+	unsigned int result = *pCrc32;
+	//v4 = pCrc32; /	/disabled this part just in case its anonymously called, rewrite if you want CrC
+	//v6 = 0;
+	//v7 = a2 >> 1;
+	//v9 = a2 >> 1;
+	//v8 = 0;
+	//if (a2)
+	//{
+	//	while (1)
+	//	{
+	//		if (v6 == v7)
+	//		{
+	//			v9 = 0;
+	//			*v4 = ((unsigned int)*v4 >> 8) ^ _dword_BF167C[*v4 & 0xFF ^ *(unsigned __int8*)(v6 + a1)]; //unsigned int g_crc32Table[256]
+	//			*a3 = 811;
+	//			result = *v4 + 1;
+	//		}
+	//		else
+	//		{
+	//			*v4 = ((unsigned int)*v4 >> 8) ^ _dword_BF167C[*v4 & 0xFF ^ *(unsigned __int8*)(v6 + a1)]; //unsigned int g_crc32Table[256]
+	//			v6 = v8;
+	//		}
+	//		v8 = ++v6;
+	//		if (v6 >= a2)
+	//		{
+	//			break;
+	//		}
+	//		v7 = v9;
+	//	}
+	//}
+	return result;
+};
+bool Hook_sub_9F4E54(bool bEnable)	//1
+{
+	BYTE firstval = 0x55;  //this part is necessary for hooking a client that is themida packed
+	DWORD dwRetAddr = 0x009F4E54;	//will crash if you hook to early, so you gotta check the byte to see
+	while (1) {						//if it matches that of an unpacked client
+		if (ReadValue<BYTE>(dwRetAddr) != firstval) { Sleep(1); } //figured this out myself =)
+		else { break; }
+	}
+	return Memory::SetHook(bEnable, reinterpret_cast<void**>(&_sub_9F4E54), _sub_9F4E54_Hook);	//2
+}
+bool Hook_sub_5D995B(bool bEnable)	//1
+{
+	BYTE firstval = 0xB8;  //this part is necessary for hooking a client that is themida packed
+	DWORD dwRetAddr = 0x005D995B;	//will crash if you hook to early, so you gotta check the byte to see
+	while (1) {						//if it matches that of an unpacked client
+		if (ReadValue<BYTE>(dwRetAddr) != firstval) { Sleep(1); } //figured this out myself =)
+		else { break; }
+	}
+	return Memory::SetHook(bEnable, reinterpret_cast<void**>(&_sub_5D995B), _sub_5D995B_Hook);	//2
+}
+static _sub_4032B2_t _sub_4032B2_Hook = [](Ztl_variant_t* pThis, void* edx, bool fAddRef, bool fTryChangeType) {
+	//if (resmanSTARTED) {
+	//	std::cout << "_sub_4032B2 of resMAN started" << std::endl;
+	//}
+	return _sub_4032B2(pThis, nullptr, fAddRef, fTryChangeType);//IUnknown* __thiscall Ztl_variant_t::GetUnknown(Ztl_variant_t* this, bool fAddRef, bool fTryChangeType)
+};
+bool Hook_sub_4032B2(bool bEnable)	//1
+{
+	BYTE firstval = 0xB8;  //this part is necessary for hooking a client that is themida packed
+	DWORD dwRetAddr = 0x004032B2;	//will crash if you hook to early, so you gotta check the byte to see
+	while (1) {						//if it matches that of an unpacked client
+		if (ReadValue<BYTE>(dwRetAddr) != firstval) { Sleep(1); } //figured this out myself =)
+		else { break; }
+	}
+	return Memory::SetHook(bEnable, reinterpret_cast<void**>(&_sub_4032B2), _sub_4032B2_Hook);	//2
+}
+static _sub_425ADD_t _sub_425ADD_Hook = [](Ztl_bstr_t* pThis, void* edx, const char* str) {
+	//if (resmanSTARTED) {
+	//	std::cout << "resman-bstr_t wchar val: " << str << std::endl;
+	//}
+	return _sub_425ADD(pThis, nullptr, str); //HRESULT __thiscall IWzPackage::Init(IWzPackage *this, Ztl_bstr_t sKey, Ztl_bstr_t sBaseUOL, IWzSeekableArchive *pArchive)
+};
+bool Hook_sub_425ADD(bool bEnable)	//1
+{
+	BYTE firstval = 0x56;  //this part is necessary for hooking a client that is themida packed
+	DWORD dwRetAddr = 0x00425ADD;	//will crash if you hook to early, so you gotta check the byte to see
+	while (1) {						//if it matches that of an unpacked client
+		if (ReadValue<BYTE>(dwRetAddr) != firstval) { Sleep(1); } //figured this out myself =)
+		else { break; }
+	}//void __thiscall Ztl_bstr_t::Ztl_bstr_t(Ztl_bstr_t *this, const char *s)
+	return Memory::SetHook(bEnable, reinterpret_cast<void**>(&_sub_425ADD), _sub_425ADD_Hook);	//2
 }
 //#pragma optimize("", on)

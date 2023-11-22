@@ -23,6 +23,10 @@ public:
 	static const char* use_custom_dll_1;
 	static const char* use_custom_dll_2;
 	static const char* use_custom_dll_3;
+	static bool usingEzorsiaV2Wz;
+	static bool CustomLoginFrame;
+	static bool bigLoginFrame;
+	static HANDLE mainTHread;
 
 private: // forcing the class to only have one instance, created through CreateInstance
 	MainMain(std::function<void()> pPostMutexFunc);

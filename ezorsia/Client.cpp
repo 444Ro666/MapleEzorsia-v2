@@ -5,12 +5,10 @@
 int Client::m_nGameHeight = 720;
 int Client::m_nGameWidth = 1280;
 int Client::MsgAmount = 26;
-bool Client::CustomLoginFrame = true;
 bool Client::WindowedMode = true;
 bool Client::RemoveLogos = true;
 double Client::setDamageCap = 199999.0;
 bool Client::useTubi = false;
-bool Client::bigLoginFrame = false;
 int Client::speedMovementCap = 140;
 std::string Client::ServerIP_AddressFromINI = "127.0.0.1";
 
@@ -24,11 +22,16 @@ void Client::UpdateGameStartup() {
 	unsigned char CA_005F6BA4[] = { 0xFF, 0x75, 0x0C, 0x90, 0x90, 0x90, 0x90 }; //CLogin::SendCheckPasswordPacket //??
 	Memory::WriteByteArray(0x005F6BA4, CA_005F6BA4, sizeof(CA_005F6BA4)); //CLogin::SendCheckPasswordPacket //??
 
+	Memory::WriteByte(0x00496633 + 1, 0x47); //kill CSecurityClient::OnPacket//ty chronicle for idea for this
+
 	Memory::FillBytes(0x009F1C04, 0x90, 5);//run from packed client //WinMain: nop ShowStartUpWndModal	//get rid of pop-up at start of game
 	//^might not work for packed client since the window seems to be run before the edit can take place, keeping in case
 	Memory::WriteByte(0x009F242F, 0xEB); //run from packed client //WinMain: jz->jmp for ShowADBalloon code (pretty much at the end of method, above push with small number)
 
 	Memory::WriteByte(0x009F6EDC, 0xEB); //kill if statement in broken //void __thiscall CWvsApp::CreateMainWindow(CWvsApp *this)
+
+	Memory::WriteByte(0x009F74EA + 3, resmanLoadAMNT); //replace their wz load list size with ours //void __thiscall CWvsApp::InitializeResMan(CWvsApp *this)
+	Memory::CodeCave(LoadUItwice, dwLoadUItwice, dwLoadUItwiceNOPs);//working after a check after CWvsApp::InitializeInput
 
 	//Memory::WriteByte(0x008DB387 + 3, 0xFF); //set charbar limit
 	//Memory::CodeCave(ccCUIStatusBarChatLogAddBypass, dwCUIStatusBarChatLogAddBypass, dwCUIStatusBarChatLogAddBypassNops); //set charbar limit
@@ -527,7 +530,7 @@ void Client::UpdateResolution() {
 	myAlwaysViewRestoreFixOffset = myHeight; //parameters for fix view restore all maps number ?????working????!!!
 	Memory::CodeCave(AlwaysViewRestoreFix, dwAlwaysViewRestoreFix, dwAlwaysViewRestoreFixNOPs);	//fix view restora on all maps, currently does nothing; i likely looked in the wrong area
 
-	if (CustomLoginFrame) {
+	if (MainMain::CustomLoginFrame) {
 		Memory::WriteInt(0x005F481E + 1, (int)floor(-m_nGameHeight / 2));//push -300				!!game login frame!! turn this on if you edit UI.wz and use a frame that matches your res
 		Memory::WriteInt(0x005F4824 + 1, (int)floor(-m_nGameWidth / 2));	//push -400 ; RelMove?				!!game login frame!! turn this on if you edit UI.wz and use a frame that matches your res
 	}
@@ -535,7 +538,7 @@ void Client::UpdateResolution() {
 	//nTopOfsettedloginFrameFix = 0 + myHeight; nLeftOfsettedloginFrameFix = 0 + myWidth; //parameters for fix cash preview
 	//Memory::CodeCave(loginFrameFix, dwloginFrameFix, loginFrameFixNOPs); //failed login frame fix =(
 
-	if (bigLoginFrame) {
+	if (MainMain::bigLoginFrame) {
 		Memory::WriteInt(0x005F464D + 1, m_nGameWidth - 165);	//mov eax,800 ; RelMove?	//game version number for login frames that hug the side of the screen //you will still need to offset ntop, and that may require a code cave if your height resolution is too big
 	}
 	else {
@@ -543,7 +546,7 @@ void Client::UpdateResolution() {
 		Memory::CodeCave(VersionNumberFix, dwVersionNumberFix, dwVersionNumberFixNOPs);	//game version number fix //use this if you use no frame or default client frame
 	}
 
-	if (!bigLoginFrame) {
+	if (!MainMain::bigLoginFrame) {
 		nHeightOfsettedLoginBackCanvasFix = 352 + myHeight; nWidthOfsettedLoginBackCanvasFix = 125 + myWidth;//para for world select buttonsViewRec
 		nTopOfsettedLoginBackCanvasFix = 125 + myHeight; nLeftOfsettedLoginBackCanvasFix = 0 + myWidth;
 		Memory::CodeCave(ccLoginBackCanvasFix, dwLoginBackCanvasFix, LoginBackCanvasFixNOPs);	//world select buttons fix		//thank you teto for pointing out my error in finding the constructor
@@ -609,6 +612,7 @@ void Client::UpdateResolution() {
 	//Memory::CodeCave(testingCodeCave2, dwTesting2, Testing2NOPs); //testing
 	//Memory::CodeCave(testingCodeCave3, dwTesting3, Testing3NOPs); //testing
 	//Memory::CodeCave(testingCodeCave4, dwTesting4, Testing4NOPs); //testing
+	//std::cout << "Client Value: " << MainMain::CustomLoginFrame << std::endl;
 }
 
 void Client::EnableNewIGCipher() {//??not called //no idea what cipher is

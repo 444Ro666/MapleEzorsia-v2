@@ -1,12 +1,16 @@
 #include "stdafx.h"
 #include "INIReader.h"
+#include <filesystem>
+#include "resource.h"
 
 INIReader reader("config.ini");
 MainMain* MainMain::_s_pInstance;
 FILE* MainMain::stream;
 bool MainMain::ownLoginFrame = false;
+bool MainMain::CustomLoginFrame = false;
+bool MainMain::bigLoginFrame = false;
 bool MainMain::ownCashShopFrame = false;
-bool MainMain::EzorsiaV2WzIncluded = true;
+bool MainMain::EzorsiaV2WzIncluded = false;
 bool MainMain::useV62_ExpTable = false;
 SOCKET MainMain::m_GameSock = INVALID_SOCKET;
 WSPPROC_TABLE MainMain::m_ProcTable = { 0 };//to set your max level you have to go to the function rewrite
@@ -17,29 +21,93 @@ unsigned int MainMain::expTableMemSize = 804;//memory size of array for expTable
 const char* MainMain::use_custom_dll_1 = "CUSTOM.dll";
 const char* MainMain::use_custom_dll_2 = "CUSTOM2.dll";
 const char* MainMain::use_custom_dll_3 = "CUSTOM3.dll";
+bool MainMain::usingEzorsiaV2Wz = false;
+HANDLE MainMain::mainTHread;
 
 MainMain::MainMain(std::function<void()> pPostMutexFunc)
 {
-	if (reader.ParseError()) { MessageBox(NULL, L"your config.ini file cannot be properly read, go to troubleshooting section of Ezorsia v2 setup guide for more details", L"bad config file", 0); ExitProcess(0); }
-	//Memory::UseVirtuProtect = reader.GetBoolean("general", "UseVirtuProtect", true);
-	//;Should VirtuProtect be enabled ? (true / false, default true) (this is necessary for clients without CRC bypass such as hendi's clients
-	//	;that havent been editted further, can be turned off for clients with CRC bypass to save whatever processing power it uses)
-	//	UseVirtuProtect = true
-	Memory::UseVirtuProtect = true;	//breaks without it so i removed the option, too many options anyway and this wasnt helping anyone
+	std::filesystem::path BfilePath("Base.wz"); std::filesystem::path BfilePath2("Data/zmap.img"); std::filesystem::path filePath("config.ini"); //check if needed stuff exists
+	if (std::filesystem::exists(filePath) && reader.ParseError()) { Sleep(20); SuspendThread(MainMain::mainTHread); MessageBox(NULL, L"your config.ini file cannot be properly read, go to troubleshooting section of Ezorsia v2 setup guide at https://github.com/444Ro666/MapleEzorsia-v2 for more details, or delete your config.ini to have a new one generated with default settings", L"bad config file", 0); ExitProcess(0); }
+	else if (!std::filesystem::exists(filePath)) {
+		HANDLE hOrg = CreateFileA("config.ini", (GENERIC_READ | GENERIC_WRITE), NULL, NULL, CREATE_ALWAYS, NULL, NULL); DWORD dw;
+		if (hOrg) {
+			HMODULE hModule = GetModuleHandle(L"dinput8.dll"); // Get handle to current DLL
+			HRSRC hResource = FindResource(hModule, MAKEINTRESOURCE(IDR_RCDATA1), RT_RCDATA);
+			HGLOBAL hResourceData = LoadResource(hModule, hResource);
+			DWORD resourceSize = SizeofResource(hModule, hResource);
+			LPVOID resourceData = LockResource(hResourceData); Sleep(2); SuspendThread(MainMain::mainTHread);
+			if (WriteFile(hOrg, resourceData, resourceSize, &dw, NULL) && dw == resourceSize) { 
+				CloseHandle(hOrg);
+				ResumeThread(MainMain::mainTHread);
+			}
+			else { 
+				CloseHandle(hOrg);
+				MessageBox(NULL, L"your config.ini file doesn't exist, please re-download config.ini from Ezorsia v2 releases at https://github.com/444Ro666/MapleEzorsia-v2", L"bad config file", 0);
+				ExitProcess(0);
+			}
+		}
+	}
+	if (!std::filesystem::exists(BfilePath) && !std::filesystem::exists(BfilePath2)) { Sleep(20); SuspendThread(MainMain::mainTHread); MessageBox(NULL, L"Either Base.wz is missing from your game directory OR you are loading from .img and zmap.img is not in your Data directory, please reinstall and make sure relevant file(s) exist", L"missing .wz/.img file", 0); ExitProcess(0); }
+	MainMain::CustomLoginFrame = reader.GetBoolean("optional", "CustomLoginFrame", false);
+	if (MainMain::CustomLoginFrame) { MainMain::ownLoginFrame = true; MainMain::bigLoginFrame = true; } //use own login if true
+	std::filesystem::path EfilePath("EzorsiaV2_UI.wz");	//support for other non-big frame users (i.e. ezorsia-like, with login centered, but different frame, isnt currently supported)
+	std::filesystem::path EfilePath2("Data/MapleEzorsiaV2wzfiles.img");
+	if (std::filesystem::exists(EfilePath)) { 	//only check after "if false" on Client::CustomLoginFrame or things break
+		MainMain::EzorsiaV2WzIncluded = true; MainMain::CustomLoginFrame = true; MainMain::usingEzorsiaV2Wz = true; }
+	else if(std::filesystem::exists(EfilePath2)){ MainMain::EzorsiaV2WzIncluded = true; MainMain::CustomLoginFrame = true; }
+	else {
+		if (std::filesystem::exists(BfilePath)) {
+			HANDLE hOrg = CreateFileA("EzorsiaV2_UI.wz", (GENERIC_READ | GENERIC_WRITE), NULL, NULL, CREATE_ALWAYS, NULL, NULL); DWORD dw;
+			if (hOrg) {
+				HMODULE hModule = GetModuleHandle(L"dinput8.dll"); // Get handle to current DLL
+				HRSRC hResource = FindResource(hModule, MAKEINTRESOURCE(IDR_RCDATA2), RT_RCDATA);
+				HGLOBAL hResourceData = LoadResource(hModule, hResource);
+				DWORD resourceSize = SizeofResource(hModule, hResource);
+				LPVOID resourceData = LockResource(hResourceData); Sleep(2); SuspendThread(MainMain::mainTHread);
+				if (WriteFile(hOrg, resourceData, resourceSize, &dw, NULL) && dw == resourceSize) {
+					CloseHandle(hOrg);
+					ResumeThread(MainMain::mainTHread);
+				}
+				else {
+					CloseHandle(hOrg);
+					MessageBox(NULL, L"your EzorsiaV2_UI.wz file doesn't exist, please re-download EzorsiaV2_UI.wz from Ezorsia v2 releases at https://github.com/444Ro666/MapleEzorsia-v2", L"bad WZ file", 0);
+					ExitProcess(0);
+				}
+			}
+			MainMain::EzorsiaV2WzIncluded = true; MainMain::CustomLoginFrame = true; MainMain::usingEzorsiaV2Wz = true;
+		}
+		if (std::filesystem::exists(BfilePath2)) {
+			HANDLE hOrg = CreateFileA("Data\\MapleEzorsiaV2wzfiles.img", (GENERIC_READ | GENERIC_WRITE), NULL, NULL, CREATE_ALWAYS, NULL, NULL); DWORD dw;
+			if (hOrg) {
+				HMODULE hModule = GetModuleHandle(L"dinput8.dll"); // Get handle to current DLL
+				HRSRC hResource = FindResource(hModule, MAKEINTRESOURCE(IDR_RCDATA3), RT_RCDATA);
+				HGLOBAL hResourceData = LoadResource(hModule, hResource);
+				DWORD resourceSize = SizeofResource(hModule, hResource);
+				LPVOID resourceData = LockResource(hResourceData); Sleep(2); SuspendThread(MainMain::mainTHread);
+				if (WriteFile(hOrg, resourceData, resourceSize, &dw, NULL) && dw == resourceSize) {
+					CloseHandle(hOrg);
+					ResumeThread(MainMain::mainTHread);
+				}
+				else {
+					CloseHandle(hOrg);
+					MessageBox(NULL, L"Ezorsia V2 has detected you are loading from .img, but that your MapleEzorsiaV2wzfiles.img file doesn't exist in your Data folder, please re-download MapleEzorsiaV2wzfiles.img from Ezorsia v2 releases at https://github.com/444Ro666/MapleEzorsia-v2", L"bad IMG file", 0);
+					ExitProcess(0);
+				}
+			}
+			MainMain::EzorsiaV2WzIncluded = true; MainMain::CustomLoginFrame = true;
+		}
+	}
+	//Memory::UseVirtuProtect = reader.GetBoolean("general", "UseVirtuProtect", true);//breaks without it so i removed the option, too many options anyway and this wasnt helping anyone
 	Client::m_nGameWidth = reader.GetInteger("general", "width", 1280);
 	Client::m_nGameHeight = reader.GetInteger("general", "height", 720);
 	Client::MsgAmount = reader.GetInteger("general", "MsgAmount", 26);
-	Client::CustomLoginFrame = reader.GetBoolean("general", "CustomLoginFrame", true);
 	Client::WindowedMode = reader.GetBoolean("general", "WindowedMode", true);
 	Client::RemoveLogos = reader.GetBoolean("general", "RemoveLogos", true);
 	Client::setDamageCap = reader.GetReal("optional", "setDamageCap", 199999.0);
 	Client::useTubi = reader.GetBoolean("optional", "useTubi", false);
-	Client::bigLoginFrame = reader.GetBoolean("general", "bigLoginFrame", false);
 	Client::speedMovementCap = reader.GetInteger("optional", "speedMovementCap", 140);
 	Client::ServerIP_AddressFromINI = reader.Get("general", "ServerIP_Address", "127.0.0.1");
-	MainMain::ownLoginFrame = reader.GetBoolean("optional", "ownLoginFrame", false);
 	MainMain::ownCashShopFrame = reader.GetBoolean("optional", "ownCashShopFrame", false);
-	MainMain::EzorsiaV2WzIncluded = reader.GetBoolean("general", "EzorsiaV2WzIncluded", true);
 	MainMain::useV62_ExpTable = reader.GetBoolean("optional", "useV62_ExpTable", false);
 	const char* serverIP_Address = Client::ServerIP_AddressFromINI.c_str();
 	MainMain::m_sRedirectIP = serverIP_Address; unsigned int sleepySleepy = reader.GetInteger("debug", "sleepTime", 0);
@@ -56,15 +124,15 @@ MainMain::MainMain(std::function<void()> pPostMutexFunc)
 
 	if (strcmp(MainMain::use_custom_dll_1, "CUSTOM.dll")) { //load auxilliary dll files
 		HMODULE hModule = LoadLibraryA(MainMain::use_custom_dll_1);
-		if (!hModule) { MessageBox(NULL, L"Failed to find the first custom dll file", L"Missing file", 0); ExitProcess(0); }
+		if (!hModule) { Sleep(20); SuspendThread(MainMain::mainTHread); MessageBox(NULL, L"Failed to find the first custom dll file", L"Missing file", 0); ExitProcess(0); }
 	}
 	if (strcmp(MainMain::use_custom_dll_2, "CUSTOM2.dll")) {
 		HMODULE hModule1 = LoadLibraryA(MainMain::use_custom_dll_2);
-		if (!hModule1) { MessageBox(NULL, L"Failed to find the second custom dll file", L"Missing file", 0); ExitProcess(0); }
+		if (!hModule1) { Sleep(20); SuspendThread(MainMain::mainTHread); MessageBox(NULL, L"Failed to find the second custom dll file", L"Missing file", 0); ExitProcess(0); }
 	}
 	if (strcmp(MainMain::use_custom_dll_3, "CUSTOM3.dll")) {
 		HMODULE hModule2 = LoadLibraryA(MainMain::use_custom_dll_3);
-		if (!hModule2) { MessageBox(NULL, L"Failed to find the third custom dll file", L"Missing file", 0); ExitProcess(0); }
+		if (!hModule2) { Sleep(20); SuspendThread(MainMain::mainTHread); MessageBox(NULL, L"Failed to find the third custom dll file", L"Missing file", 0); ExitProcess(0); }
 	}
 
 	pPostMutexFunc(); //can't reach my functions from this class =(
@@ -78,3 +146,7 @@ MainMain::~MainMain()
 		MainMain::m_GameSock = INVALID_SOCKET;
 	}
 }
+//old config stuff:
+	//;Should VirtuProtect be enabled ? (true / false, default true) (this is necessary for clients without CRC bypass such as hendi's clients
+	//	;that havent been editted further, can be turned off for clients with CRC bypass to save whatever processing power it uses)
+	//	UseVirtuProtect = true
