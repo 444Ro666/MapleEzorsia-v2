@@ -82,7 +82,7 @@ void MainProc() { MainMain::CreateInstance(MainFunc); }
 BOOL APIENTRY DllMain(HMODULE hModule, DWORD  ul_reason_for_call, LPVOID lpReserved) {
 	switch (ul_reason_for_call) {
 	case DLL_PROCESS_ATTACH:
-	{	MainMain::CreateConsole(MainMain::stream);//console for devs, use this to log stuff if you want
+	{	//MainMain::CreateConsole(MainMain::stream);//console for devs, use this to log stuff if you want
 		MainMain::mainTHread = OpenThread(THREAD_SUSPEND_RESUME, FALSE, GetCurrentThreadId());
 
 		//windows API hooks(for ones that are called by the maplestory client)//there is more than this, but the default ones in the client template mostly do logging
