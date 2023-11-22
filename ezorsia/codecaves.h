@@ -1,5 +1,33 @@
 #pragma once
-//pushad and pushfd,  and, popad and popfd to push and pop all stack variables and flags to restore after
+//tips:pushad and pushfd,  and, popad and popfd to push and pop all stack variables and flags to restore after
+
+//my own load other wz file attempt //OMG working thanks to a check after CWvsApp::InitializeInput !!
+const char* resmanLoadOrder[] = {  //suspecting resman load list is an array of const char* rather than a vector
+"Character", //"Character"
+"Mob", //"Mob"
+"Skill", //"Skill"
+"Reactor", //"Reactor"
+"Npc", //"Npc"
+"UI", //"UI"
+"Quest", //"Quest"
+"Item", //"Item"
+"Effect", //"Effect"
+"String", //"String"
+"Etc", //"Etc"
+"Morph", //"Morph"
+"TamingMob", //"TamingMob"
+"Sound", //"Sound"
+"Map",  //Map"
+"EzorsiaV2_UI"	//sneakily insert our wz file here and walk away
+};
+unsigned char resmanLoadAMNT = sizeof(resmanLoadOrder) / sizeof(resmanLoadOrder[0]) - 1;
+__declspec(naked) void LoadUItwice() {
+	__asm {
+		mov     ebx, [eax * 4 + resmanLoadOrder]//mov     ebx, MainMain::resmanLoadOrder //mov     ebx, [ebp+eax*4+
+		jmp dword ptr[dwLoadUItwiceRetn]
+	}
+}
+
 int nStatusBarY = 0;
 __declspec(naked) void AdjustStatusBar() {
 	__asm {
@@ -561,15 +589,12 @@ const char myWzFile[] = "TamingMob";
 const char* ptrmyWzFile = myWzFile;
 
 int MINT = 51+1;
-const DWORD dwTesting = 0x008DDC4F;
-const DWORD dwTestingRetn = 0x008DDC55;
-const int TestingNOPs = 6;
+const DWORD dwTesting = 0x009F753C;
+const DWORD dwTestingRetn = 0x009F7543;
+const int TestingNOPs = dwTestingRetn - dwTesting;
 __declspec(naked) void testingCodeCave() {
 	__asm {
-		push   DWORD PTR[ebp - 0x14]
-		push    eax
-		push    15
-		push	15
+		mov     ebx, [eax * 4 + resmanLoadOrder]//mov     ebx, MainMain::resmanLoadOrder //mov     ebx, [ebp+eax*4+
 		jmp dword ptr[dwTestingRetn]
 	}
 }

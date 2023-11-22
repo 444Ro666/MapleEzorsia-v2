@@ -207,6 +207,10 @@ const DWORD dwCashFixPrev = 0x004AB10F;
 const DWORD dwCashFixPrevRtm = 0x004AB11D;
 const int dwCashFixPrevNOPs = 14;
 
+const DWORD dwLoadUItwice = 0x009F753C;
+const DWORD dwLoadUItwiceRetn = 0x009F7543;
+const int dwLoadUItwiceNOPs = 7;
+
 // ===== Unlimited Teleport =====
 const DWORD dwTeleFieldLimit = 0x00957BB7;
 const DWORD dwTeleUpdateTime = 0x00957BFE;

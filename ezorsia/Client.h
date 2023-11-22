@@ -10,12 +10,10 @@ public:
 	static int m_nGameHeight;
 	static int m_nGameWidth;
 	static int MsgAmount;
-	static bool CustomLoginFrame;
 	static bool WindowedMode;
 	static bool RemoveLogos;
 	static double setDamageCap;
 	static bool useTubi;
-	static bool bigLoginFrame;
 	static int speedMovementCap;
 	static std::string ServerIP_AddressFromINI;
 };

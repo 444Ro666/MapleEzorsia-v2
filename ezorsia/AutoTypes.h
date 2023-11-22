@@ -43,9 +43,9 @@ struct ZException { HRESULT m_hr; };
 //	ZRef<ZSocketBuffer>* _m_pHead;	//size 4
 //	ZRef<ZSocketBuffer>* _m_pTail;	//size 4
 //};
-
+struct _variant_t2 : tagVARIANT { };
 //section start: ty to bubbling/Bia10 for the definitions/classes in this section; their release is at https://github.com/MapleDevelopers/MaplestoryV95.1
-struct Ztl_variant_t : _variant_t { };
+struct Ztl_variant_t : _variant_t2 { };
 struct Ztl_bstr_t : _bstr_t2 { };
 class ZSyncAutoUnlock
 {
@@ -362,6 +362,9 @@ static _PcCreateObject_IWzFileSystem_t _PcCreateObject_IWzFileSystem_Hook = [](c
 	_sub_9FB01F(sUOL, pObj, pUnkOuter);
  };
 
+typedef void(__cdecl* _sub_9FB084_t)(const wchar_t* sUOL, void* pObj, void* pUnkOuter);   //sub_9FB01F    end 009FB083
+static auto _sub_9FB084 = reinterpret_cast<_sub_9FB084_t>(0x009FB084);//9FB084 //void __cdecl PcCreateObject_IWzPackage(const wchar_t *sUOL, ??? *pObj, IUnknown *pUnkOuter)
+
 typedef void(__cdecl* _CWvsApp__Dir_BackSlashToSlash_t)(char* sDir);
 static auto _sub_9F95FE = reinterpret_cast<_CWvsApp__Dir_BackSlashToSlash_t>(0x009F95FE);    //sub_9F95FE	end 009F9620
 bool _CWvsApp__Dir_BackSlashToSlash_rewrite_initialized_2 = true;
@@ -387,7 +390,7 @@ static auto _sub_406301 = reinterpret_cast<_bstr_ctor_t>(0x00406301);	//void __t
 static _bstr_ctor_t _bstr_ctor_Hook = [](void* pThis, void* edx, const char* str) { //can make it return the ptr of inserted val
 	return _sub_406301(pThis, nullptr, str); };
 
-typedef void*(__fastcall* _sub_425ADD_t)(void* pThis, void* edx, const char* str); //can make it return the ptr of inserted val   //sub_425ADD
+typedef void*(__fastcall* _sub_425ADD_t)(Ztl_bstr_t* pThis, void* edx, const char* str); //can make it return the ptr of inserted val   //sub_425ADD
 static auto _sub_425ADD = reinterpret_cast<_sub_425ADD_t>(0x00425ADD);//void __thiscall Ztl_bstr_t::Ztl_bstr_t(Ztl_bstr_t *this, const char *s) //Ztl_bstr_t ctor
 
 //Ztl_bstr_t
@@ -422,11 +425,15 @@ static auto _sub_425ADD = reinterpret_cast<_sub_425ADD_t>(0x00425ADD);//void __t
 
 typedef HRESULT(__fastcall* _IWzFileSystem__Init_t)(void* pThis, void* edx, Ztl_bstr_t sPath); //sub_9F7964	//HRESULT
 static auto _sub_9F7964 = reinterpret_cast<_IWzFileSystem__Init_t>(0x009F7964);//HRESULT __thiscall IWzFileSystem::Init(IWzFileSystem *this, Ztl_bstr_t sPath)
-static _IWzFileSystem__Init_t _IWzFileSystem__Init_Hook = [](void* pThis, void* edx, Ztl_bstr_t sPath) {
-//-> HRESULT {_IWzFileSystem__Init(pThis, edx, sPath);	//HRESULT
-//std::cout << "_IWzFileSystem__Init " << " pThis: " << pThis << " edx: " << edx << " sPath: " << sPath << std::endl;
-	return _sub_9F7964(pThis, nullptr, sPath);
-};
+
+typedef unsigned int(__thiscall* _sub_402EA5_t)(_bstr_t__Data_t* pThis);
+static auto _sub_402EA5 = reinterpret_cast<_sub_402EA5_t>(0x00402EA5);//unsigned int __thiscall _bstr_t::Data_t::Release(_bstr_t::Data_t *this)
+
+typedef void*(__thiscall* _sub_4039AC_t)(Ztl_variant_t* pvargDest, Ztl_variant_t* pvargSrc, char a3);//could be wrong
+static auto _sub_4039AC = reinterpret_cast<_sub_4039AC_t>(0x004039AC);//non-existent func in v95//int __thiscall sub_4039AC(VARIANTARG *pvargDest, VARIANTARG *pvargSrc, char)
+
+auto _unk_BE2EC0 = (_GUID*)0x00BE2EC0;//GUID _GUID_352d8655_51e4_4668_8ce4_0866e2b6a5b5
+auto _unk_BD8F28 = (_GUID*)0x00BD8F28;//GUID _GUID_2aeeeb36_a4e1_4e2b_8f6f_2e7bdec5c53d
 
 typedef HRESULT(__fastcall* _IWzNameSpace__Mount_t)(void* pThis, void* edx, Ztl_bstr_t sPath, void* pDown, int nPriority); //HRESULT
 static auto _sub_9F790A = reinterpret_cast<_IWzNameSpace__Mount_t>(0x009F790A);    //sub_9F790A	//HRESULT __thiscall IWzNameSpace::Mount(IWzNameSpace *this, Ztl_bstr_t sPath, IWzNameSpace *pDown, int nPriority)
@@ -435,7 +442,15 @@ static _IWzNameSpace__Mount_t _IWzNameSpace__Mount_Hook = [](void* pThis, void* 
 	return _sub_9F790A(pThis, nullptr, sPath, pDown, nPriority);
 };
 
-//sub_79E993
+typedef Ztl_variant_t*(__fastcall* _sub_5D995B_t)(void* pThis, void* edx, Ztl_variant_t* result, Ztl_bstr_t sPath);
+static auto _sub_5D995B = reinterpret_cast<_sub_5D995B_t>(0x005D995B);//_sub_5D995B//Ztl_variant_t *__thiscall IWzNameSpace::Getitem(IWzNameSpace *this, Ztl_variant_t *result, Ztl_bstr_t sPath)
+
+typedef IUnknown*(__fastcall* _sub_4032B2_t)(Ztl_variant_t* pThis, void* edx, bool fAddRef, bool fTryChangeType);
+static auto _sub_4032B2 = reinterpret_cast<_sub_4032B2_t>(0x004032B2);//IUnknown* __thiscall Ztl_variant_t::GetUnknown(Ztl_variant_t* this, bool fAddRef, bool fTryChangeType)
+
+typedef void(__fastcall* _sub_9FCD88_t)(void* pThis, void* edx, IUnknown* p);
+static auto _sub_9FCD88 = reinterpret_cast<_sub_9FCD88_t>(0x009FCD88);//sub_9FCD88 //void __thiscall <IWzSeekableArchive(IWzSeekableArchive* this, IUnknown* p)
+
 typedef ZXString<char>* (__fastcall* _StringPool__GetString_t)(void* pThis, void* edx, ZXString<char>* result, unsigned int nIdx, char formal); //also ty to the creators of MapleClientEditTemplate
 static auto _sub_79E993 = reinterpret_cast<_StringPool__GetString_t>(0x0079E993);//hook stringpool modification //ty !! popcorn //ty darter //ty teto
 
@@ -951,6 +966,9 @@ typedef DWORD(WINAPI* GetLastError_t)(); extern GetLastError_t GetLastError_Orig
 
 typedef void(__fastcall* _sub_9F51F6_t)(CWvsApp* pThis, void* edx);
 static auto _sub_9F51F6 = reinterpret_cast<_sub_9F51F6_t>(0x009F51F6);//void __thiscall CWvsApp::~CWvsApp(CWvsApp *this)
+
+typedef unsigned int(__fastcall* _sub_9F4E54_t)(unsigned int* pmem, void* edx, unsigned int size, unsigned int* pcheck, unsigned int* pCrc32);
+static auto _sub_9F4E54 = reinterpret_cast<_sub_9F4E54_t>(0x009F4E54);//unsigned int __cdecl Crc32_GetCrc32_VMTable(unsigned int pmem, unsigned int size, unsigned intpcheck, unsigned int *pCrc32) 
 
 //auto _sub_9F9621 = (void(__cdecl*)(char*))0x009F9621;//XXXXXXXXXXXXX
 //auto _unk_BF0B00 = (ZAllocEx<ZAllocAnonSelector>*)0x00BF0B00;//XXXXXXXXXXXXX00B3F3E8
