@@ -32,13 +32,13 @@
 
 typedef struct _SYELOG_MESSAGE
 {
-    USHORT      nBytes;
-    BYTE        nFacility;
-    BYTE        nSeverity;
-    DWORD       nProcessId;
-    FILETIME    ftOccurance;
-    BOOL        fTerminate;
-    CHAR        szMessage[SYELOG_MAXIMUM_MESSAGE];
+	USHORT nBytes;
+	BYTE nFacility;
+	BYTE nSeverity;
+	DWORD nProcessId;
+	FILETIME ftOccurance;
+	BOOL fTerminate;
+	CHAR szMessage[SYELOG_MAXIMUM_MESSAGE];
 } SYELOG_MESSAGE, *PSYELOG_MESSAGE;
 
 

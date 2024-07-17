@@ -5,7 +5,6 @@
 
 class MainMain
 {
-private:
 	static MainMain* _s_pInstance;
 
 public:
@@ -26,17 +25,17 @@ public:
 	static bool usingEzorsiaV2Wz;
 	static bool CustomLoginFrame;
 	static bool bigLoginFrame;
-	static HANDLE mainTHread;
+	static HANDLE mainThread;
 
 private: // forcing the class to only have one instance, created through CreateInstance
-	MainMain(std::function<void()> pPostMutexFunc);
+	static void invalid_config_error();
+	MainMain(const std::function<void()>& pPostMutexFunc);
 	MainMain() = delete;
 	MainMain(const MainMain&) = delete;
-	MainMain& operator = (const MainMain&) = delete;
+	MainMain& operator =(const MainMain&) = delete;
 
 public:
 	~MainMain();
-public:
 	static void CreateInstance(std::function<void()> pMutexFunc)
 	{
 		if (_s_pInstance) return;
@@ -46,11 +45,13 @@ public:
 	{
 		return _s_pInstance;
 	}
-	static void CreateConsole(FILE* stream) {
+	static void CreateConsole(FILE* stream)
+	{
 		AllocConsole();
 		freopen_s(&stream, "CONOUT$", "w", stdout); //CONOUT$
 	}
-	static void DeleteConsole(FILE* stream) {
+	static void DeleteConsole(FILE* stream)
+	{
 		FreeConsole();
 		fclose(stream);
 	}

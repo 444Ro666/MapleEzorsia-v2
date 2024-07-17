@@ -17,7 +17,7 @@ template <typename T> // uses fastcall because it passes args through registers 
 unsigned int __fastcall ZtlSecureTear(T* at, T t)
 {
 	/* storage type is 1 byte large if size < 4, otherwise its 4 bytes large */
-	typedef std::conditional<(sizeof(T) < 4), unsigned char, unsigned int>::type PType;
+	using PType = std::conditional_t<(sizeof(T) < 4), unsigned char, unsigned int>;
 
 	unsigned int checksum = ZTLSECURE_CHECKSUM;
 
@@ -44,7 +44,7 @@ template <typename T>
 T __fastcall ZtlSecureFuse(T* at, unsigned int uCS)
 {
 	/* storage type is 1 byte large if size < 4, otherwise its 4 bytes large */
-	typedef std::conditional<(sizeof(T) < 4), unsigned char, unsigned int>::type PType;
+	using PType = std::conditional_t<(sizeof(T) < 4), unsigned char, unsigned int>;
 
 	unsigned int checksum = ZTLSECURE_CHECKSUM;
 
@@ -68,12 +68,11 @@ T __fastcall ZtlSecureFuse(T* at, unsigned int uCS)
 		CxxThrowException(&zException, (void*)ThrowInfo::ZException);*/
 	}
 
-	return  *reinterpret_cast<T*>(&value[0]);
+	return *reinterpret_cast<T*>(&value[0]);
 }
 
 class SECRECT
 {
-private:
 	int _ZtlSecureTear_left[2];
 	unsigned int _ZtlSecureTear_left_CS;
 	int _ZtlSecureTear_top[2];

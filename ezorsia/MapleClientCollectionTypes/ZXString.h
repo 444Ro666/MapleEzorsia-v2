@@ -1,8 +1,8 @@
 #pragma once
 #include "ZAllocEx.h"
 //credits to the creators of https://github.com/MapleStory-Archive/MapleClientEditTemplate
-template<typename T> struct ZAllocEx;
-template<typename T> struct ZAllocStrSelector;
+template <typename T> struct ZAllocEx;
+template <typename T> struct ZAllocStrSelector;
 
 /*
 	Credits: Minimum Delta - this was a pain in the ass to figure out, ya'll
@@ -34,7 +34,6 @@ public:
 	/// </summary>
 	struct _ZXStringData
 	{
-	public:
 		/// <summary>
 		/// The number of references pointing to this string.
 		/// </summary>
@@ -184,7 +183,7 @@ public:
 	/// <summary>
 	/// Extract the encapsulated unicode or multibyte char pointer.
 	/// </summary>
-	operator const T* ()
+	operator const T*()
 	{
 		return this->m_pStr;
 	}
@@ -223,7 +222,7 @@ public:
 
 	void Assign(ZXString<T>* s)
 	{
-		ZXString<T>::_ZXStringData* pNewData;
+		_ZXStringData* pNewData;
 
 		if (this != s)
 		{
@@ -306,28 +305,28 @@ public:
 	{
 		if (!this->m_pStr) return !s;
 
-		return !strcmp(reinterpret_cast<const char*>(this->m_pStr), reinterpret_cast<const char*>(s));
+		return !strcmp(reinterpret_cast<const char*>(this->m_pStr), s);
 	}
 
 	BOOL Compare(const wchar_t* s)
 	{
 		if (!this->m_pStr) return !s;
 
-		return !wcscmp(reinterpret_cast<const wchar_t*>(this->m_pStr), reinterpret_cast<const wchar_t*>(s));
+		return !wcscmp(reinterpret_cast<const wchar_t*>(this->m_pStr), s);
 	}
 
 	BOOL CompareNoCase(const char* s)
 	{
 		if (!this->m_pStr) return !s;
 
-		return !stricmp(reinterpret_cast<const char*>(this->m_pStr), reinterpret_cast<const char*>(s));
+		return !stricmp(reinterpret_cast<const char*>(this->m_pStr), s);
 	}
 
 	BOOL CompareNoCase(const wchar_t* s)
 	{
 		if (!this->m_pStr) return !s;
 
-		return !wcsicmp(reinterpret_cast<const wchar_t*>(this->m_pStr), reinterpret_cast<const wchar_t*>(s));
+		return !wcsicmp(reinterpret_cast<const wchar_t*>(this->m_pStr), s);
 	}
 
 	ZXString<T>* Concat(const T* s, int nLen = -1) // _Cat
@@ -347,7 +346,7 @@ public:
 		}
 		else // else add new string to existing string
 		{
-			ZXString<T>::_ZXStringData* pData = this->GetData();
+			_ZXStringData* pData = this->GetData();
 
 			int nCap = pData->nCap;
 			int i = nLen + this->Length();
@@ -390,11 +389,11 @@ public:
 
 			if (sizeof(T) == 1) // compiler should optimize away this conditional when in release mode
 			{
-				nBytesWritten = _vsnprintf_s((char*)pBuff, nBufferLen, _TRUNCATE, (const char*)sFormat, args);
+				nBytesWritten = _vsnprintf_s(static_cast<char*>(pBuff), nBufferLen, _TRUNCATE, static_cast<const char*>(sFormat), args);
 			}
 			else
 			{
-				nBytesWritten = _vsnwprintf_s((wchar_t*)pBuff, nBufferLen, _TRUNCATE, (const wchar_t*)sFormat, args);
+				nBytesWritten = _vsnwprintf_s(static_cast<wchar_t*>(pBuff), nBufferLen, _TRUNCATE, static_cast<const wchar_t*>(sFormat), args);
 			}
 
 			s.ReleaseBuffer(nBufferLen < 0 ? 0 : nBufferLen);
@@ -412,11 +411,11 @@ public:
 
 	// ------------------------------------------------------ Private Member Functions
 private:
-	ZXString<T>::_ZXStringData* GetData()
+	_ZXStringData* GetData()
 	{
 		if (this->m_pStr)
 		{
-			return reinterpret_cast<ZXString<T>::_ZXStringData*>(reinterpret_cast<unsigned char*>(this->m_pStr) - sizeof(ZXString<T>::_ZXStringData));
+			return reinterpret_cast<_ZXStringData*>(reinterpret_cast<unsigned char*>(this->m_pStr) - sizeof(_ZXStringData));
 		}
 
 		return nullptr;
@@ -424,8 +423,8 @@ private:
 
 	T* GetBuffer(size_t nMinLength, BOOL bRetain)
 	{
-		ZXString<T>::_ZXStringData* pCurData;
-		ZXString<T>::_ZXStringData* pNewData;
+		_ZXStringData* pCurData;
+		_ZXStringData* pNewData;
 		size_t nStrLen;
 
 		if (this->m_pStr)
@@ -477,7 +476,7 @@ private:
 		{
 			if (InterlockedDecrement(&pCurData->nRef) <= 0)
 			{
-				ZAllocEx<ZAllocStrSelector<T>>::GetInstance()->Free((void**)pCurData);
+				ZAllocEx<ZAllocStrSelector<T>>::GetInstance()->Free(reinterpret_cast<void**>(pCurData));
 			}
 		}
 
@@ -486,7 +485,7 @@ private:
 
 	void ReleaseBuffer(size_t nLength)
 	{
-		ZXString<T>::_ZXStringData* pData = this->GetData();
+		_ZXStringData* pData = this->GetData();
 
 		pData->nRef = 1;
 
@@ -501,13 +500,13 @@ private:
 		}
 	}
 
-	ZXString<T>::_ZXStringData* Alloc(size_t nCap)
+	_ZXStringData* Alloc(size_t nCap)
 	{
-		size_t nTotalSize = (sizeof(T) * nCap) + sizeof(ZXString<T>::_ZXStringData) + sizeof(T);
+		size_t nTotalSize = (sizeof(T) * nCap) + sizeof(_ZXStringData) + sizeof(T);
 
 		PVOID pAllocated = ZAllocEx<ZAllocStrSelector<T>>::GetInstance()->Alloc(nTotalSize);
 
-		ZXString<T>::_ZXStringData* result = reinterpret_cast<ZXString<T>::_ZXStringData*>(pAllocated);
+		_ZXStringData* result = reinterpret_cast<_ZXStringData*>(pAllocated);
 		result->nCap = nCap;
 		return result;
 	}
@@ -516,18 +515,18 @@ private:
 	{
 		if (InterlockedDecrement(&this->GetData()->nRef) <= 0)
 		{
-			ZAllocEx<ZAllocStrSelector<T>>::GetInstance()->Free((void**)this->GetData());
+			ZAllocEx<ZAllocStrSelector<T>>::GetInstance()->Free(reinterpret_cast<void**>(this->GetData()));
 		}
 	}
 
 	size_t TStrLen(const char* s)
 	{
-		return strlen(reinterpret_cast<const char*>(s));
+		return strlen(s);
 	}
 
 	size_t TStrLen(const wchar_t* s)
 	{
-		return wcslen(reinterpret_cast<const wchar_t*>(s));
+		return wcslen(s);
 	}
 };
 

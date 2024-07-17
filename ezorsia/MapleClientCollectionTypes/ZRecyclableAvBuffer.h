@@ -9,7 +9,6 @@
 template <class T>
 class ZRecyclableAvBuffer : ZRecyclableStatic::CallBack
 {
-private:
 	ZFakeStatAvBuff* m_pStat;
 	ZFatalSection m_l; // TODO maybe emulate this one day
 	void* m_pAv;
@@ -46,7 +45,7 @@ public:
 			this->m_pAv = ZAllocBase::AllocRawBlocks(sizeof(T), ZRECYCLABLE_RAW_BLOCK_SIZE);
 		}
 
-		pAlloc = (void**)this->m_pAv;
+		pAlloc = static_cast<void**>(this->m_pAv);
 		this->m_pAv = *pAlloc;
 
 		this->GetMutex()->unlock();
@@ -58,7 +57,7 @@ public:
 	{
 		this->GetMutex()->lock();
 
-		*(void**)p = this->m_pAv;
+		*static_cast<void**>(p) = this->m_pAv;
 		this->m_pAv = p;
 
 		this->GetMutex()->unlock();

@@ -74,23 +74,23 @@ public:
 
 	PVOID Alloc(size_t uSize)
 	{
-		ZAllocBase::BLOCK_SIZE nBlockSizeIndex;
+		BLOCK_SIZE nBlockSizeIndex;
 
 		if (uSize <= 16)
 		{
-			nBlockSizeIndex = ZAllocBase::BLOCK_SIZE::BLOCK16;
+			nBlockSizeIndex = BLOCK16;
 		}
 		else if (uSize <= 32)
 		{
-			nBlockSizeIndex = ZAllocBase::BLOCK_SIZE::BLOCK32;
+			nBlockSizeIndex = BLOCK32;
 		}
 		else if (uSize <= 64)
 		{
-			nBlockSizeIndex = ZAllocBase::BLOCK_SIZE::BLOCK64;
+			nBlockSizeIndex = BLOCK64;
 		}
 		else if (uSize <= 128)
 		{
-			nBlockSizeIndex = ZAllocBase::BLOCK_SIZE::BLOCK128;
+			nBlockSizeIndex = BLOCK128;
 		}
 		else
 		{
@@ -151,11 +151,11 @@ public:
 
 		/* return memory */
 		return lpAllocRet;
-}
+	}
 
 	void Free(void** p)
 	{
-		ZAllocBase::BLOCK_SIZE nBlockSizeIndex;
+		BLOCK_SIZE nBlockSizeIndex;
 
 		if (!p) return;
 
@@ -168,19 +168,19 @@ public:
 
 		if (uSize == 16)
 		{
-			nBlockSizeIndex = ZAllocBase::BLOCK_SIZE::BLOCK16;
+			nBlockSizeIndex = BLOCK16;
 		}
 		else if (uSize == 32)
 		{
-			nBlockSizeIndex = ZAllocBase::BLOCK_SIZE::BLOCK32;
+			nBlockSizeIndex = BLOCK32;
 		}
 		else if (uSize == 64)
 		{
-			nBlockSizeIndex = ZAllocBase::BLOCK_SIZE::BLOCK64;
+			nBlockSizeIndex = BLOCK64;
 		}
 		else if (uSize == 128)
 		{
-			nBlockSizeIndex = ZAllocBase::BLOCK_SIZE::BLOCK128;
+			nBlockSizeIndex = BLOCK128;
 		}
 		else
 		{
@@ -203,7 +203,7 @@ public:
 //		}
 //#endif
 			return;
-	}
+		}
 
 		GetMutex()->lock();
 
@@ -274,23 +274,23 @@ public:
 
 	PVOID Alloc(size_t uSize)
 	{
-		ZAllocBase::BLOCK_SIZE nBlockSizeIndex;
+		BLOCK_SIZE nBlockSizeIndex;
 
 		if (uSize <= (sizeof(T) * 16) + sizeof(ZXString<T>::_ZXStringData) + sizeof(T))
 		{
-			nBlockSizeIndex = ZAllocBase::BLOCK_SIZE::BLOCK16;
+			nBlockSizeIndex = BLOCK16;
 		}
 		else if (uSize <= (sizeof(T) * 32) + sizeof(ZXString<T>::_ZXStringData) + sizeof(T))
 		{
-			nBlockSizeIndex = ZAllocBase::BLOCK_SIZE::BLOCK32;
+			nBlockSizeIndex = BLOCK32;
 		}
 		else if (uSize <= (sizeof(T) * 64) + sizeof(ZXString<T>::_ZXStringData) + sizeof(T))
 		{
-			nBlockSizeIndex = ZAllocBase::BLOCK_SIZE::BLOCK64;
+			nBlockSizeIndex = BLOCK64;
 		}
 		else if (uSize <= (sizeof(T) * 128) + sizeof(ZXString<T>::_ZXStringData) + sizeof(T))
 		{
-			nBlockSizeIndex = ZAllocBase::BLOCK_SIZE::BLOCK128;
+			nBlockSizeIndex = BLOCK128;
 		}
 		else
 		{
@@ -350,11 +350,11 @@ public:
 
 		/* return memory */
 		return lpAllocRet;
-}
+	}
 
 	void Free(void** p)
 	{
-		ZAllocBase::BLOCK_SIZE nBlockSizeIndex;
+		BLOCK_SIZE nBlockSizeIndex;
 
 		if (!p) return;
 
@@ -367,19 +367,19 @@ public:
 
 		if (uSize == (sizeof(T) * 16) + sizeof(ZXString<T>::_ZXStringData) + sizeof(T))
 		{
-			nBlockSizeIndex = ZAllocBase::BLOCK_SIZE::BLOCK16;
+			nBlockSizeIndex = BLOCK16;
 		}
 		else if (uSize == (sizeof(T) * 32) + sizeof(ZXString<T>::_ZXStringData) + sizeof(T))
 		{
-			nBlockSizeIndex = ZAllocBase::BLOCK_SIZE::BLOCK32;
+			nBlockSizeIndex = BLOCK32;
 		}
 		else if (uSize == (sizeof(T) * 64) + sizeof(ZXString<T>::_ZXStringData) + sizeof(T))
 		{
-			nBlockSizeIndex = ZAllocBase::BLOCK_SIZE::BLOCK64;
+			nBlockSizeIndex = BLOCK64;
 		}
 		else if (uSize == (sizeof(T) * 128) + sizeof(ZXString<T>::_ZXStringData) + sizeof(T))
 		{
-			nBlockSizeIndex = ZAllocBase::BLOCK_SIZE::BLOCK128;
+			nBlockSizeIndex = BLOCK128;
 		}
 		else
 		{
@@ -400,7 +400,7 @@ public:
 //		}
 //#endif
 			return;
-	}
+		}
 
 		GetMutex()->lock();
 

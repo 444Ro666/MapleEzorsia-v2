@@ -12,7 +12,8 @@ bool Client::useTubi = false;
 int Client::speedMovementCap = 140;
 std::string Client::ServerIP_AddressFromINI = "127.0.0.1";
 
-void Client::UpdateGameStartup() {
+void Client::UpdateGameStartup()
+{
 
 	Memory::CodeCave(cc0x00A63FF3, dw0x00A63FF3, dw0x00A63FF3Nops); //fix start @0x00A63FF3, may be unnecessary, but dump of vanilla client showed broken code here
 
@@ -45,7 +46,7 @@ void Client::UpdateGameStartup() {
 	Memory::WriteByte(0x0049D398 + 1, 0x01);//remove elevation requests	//still not working unfortunately
 
 	Memory::FillBytes(0x00AFE084, 0x00, 0x006FE0B2 - 0x006FE084);//remove the existing server IP address in client
-	const char* serverIP_Address = Client::ServerIP_AddressFromINI.c_str();//could be obselete, but keeping it in case of use by unpacked localhosts
+	const char* serverIP_Address = ServerIP_AddressFromINI.c_str();//could be obselete, but keeping it in case of use by unpacked localhosts
 	Memory::WriteString(0x00AFE084, serverIP_Address);//write the user-set IP address
 	Memory::WriteString(0x00AFE084 + 16, serverIP_Address);//write the user-set IP address
 	Memory::WriteString(0x00AFE084 + 32, serverIP_Address);//write the user-set IP address
@@ -86,8 +87,9 @@ void Client::UpdateGameStartup() {
 	//00960581 //00960839 //00960C67 //00960DED //CUserLocal::DrawCombo
 }
 
-void Client::UpdateResolution() {
-	nStatusBarY = Client::m_nGameHeight - 578;
+void Client::UpdateResolution()
+{
+	nStatusBarY = m_nGameHeight - 578;
 
 	Memory::CodeCave(AdjustStatusBar, dwStatusBarVPos, 5);
 	Memory::CodeCave(AdjustStatusBarBG, dwStatusBarBackgroundVPos, 5);
@@ -95,8 +97,8 @@ void Client::UpdateResolution() {
 
 	Memory::WriteInt(dwApplicationHeight + 1, m_nGameHeight);//push 600
 	Memory::WriteInt(dwApplicationWidth + 1, m_nGameWidth);	//push 800 ; CWvsApp::InitializeGr2D
-	Memory::WriteInt(dwCursorVectorVPos + 2, (int)floor(-m_nGameHeight / 2));//push -300				!!moves all interactable UI elements!!
-	Memory::WriteInt(dwCursorVectorHPos + 2, (int)floor(-m_nGameWidth / 2));	//push -400 ; CInputSystem::SetCursorVectorPos				!!moves all interactable UI elements!!
+	Memory::WriteInt(dwCursorVectorVPos + 2, static_cast<int>(floor(-m_nGameHeight / 2)));//push -300				!!moves all interactable UI elements!!
+	Memory::WriteInt(dwCursorVectorHPos + 2, static_cast<int>(floor(-m_nGameWidth / 2)));	//push -400 ; CInputSystem::SetCursorVectorPos				!!moves all interactable UI elements!!
 	Memory::WriteInt(dwUpdateMouseLimitVPos + 1, m_nGameHeight);//mov ecx,600
 	Memory::WriteInt(dwUpdateMouseLimitHPos + 1, m_nGameWidth);	//mov ecx,800 ; CInputSystem::UpdateMouse
 	Memory::WriteInt(dwCursorPosLimitVPos + 1, m_nGameHeight);//mov eax,600
@@ -193,31 +195,31 @@ void Client::UpdateResolution() {
 	Memory::WriteInt(0x00640606 + 1, m_nGameWidth);	//mov ecx,800
 	Memory::WriteInt(0x0064067E + 1, m_nGameWidth);	//mov ecx,800
 	Memory::WriteInt(0x00640639 + 1, m_nGameWidth);	//mov ecx,800
-	Memory::WriteInt(0x0064043E + 1, (int)floor(m_nGameWidth / 2));	//mov edi,400
-	Memory::WriteInt(0x00640443 + 1, (int)floor(m_nGameHeight / 2));	//mov esi,300
-	Memory::WriteInt(0x00640626 + 1, (int)floor(m_nGameWidth / 2));	//add eax,400 ; bunch of modulus stuff
+	Memory::WriteInt(0x0064043E + 1, static_cast<int>(floor(m_nGameWidth / 2)));	//mov edi,400
+	Memory::WriteInt(0x00640443 + 1, static_cast<int>(floor(m_nGameHeight / 2)));	//mov esi,300
+	Memory::WriteInt(0x00640626 + 1, static_cast<int>(floor(m_nGameWidth / 2)));	//add eax,400 ; bunch of modulus stuff
 
 	Memory::WriteInt(0x00641038 + 2, m_nGameHeight);//??possibly related to player display
 	Memory::WriteInt(0x0064103F + 2, m_nGameWidth);//??possibly related to player display
-	Memory::WriteInt(0x00641048 + 1, (int)floor(-m_nGameHeight / 2));	//mov esi,-300
-	Memory::WriteInt(0x00641050 + 1, (int)floor(-m_nGameWidth / 2));		//mov esi,-400 ;
+	Memory::WriteInt(0x00641048 + 1, static_cast<int>(floor(-m_nGameHeight / 2)));	//mov esi,-300
+	Memory::WriteInt(0x00641050 + 1, static_cast<int>(floor(-m_nGameWidth / 2)));		//mov esi,-400 ;
 	Memory::WriteInt(0x00641A19 + 3, m_nGameHeight);//mov [ebp+28],600
 	Memory::WriteInt(0x00641A12 + 3, m_nGameWidth);	//mov [ebp+32],800 ; idk
 	Memory::WriteInt(0x00641B38 + 3, m_nGameHeight);//mov [ebp-32],600
 	Memory::WriteInt(0x00641B2E + 3, m_nGameWidth);	//mov [ebp-36],800 ; CAnimationDisplayer::SetCenterOrigin
 
-	Memory::WriteInt(0x006CD842 + 1, (int)floor(m_nGameWidth / 2));	//push 400 ; RelMove?
+	Memory::WriteInt(0x006CD842 + 1, static_cast<int>(floor(m_nGameWidth / 2)));	//push 400 ; RelMove?
 
-	Memory::WriteInt(0x0059A0A2 + 6, (int)floor(m_nGameHeight / 2));	//mov [ebx+2364],300
-	Memory::WriteInt(0x0059A09C + 2, (int)floor(m_nGameWidth / 2));	//mov [esi],400	; CInputSystem::LoadCursorState
+	Memory::WriteInt(0x0059A0A2 + 6, static_cast<int>(floor(m_nGameHeight / 2)));	//mov [ebx+2364],300
+	Memory::WriteInt(0x0059A09C + 2, static_cast<int>(floor(m_nGameWidth / 2)));	//mov [esi],400	; CInputSystem::LoadCursorState
 	Memory::WriteInt(0x0080546C + 1, m_nGameHeight);//mov edi,600
 	Memory::WriteInt(0x00805459 + 1, m_nGameWidth);	//mov edx,800 ; CUIEventAlarm::CreateEventAlarm
 	Memory::WriteInt(0x008CFD4B + 1, m_nGameHeight - 22);	//push 578
 	Memory::WriteInt(0x008CFD50 + 1, m_nGameWidth);	//push 800
-	Memory::WriteInt(0x0053836D + 1, (int)floor(-m_nGameHeight / 2));//push -300
-	Memory::WriteInt(0x00538373 + 1, (int)floor(-m_nGameWidth / 2));	//push -400	; RelMove?
-	Memory::WriteInt(0x0055BB2F + 1, (int)floor(-m_nGameHeight / 2));//push -300
-	Memory::WriteInt(0x0055BB35 + 1, (int)floor(-m_nGameWidth / 2));	//push -400 ; RelMove?
+	Memory::WriteInt(0x0053836D + 1, static_cast<int>(floor(-m_nGameHeight / 2)));//push -300
+	Memory::WriteInt(0x00538373 + 1, static_cast<int>(floor(-m_nGameWidth / 2)));	//push -400	; RelMove?
+	Memory::WriteInt(0x0055BB2F + 1, static_cast<int>(floor(-m_nGameHeight / 2)));//push -300
+	Memory::WriteInt(0x0055BB35 + 1, static_cast<int>(floor(-m_nGameWidth / 2)));	//push -400 ; RelMove?
 
 	Memory::WriteInt(0x005A8B46 + 1, m_nGameHeight);//mov eax,600
 	Memory::WriteInt(0x005A8B56 + 1, m_nGameWidth);	//mov eax,800 ; RelMove?
@@ -235,8 +237,8 @@ void Client::UpdateResolution() {
 	Memory::WriteInt(0x005C2D72 + 1, m_nGameWidth);	//mov eax,800 ; RelMove?
 	Memory::WriteInt(0x005E3FA0 + 1, m_nGameHeight);//push 600
 
-	Memory::WriteInt(0x005F64DE + 1, (int)floor(-m_nGameHeight / 2));	//push -300 ;
-	Memory::WriteInt(0x005F6627 + 1, (int)floor(-m_nGameHeight / 2));	//push -300 ;
+	Memory::WriteInt(0x005F64DE + 1, static_cast<int>(floor(-m_nGameHeight / 2)));	//push -300 ;
+	Memory::WriteInt(0x005F6627 + 1, static_cast<int>(floor(-m_nGameHeight / 2)));	//push -300 ;
 
 	Memory::WriteInt(0x0060411C + 1, m_nGameHeight);//push 600
 	//Memory::WriteInt(0x00604126 + 1, floor(-m_nGameWidth / 2));	//push -300 //moves characters side to side on char select //unnecessary atm
@@ -251,17 +253,17 @@ void Client::UpdateResolution() {
 	Memory::WriteInt(0x0061DB10 + 1, (m_nGameWidth / 2) - 201);//??likely related to login pop-up msg
 	Memory::WriteInt(0x0061DB19 + 1, (m_nGameWidth / 2) - 181);//??likely related to login pop-up msg
 
-	Memory::WriteInt(0x004372B1 + 1, (int)floor(-m_nGameHeight / 2));//push -300
-	Memory::WriteInt(0x004372B6 + 1, (int)floor(-m_nGameWidth / 2));	//push -400 ; RelMove?
+	Memory::WriteInt(0x004372B1 + 1, static_cast<int>(floor(-m_nGameHeight / 2)));//push -300
+	Memory::WriteInt(0x004372B6 + 1, static_cast<int>(floor(-m_nGameWidth / 2)));	//push -400 ; RelMove?
 	Memory::WriteInt(0x006CE3AB + 1, m_nGameWidth);	//push 800
 	Memory::WriteInt(0x007E1CB7 + 1, m_nGameWidth);	//push 800
 	Memory::WriteInt(0x008D82F5 + 1, m_nGameHeight - 22);	//push 578
 	Memory::WriteInt(0x008D82FA + 1, m_nGameWidth);	//push 800 ; CreateWnd?
-	Memory::WriteInt(0x00935870 + 1, (int)floor(m_nGameHeight / 2));	//push 300
+	Memory::WriteInt(0x00935870 + 1, static_cast<int>(floor(m_nGameHeight / 2)));	//push 300
 	Memory::WriteInt(0x0093586B + 1, m_nGameWidth);	// push 800 ; RelMove? (Skills)
 	Memory::WriteInt(0x009DFD5C + 1, m_nGameWidth);	//mov ecx,800
 	Memory::WriteInt(0x009DFED2 + 1, m_nGameHeight);//mov ecx,600	; IWzVector2D::RelMove
-	Memory::WriteInt(0x009F6ADD + 1, (int)floor(m_nGameHeight / 2)); //push 300 ; MapleStoryClass
+	Memory::WriteInt(0x009F6ADD + 1, static_cast<int>(floor(m_nGameHeight / 2))); //push 300 ; MapleStoryClass
 	Memory::WriteInt(0x006D50D8 + 1, m_nGameHeight);//push 600
 	Memory::WriteInt(0x0074BAA9 + 1, m_nGameHeight);//push 600
 	Memory::WriteInt(0x0074B951 + 1, m_nGameHeight);//push 600
@@ -289,24 +291,24 @@ void Client::UpdateResolution() {
 	Memory::WriteInt(0x004EDAD8 + 1, m_nGameWidth);	//mov ecx,800
 	Memory::WriteInt(0x009F7079, m_nGameHeight);	// dd 600
 	Memory::WriteInt(0x009F707E, m_nGameWidth);	// dd 800
-	Memory::WriteInt(0x00BE2738, (int)floor(m_nGameWidth / 2));	// dd 400
-	Memory::WriteInt(0x00BE2DF4, (int)floor(m_nGameHeight / 2));	// dd 300
-	Memory::WriteInt(0x00BE2DF0, (int)floor(m_nGameWidth / 2));	// dd 400
-	Memory::WriteInt(0x00640656 + 2, (int)floor(-m_nGameWidth / 2));		//add edi,-400 ;
+	Memory::WriteInt(0x00BE2738, static_cast<int>(floor(m_nGameWidth / 2)));	// dd 400
+	Memory::WriteInt(0x00BE2DF4, static_cast<int>(floor(m_nGameHeight / 2)));	// dd 300
+	Memory::WriteInt(0x00BE2DF0, static_cast<int>(floor(m_nGameWidth / 2)));	// dd 400
+	Memory::WriteInt(0x00640656 + 2, static_cast<int>(floor(-m_nGameWidth / 2)));		//add edi,-400 ;
 
-	Memory::WriteInt(0x006CE4C6 + 1, (int)floor(-m_nGameWidth / 2));		//push -400 ;
-	Memory::WriteInt(0x009E2E85 + 1, (int)floor(-m_nGameHeight / 2));	//push -300		overall screen visible UI scaling
-	Memory::WriteInt(0x009E2E8B + 1, (int)floor(-m_nGameWidth / 2));		//push -400 ;	overall screen visible UI scaling
+	Memory::WriteInt(0x006CE4C6 + 1, static_cast<int>(floor(-m_nGameWidth / 2)));		//push -400 ;
+	Memory::WriteInt(0x009E2E85 + 1, static_cast<int>(floor(-m_nGameHeight / 2)));	//push -300		overall screen visible UI scaling
+	Memory::WriteInt(0x009E2E8B + 1, static_cast<int>(floor(-m_nGameWidth / 2)));		//push -400 ;	overall screen visible UI scaling
 
-	Memory::WriteInt(0x0093519A + 1, (int)floor(-m_nGameHeight / 2));	//push -300 ;
-	Memory::WriteInt(0x00954433 + 1, (int)floor(-m_nGameHeight / 2));	//push -300 ;
-	Memory::WriteInt(0x00981555 + 1, (int)floor(-m_nGameHeight / 2));	//push -300 ;
-	Memory::WriteInt(0x00981F7A + 2, (int)floor(-m_nGameHeight / 2));	//push -300 ;
-	Memory::WriteInt(0x00A448B0 + 2, (int)floor(-m_nGameHeight / 2));	//push -300 ; CWvsPhysicalSpace2D::Load]
+	Memory::WriteInt(0x0093519A + 1, static_cast<int>(floor(-m_nGameHeight / 2)));	//push -300 ;
+	Memory::WriteInt(0x00954433 + 1, static_cast<int>(floor(-m_nGameHeight / 2)));	//push -300 ;
+	Memory::WriteInt(0x00981555 + 1, static_cast<int>(floor(-m_nGameHeight / 2)));	//push -300 ;
+	Memory::WriteInt(0x00981F7A + 2, static_cast<int>(floor(-m_nGameHeight / 2)));	//push -300 ;
+	Memory::WriteInt(0x00A448B0 + 2, static_cast<int>(floor(-m_nGameHeight / 2)));	//push -300 ; CWvsPhysicalSpace2D::Load]
 
-	Memory::WriteInt(0x0066BACE + 2, (int)floor(-m_nGameWidth / 2));		//and ecx,-400
-	Memory::WriteInt(0x009B76BD + 3, (int)floor(-m_nGameHeight / 2));	//push -300
-	Memory::WriteInt(0x009B76CB + 3, (int)floor(m_nGameHeight / 2));		//push 300
+	Memory::WriteInt(0x0066BACE + 2, static_cast<int>(floor(-m_nGameWidth / 2)));		//and ecx,-400
+	Memory::WriteInt(0x009B76BD + 3, static_cast<int>(floor(-m_nGameHeight / 2)));	//push -300
+	Memory::WriteInt(0x009B76CB + 3, static_cast<int>(floor(m_nGameHeight / 2)));		//push 300
 
 	Memory::WriteInt(0x009F7078 + 1, m_nGameHeight);//??related to application dimensions	//(ragezone release merge)//thanks mr mr of ragezone for these addresses
 	Memory::WriteInt(0x009F707D + 1, m_nGameWidth);//??related to application dimensions
@@ -318,8 +320,8 @@ void Client::UpdateResolution() {
 	Memory::WriteInt(0x00991854 + 1, m_nGameHeight);//??unknown cwnd function
 	Memory::WriteInt(0x0099185F + 1, (m_nGameWidth / 2) - 134);//??unknown cwnd function
 	Memory::WriteInt(0x00991867 + 1, (m_nGameWidth / 2) - 133);//??unknown cwnd function
-	Memory::WriteInt(0x00992BA7 + 1, (int)floor(m_nGameWidth / 2));//??unknown cwnd function, possibly related to cutildlg
-	Memory::WriteInt(0x00992BAC + 1, (int)floor(m_nGameHeight / 2));//??unknown cwnd function, possibly related to cutildlg
+	Memory::WriteInt(0x00992BA7 + 1, static_cast<int>(floor(m_nGameWidth / 2)));//??unknown cwnd function, possibly related to cutildlg
+	Memory::WriteInt(0x00992BAC + 1, static_cast<int>(floor(m_nGameHeight / 2)));//??unknown cwnd function, possibly related to cutildlg
 
 	Memory::WriteInt(0x007E1E07 + 2, m_nGameWidth);//??related to displaying server message at top of screen
 	Memory::WriteInt(0x007E19CA + 2, m_nGameWidth);//??related to displaying server message at top of screen
@@ -351,15 +353,18 @@ void Client::UpdateResolution() {
 
 	Memory::WriteInt(0x00897BB4 + 1, (m_nGameWidth / 2) - 143);//??related to exp gain/item pick up msg
 
-	if (WindowedMode) {
+	if (WindowedMode)
+	{
 		unsigned char forced_window[] = { 0xb8, 0x00, 0x00, 0x00, 0x00 }; //force window mode	//thanks stelmo for showing me how to do this
 		Memory::WriteByteArray(0x009F7A9B, forced_window, sizeof(forced_window));//force window mode
 	} //*note:CreateWindowExA_Hook doesnt work yet//old forced window mode, is now handled in CreateWindowExA_Hook, keeping for reference
-	if (RemoveLogos) {
+	if (RemoveLogos)
+	{
 		Memory::FillBytes(0x0062EE54, 0x90, 21);	//no Logo @launch //Thanks Denki!!
 	}
 
-	int msgAmntOffset, msgAmnt; msgAmnt = MsgAmount; msgAmntOffset = msgAmnt * 14;
+	const int msgAmnt = MsgAmount;
+	const int msgAmntOffset = msgAmnt * 14;
 
 	Memory::WriteInt(0x0089B639 + 1, m_nGameHeight - 6 - msgAmntOffset);//inventory/exp gain y axis //####hd100 //90
 	Memory::WriteInt(0x0089B6F7 + 1, m_nGameWidth - 405);//inventory/exp gain x axis //310 //####hd415 //405
@@ -498,90 +503,138 @@ void Client::UpdateResolution() {
 	//myWidth = -(Client::m_nGameWidth - 800) / 2;//cash shop fix for frame area		//recalc offsets
 	//Memory::CodeCave(CashShopFix, dwCashFix, 6);//cash shop fix for frame area //moves frame to top left (not used rn)
 
-	myHeight = (Client::m_nGameHeight - 600) / 2;//cash shop fix for frame area	//recalc offsets
-	myWidth = (Client::m_nGameWidth - 800) / 2;//cash shop fix for frame area		//recalc offsets
-	nHeightOfsetted1 = 316; nWidthOfsetted1 = 256; nTopOfsetted1 = 0 + myHeight; nLeftOfsetted1 = 0 + myWidth; //parameters for fix1
+	myHeight = (m_nGameHeight - 600) / 2;//cash shop fix for frame area	//recalc offsets
+	myWidth = (m_nGameWidth - 800) / 2;//cash shop fix for frame area		//recalc offsets
+	nHeightOfsetted1 = 316;
+	nWidthOfsetted1 = 256;
+	nTopOfsetted1 = 0 + myHeight;
+	nLeftOfsetted1 = 0 + myWidth; //parameters for fix1
 	Memory::CodeCave(CashShopFix1, dwCashFix1, dwCashFix1NOPs);
-	nHeightOfsetted2 = 104; nWidthOfsetted2 = 256; nTopOfsetted2 = 318 + myHeight; nLeftOfsetted2 = -1 + myWidth; //parameters for fix2
+	nHeightOfsetted2 = 104;
+	nWidthOfsetted2 = 256;
+	nTopOfsetted2 = 318 + myHeight;
+	nLeftOfsetted2 = -1 + myWidth; //parameters for fix2
 	Memory::CodeCave(CashShopFix2, dwCashFix2, dwCashFix2NOPs);
-	nHeightOfsetted3 = 163; nWidthOfsetted3 = 246; nTopOfsetted3 = 426 + myHeight; nLeftOfsetted3 = 0 + myWidth; //parameters for fix3
+	nHeightOfsetted3 = 163;
+	nWidthOfsetted3 = 246;
+	nTopOfsetted3 = 426 + myHeight;
+	nLeftOfsetted3 = 0 + myWidth; //parameters for fix3
 	Memory::CodeCave(CashShopFix3, dwCashFix3, dwCashFix3NOPs);
-	nHeightOfsetted4 = 78; nWidthOfsetted4 = 508; nTopOfsetted4 = 17 + myHeight; nLeftOfsetted4 = 272 + myWidth; //parameters for fix4
+	nHeightOfsetted4 = 78;
+	nWidthOfsetted4 = 508;
+	nTopOfsetted4 = 17 + myHeight;
+	nLeftOfsetted4 = 272 + myWidth; //parameters for fix4
 	Memory::CodeCave(CashShopFix4, dwCashFix4, dwCashFix4NOPs);
-	nHeightOfsetted5 = 430; nWidthOfsetted5 = 412; nTopOfsetted5 = 95 + myHeight; nLeftOfsetted5 = 275 + myWidth; //parameters for fix5
+	nHeightOfsetted5 = 430;
+	nWidthOfsetted5 = 412;
+	nTopOfsetted5 = 95 + myHeight;
+	nLeftOfsetted5 = 275 + myWidth; //parameters for fix5
 	Memory::CodeCave(CashShopFix5, dwCashFix5, dwCashFix5NOPs);	//main part of shop, item listings	//thanks angel for stuff that helped
-	nHeightOfsetted6 = 358; nWidthOfsetted6 = 90; nTopOfsetted6 = 157 + myHeight; //parameters for fix6
+	nHeightOfsetted6 = 358;
+	nWidthOfsetted6 = 90;
+	nTopOfsetted6 = 157 + myHeight; //parameters for fix6
 	Memory::CodeCave(CashShopFix6, dwCashFix6, dwCashFix6NOPs);//code cave 6 //best sellers
 	Memory::WriteInt(0x004694BA + 1, myWidth + 690);//nleft, actual drawn part	//best sellers
-	nHeightOfsetted7 = 56; nWidthOfsetted7 = 545; nTopOfsetted7 = 530 + myHeight; nLeftOfsetted7 = 254 + myWidth; //parameters for fix7
+	nHeightOfsetted7 = 56;
+	nWidthOfsetted7 = 545;
+	nTopOfsetted7 = 530 + myHeight;
+	nLeftOfsetted7 = 254 + myWidth; //parameters for fix7
 	Memory::CodeCave(CashShopFix7, dwCashFix7, dwCashFix7NOPs);
-	nHeightOfsetted8 = 22; nWidthOfsetted8 = 89; nTopOfsetted8 = 97 + myHeight; nLeftOfsetted8 = 690 + myWidth; //parameters for fix8
+	nHeightOfsetted8 = 22;
+	nWidthOfsetted8 = 89;
+	nTopOfsetted8 = 97 + myHeight;
+	nLeftOfsetted8 = 690 + myWidth; //parameters for fix8
 	Memory::CodeCave(CashShopFix8, dwCashFix8, dwCashFix8NOPs);
 	Memory::CodeCave(CashShopFixOnOff, dwCashFixOnOff, dwCashFixOnOffNOPs);	//fix for preview On/Off button not being accurate on entering cash shop //thanks windyboy
 
-	nHeightOfsettedPrev = 165 + myHeight; nWidthOfsettedPrev = 212 + myWidth; nTopOfsettedPrev = 40 + myHeight; nLeftOfsettedPrev = 24 + myWidth; //parameters for fix cash preview
+	nHeightOfsettedPrev = 165 + myHeight;
+	nWidthOfsettedPrev = 212 + myWidth;
+	nTopOfsettedPrev = 40 + myHeight;
+	nLeftOfsettedPrev = 24 + myWidth; //parameters for fix cash preview
 	Memory::CodeCave(CashShopFixPrev, dwCashFixPrev, dwCashFixPrevNOPs); //cash shop preview fix
 
-	Memory::WriteInt(0x00641F61 + 1, (int)floor(m_nGameWidth / 2));	//mov ebc,400 ;  VRleft		//camera movement
-	Memory::WriteInt(0x00641FC8 + 1, (int)floor(m_nGameHeight / 2));	//add eax,300  ; VRTop //camera movement //not working for most maps
+	Memory::WriteInt(0x00641F61 + 1, static_cast<int>(floor(m_nGameWidth / 2)));	//mov ebc,400 ;  VRleft		//camera movement
+	Memory::WriteInt(0x00641FC8 + 1, static_cast<int>(floor(m_nGameHeight / 2)));	//add eax,300  ; VRTop //camera movement //not working for most maps
 	//Memory::WriteInt(0x0064202F + 2, (int)floor(m_nGameWidth / 2));	//mov ebc,400 ;  VRright		//camera movement	//crashes
-	Memory::WriteInt(0x0064208F + 1, (int)floor(m_nGameHeight / 2));	//add eax,300  ; VRbottom //camera movement //not working for most maps
+	Memory::WriteInt(0x0064208F + 1, static_cast<int>(floor(m_nGameHeight / 2)));	//add eax,300  ; VRbottom //camera movement //not working for most maps
 
 	myAlwaysViewRestoreFixOffset = myHeight; //parameters for fix view restore all maps number ?????working????!!!
 	Memory::CodeCave(AlwaysViewRestoreFix, dwAlwaysViewRestoreFix, dwAlwaysViewRestoreFixNOPs);	//fix view restora on all maps, currently does nothing; i likely looked in the wrong area
 
-	if (MainMain::CustomLoginFrame) {
-		Memory::WriteInt(0x005F481E + 1, (int)floor(-m_nGameHeight / 2));//push -300				!!game login frame!! turn this on if you edit UI.wz and use a frame that matches your res
-		Memory::WriteInt(0x005F4824 + 1, (int)floor(-m_nGameWidth / 2));	//push -400 ; RelMove?				!!game login frame!! turn this on if you edit UI.wz and use a frame that matches your res
+	if (MainMain::CustomLoginFrame)
+	{
+		Memory::WriteInt(0x005F481E + 1, static_cast<int>(floor(-m_nGameHeight / 2)));//push -300				!!game login frame!! turn this on if you edit UI.wz and use a frame that matches your res
+		Memory::WriteInt(0x005F4824 + 1, static_cast<int>(floor(-m_nGameWidth / 2)));	//push -400 ; RelMove?				!!game login frame!! turn this on if you edit UI.wz and use a frame that matches your res
 	}
 	//nHeightOfsettedloginFrameFix = 0 + myHeight; nWidthOfsettedloginFrameFix = 0 + myWidth;
 	//nTopOfsettedloginFrameFix = 0 + myHeight; nLeftOfsettedloginFrameFix = 0 + myWidth; //parameters for fix cash preview
 	//Memory::CodeCave(loginFrameFix, dwloginFrameFix, loginFrameFixNOPs); //failed login frame fix =(
 
-	if (MainMain::bigLoginFrame) {
+	if (MainMain::bigLoginFrame)
+	{
 		Memory::WriteInt(0x005F464D + 1, m_nGameWidth - 165);	//mov eax,800 ; RelMove?	//game version number for login frames that hug the side of the screen //you will still need to offset ntop, and that may require a code cave if your height resolution is too big
 	}
-	else {
-		nTopOfsettedVerFix = 10 + myHeight; nLeftOfsettedVerFix = 645 + myWidth; //parameters for fix version number
+	else
+	{
+		nTopOfsettedVerFix = 10 + myHeight;
+		nLeftOfsettedVerFix = 645 + myWidth; //parameters for fix version number
 		Memory::CodeCave(VersionNumberFix, dwVersionNumberFix, dwVersionNumberFixNOPs);	//game version number fix //use this if you use no frame or default client frame
 	}
 
-	if (!MainMain::bigLoginFrame) {
-		nHeightOfsettedLoginBackCanvasFix = 352 + myHeight; nWidthOfsettedLoginBackCanvasFix = 125 + myWidth;//para for world select buttonsViewRec
-		nTopOfsettedLoginBackCanvasFix = 125 + myHeight; nLeftOfsettedLoginBackCanvasFix = 0 + myWidth;
+	if (!MainMain::bigLoginFrame)
+	{
+		nHeightOfsettedLoginBackCanvasFix = 352 + myHeight;
+		nWidthOfsettedLoginBackCanvasFix = 125 + myWidth;//para for world select buttonsViewRec
+		nTopOfsettedLoginBackCanvasFix = 125 + myHeight;
+		nLeftOfsettedLoginBackCanvasFix = 0 + myWidth;
 		Memory::CodeCave(ccLoginBackCanvasFix, dwLoginBackCanvasFix, LoginBackCanvasFixNOPs);	//world select buttons fix		//thank you teto for pointing out my error in finding the constructor
 
 		//yOffsetOfLoginBackBtnFix = 300 + myHeight; xOffsetOfLoginBackBtnFix = 0 + myWidth;	//para for back button
 		//Memory::CodeCave(ccLoginBackBtnFix, dwLoginBackBtnFix, LoginBackBtnFixNOPs); //back button on world select //unnecessary as buttons move with canvas
 
-		nHeightOfsettedLoginViewRecFix = 167 + myHeight; nWidthOfsettedLoginViewRecFix = 540 + myWidth;//para for ViewRec fix
-		nTopOfsettedLoginViewRecFix = 51 + myHeight; nLeftOfsettedLoginViewRecFix = 136 + myWidth;
+		nHeightOfsettedLoginViewRecFix = 167 + myHeight;
+		nWidthOfsettedLoginViewRecFix = 540 + myWidth;//para for ViewRec fix
+		nTopOfsettedLoginViewRecFix = 51 + myHeight;
+		nLeftOfsettedLoginViewRecFix = 136 + myWidth;
 		Memory::CodeCave(ccLoginViewRecFix, dwLoginViewRecFix, LoginViewRecFixNOPs);	//world ViewRec fix	
 
-		a1x = 0 + myWidth; a2x = -149 + myWidth; a2y = 0 + myHeight; a3 = 25; a1y = -250; //a4 = 0;	//LoginDescriptor params
+		a1x = 0 + myWidth;
+		a2x = -149 + myWidth;
+		a2y = 0 + myHeight;
+		a3 = 25;
+		a1y = -250; //a4 = 0;	//LoginDescriptor params
 		Memory::WriteInt(0x0060D849 + 1, 300 + a1y); //speed 1	//temporary fix by increasing the speed of display until i get good enough at procedural programming 
 		//and memory management and reverse engineering to use nXXXon's own functions to put a black layer with greater z value to cover the tabs being shown off screen at origin
 		Memory::CodeCave(ccLoginDescriptorFix, dwLoginDescriptorFix, LoginDescriptorFixNOPs);	//world LoginDescriptor fix	
 	}
 
 	int customEngY = -62, customEngX = -22, dojangYoffset = 0;	//myHeight //-55-35 (myHeight*250/100)	-(myWidth*53/100) 140 -130
-	yOffsetOfMuruengraidPlayer = 50 + dojangYoffset; xOffsetOfMuruengraidPlayer = 169 + myWidth; //params
+	yOffsetOfMuruengraidPlayer = 50 + dojangYoffset;
+	xOffsetOfMuruengraidPlayer = 169 + myWidth; //params
 	Memory::CodeCave(ccMuruengraidPlayer, dwMuruengraidPlayer, MuruengraidPlayerNOPs);	//muruengraid scaling	
-	yOffsetOfMuruengraidClock = 26 + dojangYoffset; xOffsetOfMuruengraidClock = 400 + myWidth; //params
+	yOffsetOfMuruengraidClock = 26 + dojangYoffset;
+	xOffsetOfMuruengraidClock = 400 + myWidth; //params
 	Memory::CodeCave(ccMuruengraidClock, dwMuruengraidClock, MuruengraidClockNOPs);	//muruengraid scaling
-	yOffsetOfMuruengraidMonster = 50 + dojangYoffset; xOffsetOfMuruengraidMonster = 631 + myWidth; //params
+	yOffsetOfMuruengraidMonster = 50 + dojangYoffset;
+	xOffsetOfMuruengraidMonster = 631 + myWidth; //params
 	Memory::CodeCave(ccMuruengraidMonster, dwMuruengraidMonster, MuruengraidMonsterNOPs);	//muruengraid scaling
-	yOffsetOfMuruengraidMonster1 = 32 + dojangYoffset; xOffsetOfMuruengraidMonster1 = 317 + myWidth; //params
+	yOffsetOfMuruengraidMonster1 = 32 + dojangYoffset;
+	xOffsetOfMuruengraidMonster1 = 317 + myWidth; //params
 	Memory::CodeCave(ccMuruengraidMonster1, dwMuruengraidMonster1, MuruengraidMonster1NOPs);	//muruengraid scaling	
-	yOffsetOfMuruengraidMonster2 = 32 + dojangYoffset; xOffsetOfMuruengraidMonster2 = 482 + myWidth; //params
+	yOffsetOfMuruengraidMonster2 = 32 + dojangYoffset;
+	xOffsetOfMuruengraidMonster2 = 482 + myWidth; //params
 	Memory::CodeCave(ccMuruengraidMonster2, dwMuruengraidMonster2, MuruengraidMonster2NOPs);	//muruengraid scaling
-	yOffsetOfMuruengraidEngBar = 86 + dojangYoffset + customEngY; xOffsetOfMuruengraidEngBar = 17 + myWidth + customEngX; //params
+	yOffsetOfMuruengraidEngBar = 86 + dojangYoffset + customEngY;
+	xOffsetOfMuruengraidEngBar = 17 + myWidth + customEngX; //params
 	Memory::CodeCave(ccMuruengraidEngBar, dwMuruengraidEngBar, MuruengraidEngBarNOPs);	//muruengraid scaling	
-	yOffsetOfMuruengraidEngBar1 = 130 + dojangYoffset + customEngY; xOffsetOfMuruengraidEngBar1 = 20 + myWidth + customEngX; //params
+	yOffsetOfMuruengraidEngBar1 = 130 + dojangYoffset + customEngY;
+	xOffsetOfMuruengraidEngBar1 = 20 + myWidth + customEngX; //params
 	Memory::CodeCave(ccMuruengraidEngBar1, dwMuruengraidEngBar1, MuruengraidEngBar1NOPs);	//muruengraid scaling	
-	yOffsetOfMuruengraidEngBar2 = 80 + dojangYoffset + customEngY; xOffsetOfMuruengraidEngBar2 = 9 + myWidth + customEngX; //params
+	yOffsetOfMuruengraidEngBar2 = 80 + dojangYoffset + customEngY;
+	xOffsetOfMuruengraidEngBar2 = 9 + myWidth + customEngX; //params
 	Memory::CodeCave(ccMuruengraidEngBar2, dwMuruengraidEngBar2, MuruengraidEngBar2NOPs);	//muruengraid scaling	
-	yOffsetOfMuruengraidClearRoundUI = 260 + myHeight; xOffsetOfMuruengraidClearRoundUI = 400 + myWidth; //params
+	yOffsetOfMuruengraidClearRoundUI = 260 + myHeight;
+	xOffsetOfMuruengraidClearRoundUI = 400 + myWidth; //params
 	Memory::CodeCave(ccMuruengraidClearRoundUI, dwMuruengraidClearRoundUI, MuruengraidClearRoundUINOPs);	//muruengraid scaling
 	//yOffsetOfMuruengraidTimerCanvas = 28 + dojangYoffset; xOffsetOfMuruengraidTimerCanvas = 112 + myWidth; //params
 	//Memory::CodeCave(ccMuruengraidTimerCanvas, dwMuruengraidTimerCanvas, MuruengraidTimerCanvasNOPs);	//muruengraid scaling	
@@ -589,7 +642,8 @@ void Client::UpdateResolution() {
 	//Memory::CodeCave(ccMuruengraidTimerMinutes, dwMuruengraidTimerMinutes, MuruengraidTimerMinutesNOPs);	//muruengraid scaling	
 	//yOffsetOfMuruengraidTimerSeconds = 0 + dojangYoffset; xOffsetOfMuruengraidTimerSeconds = 68 + myWidth; //params
 	//Memory::CodeCave(ccMuruengraidTimerSeconds, dwMuruengraidTimerSeconds, MuruengraidTimerSecondsNOPs);	//muruengraid scaling
-	yOffsetOfMuruengraidTimerBar = 16 + dojangYoffset; xOffsetOfMuruengraidTimerBar = 345 + myWidth; //params
+	yOffsetOfMuruengraidTimerBar = 16 + dojangYoffset;
+	xOffsetOfMuruengraidTimerBar = 345 + myWidth; //params
 	Memory::CodeCave(ccMuruengraidTimerBar, dwMuruengraidTimerBar, MuruengraidTimerBarNOPs);	//muruengraid scaling
 	xOffsetOfMuruengraidMonster1_2 = 318 + myWidth; //params	//finally fixed this bugger
 	Memory::CodeCave(ccMuruengraidMonster1_2, dwMuruengraidMonster1_2, MuruengraidMonster1_2NOPs);	//muruengraid scaling
@@ -599,7 +653,7 @@ void Client::UpdateResolution() {
 	//int myStatsWindowOffsetVal = 4, myStatsWindowOffset = 176, myStatsWindowOffset1 = 177;
 	//Memory::WriteInt(0x008C4AB3 + 1, myStatsWindowOffset); //stat window ty resinate
 	//Memory::WriteInt(0x008C510A + 1, myStatsWindowOffset1); //stat window ty resinate
-	
+
 	//const char* testString = "RoSWzFile"; Memory::WriteString(0x00B3F434, testString);//testing
 	//Memory::WriteInt(0x009F74EA + 3, 16); //testing
 	//Memory::WriteInt(0x008C4286 + 1, 400); //testing
@@ -615,8 +669,9 @@ void Client::UpdateResolution() {
 	//std::cout << "Client Value: " << MainMain::CustomLoginFrame << std::endl;
 }
 
-void Client::EnableNewIGCipher() {//??not called //no idea what cipher is
-	const int nCipherHash = m_nIGCipherHash;
+void Client::EnableNewIGCipher()
+{//??not called //no idea what cipher is
+	constexpr int nCipherHash = m_nIGCipherHash;
 	Memory::WriteInt(dwIGCipherHash + 3, nCipherHash);
 	Memory::WriteInt(dwIGCipherVirtual1 + 3, nCipherHash);
 	Memory::WriteInt(dwIGCipherVirtual2 + 3, nCipherHash);
@@ -624,7 +679,8 @@ void Client::EnableNewIGCipher() {//??not called //no idea what cipher is
 	Memory::WriteInt(dwIGCipherDecryptStr + 3, nCipherHash);
 }
 
-void Client::UpdateLogin() {	//un-used //may still contain some useful addresses for custom login
+void Client::UpdateLogin()
+{	//un-used //may still contain some useful addresses for custom login
 	Memory::CodeCave(PositionLoginDlg, dwLoginCreateDlg, 14);
 	Memory::CodeCave(PositionLoginUsername, dwLoginUsername, 11);
 	Memory::CodeCave(PositionLoginPassword, dwLoginPassword, 8);

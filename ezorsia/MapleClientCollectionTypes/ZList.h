@@ -11,13 +11,12 @@ class ZList : ZRefCountedAccessor<T>, ZRefCountedAccessor<ZRefCountedDummy<T>>
 {
 #define ZLIST_INVALID_INDEX -1
 
-private:
 	char gap4[1];
 	size_t m_uCount;
 	T* m_pHead;
 	T* m_pTail;
-public:
 
+public:
 	/***=========== CONSTRUCTORS ===========***/
 
 	ZList()
@@ -239,7 +238,7 @@ public:
 		{
 			pRet = this->m_pTail;
 
-			for (int i = this->m_uCount - 1; i > uIndex; i--)
+			for (int i = this->m_uCount - 1; i > uIndex; --i)
 			{
 				if (!pRet) break;
 
@@ -269,7 +268,7 @@ public:
 
 			pHead = &reinterpret_cast<ZRefCountedDummy<T>*>(pNode->m_pNext)->t;
 
-			if (!pHead) return  ZLIST_INVALID_INDEX;
+			if (!pHead) return ZLIST_INVALID_INDEX;
 		}
 
 		if (!pHead) return ZLIST_INVALID_INDEX;
@@ -371,7 +370,6 @@ public:
 	}
 
 private:
-
 	/// <summary>
 	/// If t is not a ZList member, then this will produce undefined results
 	/// </summary>

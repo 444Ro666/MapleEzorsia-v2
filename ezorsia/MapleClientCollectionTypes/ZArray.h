@@ -4,7 +4,6 @@
 template <typename T>
 class ZArray
 {
-private:
 	T* a;
 
 public:
@@ -51,7 +50,7 @@ public:
 			PVOID pAlloc = ZAllocEx<ZAllocAnonSelector>::Alloc(sizeof(T) * uCount + sizeof(T));
 
 			/* Assign array count to head address */
-			*(DWORD*)pAlloc = uCount;
+			*static_cast<DWORD*>(pAlloc) = uCount;
 
 			pAlloc += 1; // first address holds count, second address is pointer to start of ZArray
 
@@ -93,7 +92,7 @@ public:
 
 	T* InsertBefore(int nIdx = -1)
 	{
-		BOOL   bAllocateMoreMemory;
+		BOOL bAllocateMoreMemory;
 		size_t uSizeToAllocate;
 		size_t uAllocationBytes;
 		size_t uCount = this->GetCount();
@@ -199,10 +198,7 @@ public:
 			size_t nCount = reinterpret_cast<size_t*>(this->a)[-1];
 			return nCount;
 		}
-		else
-		{
-			return 0;
-		}
+		return 0;
 	}
 
 	/// <summary>
@@ -263,10 +259,7 @@ public:
 			size_t nIdx = reinterpret_cast<size_t*>(this->a)[-1] - 1;
 			return &this->a[nIdx];
 		}
-		else
-		{
-			return nullptr;
-		}
+		return nullptr;
 	}
 
 	T* GetTailPosition()
@@ -299,7 +292,7 @@ public:
 private:
 	static void Construct(T* start, T* end)
 	{
-		for (T* i = start; i < end; i++)
+		for (T* i = start; i < end; ++i)
 		{
 			i = T();
 		}
@@ -307,7 +300,7 @@ private:
 
 	static void Destroy(T* start, T* end)
 	{
-		for (T* i = start; i < end; i++)
+		for (T* i = start; i < end; ++i)
 		{
 			i->~T();
 		}
@@ -321,7 +314,7 @@ private:
 
 		/* Allocate Desired Array Size + 4 bytes */
 		/* We casting to a dword so we can write and adjust the pointer easier */
-		DWORD* pAlloc = (DWORD*)ZAllocEx<ZAllocAnonSelector>::GetInstance()->Alloc(sizeof(T) * uSize + sizeof(PVOID));
+		DWORD* pAlloc = static_cast<DWORD*>(ZAllocEx<ZAllocAnonSelector>::GetInstance()->Alloc(sizeof(T) * uSize + sizeof(PVOID)));
 
 		/* Assign number of array items to array head */
 		*pAlloc = uSize;
@@ -362,7 +355,7 @@ private:
 				PVOID pNewAlloc = ZAllocEx<ZAllocAnonSelector>::GetInstance()->Alloc(u + sizeof(DWORD));
 
 				/* set new allocation pointer to the array start location (+1) */
-				pNewAlloc = (PVOID)(reinterpret_cast<DWORD*>(pNewAlloc) + 1);
+				pNewAlloc = static_cast<PVOID>(reinterpret_cast<DWORD*>(pNewAlloc) + 1);
 
 				if (this->a)
 				{
@@ -417,7 +410,7 @@ private:
 		uCurArraySize = this->GetCount();
 
 		/* Allocate new block */
-		DWORD* pNewAllocationBase = (DWORD*)ZAllocEx<ZAllocAnonSelector>::GetInstance()->Alloc(sizeof(T) * uItems + sizeof(PVOID));
+		DWORD* pNewAllocationBase = static_cast<DWORD*>(ZAllocEx<ZAllocAnonSelector>::GetInstance()->Alloc(sizeof(T) * uItems + sizeof(PVOID)));
 
 		/* Encode new array size at allocation base */
 		*pNewAllocationBase = uCurArraySize;

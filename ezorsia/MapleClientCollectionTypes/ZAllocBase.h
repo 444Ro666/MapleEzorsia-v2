@@ -25,7 +25,7 @@ public:
 		*(pAlloc) = reinterpret_cast<PVOID>((uNumberOfBlocks * uEnlargedBlockSize) + 4);
 
 		/* block collection header */
-		*(pAlloc + 1) = 0;
+		*(pAlloc + 1) = nullptr;
 
 		/* size of first block */
 		*(pAlloc + 2) = reinterpret_cast<PVOID>(uBlockSize);

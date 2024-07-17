@@ -24,7 +24,6 @@ public:
 template <typename T>
 class TSecType
 {
-private:
 	DWORD FakePtr1;
 	DWORD FakePtr2;
 	TSecData<T>* m_secdata;
@@ -47,8 +46,8 @@ public:
 	{
 		this->m_secdata = new TSecData<T>(); // uses proper ZAllocEx now (since global new operator overload)
 
-		this->FakePtr1 = static_cast<DWORD>(rand()); 
-		this->FakePtr2 = static_cast<DWORD>(rand()); 
+		this->FakePtr1 = static_cast<DWORD>(rand());
+		this->FakePtr2 = static_cast<DWORD>(rand());
 
 		this->m_secdata->FakePtr1 = LOBYTE(this->FakePtr1);
 		this->m_secdata->FakePtr2 = LOBYTE(this->FakePtr2);
@@ -124,7 +123,7 @@ public:
 		{
 			if (i > 0)
 			{
-				key = reinterpret_cast<BYTE*>(&this->m_secdata->data)[i - 1] + key + 42;;
+				key = reinterpret_cast<BYTE*>(&this->m_secdata->data)[i - 1] + key + 42;
 				wChecksum = i > 1 ? ((8 * wChecksum) | (key + (wChecksum >> 13))) : ((key + 4) | 0xD328);
 			}
 

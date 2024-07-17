@@ -6,7 +6,8 @@
 //NOTE: ideally order hooks by execution order in exe to best bypass themida but im lazy...
 
 //executed after the client is unpacked
-void MainFunc() {
+void MainFunc()
+{
 	//NOTE: rewritten functions will kill all direct memory edits and code caves within their memory range
 
 	//Hook_sub_9F9808(true);//not rewritten//sub_9F9808 end 009F9892
@@ -72,18 +73,21 @@ void MainFunc() {
 	std::cout << "Applying resolution " << Client::m_nGameWidth << "x" << Client::m_nGameHeight << std::endl;
 	Client::UpdateResolution();
 
-	dinput8::CreateHook();	std::cout << "dinput8 hook initialized" << std::endl;
+	dinput8::CreateHook();
+	std::cout << "dinput8 hook initialized" << std::endl;
 }
 
 //gatekeeper thread
 void MainProc() { MainMain::CreateInstance(MainFunc); }
 
 //dll entry point
-BOOL APIENTRY DllMain(HMODULE hModule, DWORD  ul_reason_for_call, LPVOID lpReserved) {
-	switch (ul_reason_for_call) {
+BOOL APIENTRY DllMain(HMODULE hModule, DWORD ul_reason_for_call, LPVOID lpReserved)
+{
+	switch (ul_reason_for_call)
+	{
 	case DLL_PROCESS_ATTACH:
 	{	//MainMain::CreateConsole(MainMain::stream);//console for devs, use this to log stuff if you want
-		MainMain::mainTHread = OpenThread(THREAD_SUSPEND_RESUME, FALSE, GetCurrentThreadId());
+		MainMain::mainThread = OpenThread(THREAD_SUSPEND_RESUME, FALSE, GetCurrentThreadId());
 
 		//windows API hooks(for ones that are called by the maplestory client)//there is more than this, but the default ones in the client template mostly do logging
 		//note: these are likely not all the Windows API maple uses, for everything it uses you need to look at the dlls it imports on the system and kernel level
@@ -103,9 +107,9 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD  ul_reason_for_call, LPVOID lpReser
 		//INITWINHOOK("KERNEL32", "RegCreateKeyExA", RegCreateKeyExA_Original, RegCreateKeyExA_t, WinHooks::RegCreateKeyExA_Hook); //Maplestory saves registry information (config stuff) for a number of things. This can be used to track that.
 		//INITWINHOOK("KERNEL32", "GetProcAddress", GetProcAddress_Original, GetProcAddress_t, WinHooks::GetProcAddress_Hook); //Used to map out imports used by MapleStory
 		//INITWINHOOK("NTDLL", "NtTerminateProcess", NtTerminateProcess_Original, NtTerminateProcess_t, WinHooks::NtTerminateProcess_Hook); //We use this function to track what memory addresses are killing the process,There are more ways that Maple kills itself, but this is one of them.
-		
+
 		DisableThreadLibraryCalls(hModule);
-		CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)&MainProc, NULL, 0, 0);
+		CreateThread(nullptr, 0, (LPTHREAD_START_ROUTINE)&MainProc, nullptr, 0, nullptr);
 		break;
 	}
 	default: break;
@@ -113,6 +117,7 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD  ul_reason_for_call, LPVOID lpReser
 	{
 		MainMain::GetInstance()->~MainMain();
 		break;
-	} }
+	}
+	}
 	return TRUE;
 }

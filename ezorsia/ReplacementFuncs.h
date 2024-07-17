@@ -12,7 +12,8 @@
 //it would be the best way to do it for very extensive client edits and if you need to replace entire functions in that context but
 //code caving is generally easier for short term, one-time patchwork fixes	//thanks you teto for helping me on this learning journey
 bool HookGetModuleFileName_initialized = true;
-bool Hook_GetModuleFileNameW(bool bEnable) {
+bool Hook_GetModuleFileNameW(bool bEnable)
+{
 	static decltype(&GetModuleFileNameW) _GetModuleFileNameW = &GetModuleFileNameW;
 
 	const decltype(&GetModuleFileNameW) GetModuleFileNameW_Hook = [](HMODULE hModule, LPWSTR lpFileName, DWORD dwSize) -> DWORD {
@@ -23,7 +24,8 @@ bool Hook_GetModuleFileNameW(bool bEnable) {
 		}
 		auto len = _GetModuleFileNameW(hModule, lpFileName, dwSize);
 		// Check to see if the length is invalid (zero)
-		if (!len) {
+		if (!len)
+		{
 			// Try again without the provided module for a fixed result
 			len = _GetModuleFileNameW(nullptr, lpFileName, dwSize);
 			std::cout << "HookGetModuleFileName null file name" << std::endl;
@@ -40,21 +42,22 @@ bool Hook_GetModuleFileNameW(bool bEnable) {
 /// </summary>
 CreateWindowExA_t CreateWindowExA_Original = (CreateWindowExA_t)GetFuncAddress("USER32", "CreateWindowExA");
 bool HookCreateWindowExA_initialized = true;
-HWND WINAPI CreateWindowExA_Hook(DWORD dwExStyle, LPCSTR lpClassName, LPCSTR lpWindowName, DWORD dwStyle, int X, int Y, int nWidth, int nHeight, HWND hWndParent, HMENU hMenu, HINSTANCE hInstance, LPVOID lpParam) {
-	if(HookCreateWindowExA_initialized)//credits to the creators of https://github.com/MapleStory-Archive/MapleClientEditTemplate
+HWND WINAPI CreateWindowExA_Hook(DWORD dwExStyle, LPCSTR lpClassName, LPCSTR lpWindowName, DWORD dwStyle, int X, int Y, int nWidth, int nHeight, HWND hWndParent, HMENU hMenu, HINSTANCE hInstance, LPVOID lpParam)
+{
+	if (HookCreateWindowExA_initialized)//credits to the creators of https://github.com/MapleStory-Archive/MapleClientEditTemplate
 	{
 		std::cout << "HookCreateWindowExA started" << std::endl;
 		HookCreateWindowExA_initialized = false;
 	}
-	if(strstr(lpClassName, "MapleStoryClass"))
+	if (strstr(lpClassName, "MapleStoryClass"))
 	{
 		dwStyle |= WS_MINIMIZEBOX; // enable minimize button
-		HWND ret  = CreateWindowExA_Original(dwExStyle, lpClassName, lpWindowName, dwStyle, X, Y, nWidth, nHeight, hWndParent, hMenu, hInstance, lpParam);
+		HWND ret = CreateWindowExA_Original(dwExStyle, lpClassName, lpWindowName, dwStyle, X, Y, nWidth, nHeight, hWndParent, hMenu, hInstance, lpParam);
 		return ret;
 	}
-	else if (strstr(lpClassName, "StartUpDlgClass"))
+	if (strstr(lpClassName, "StartUpDlgClass"))
 	{
-		return NULL; //kill startup balloon
+		return nullptr; //kill startup balloon
 	}
 	//if(Client::WindowedMode)
 	//{ //unfortunately doesnt work, reverting to old window mode fix
@@ -62,23 +65,25 @@ HWND WINAPI CreateWindowExA_Hook(DWORD dwExStyle, LPCSTR lpClassName, LPCSTR lpW
 	//}
 	return CreateWindowExA_Original(dwExStyle, lpClassName, lpWindowName, dwStyle, X, Y, nWidth, nHeight, hWndParent, hMenu, hInstance, lpParam);
 };
-bool Hook_CreateWindowExA(bool bEnable) {
+bool Hook_CreateWindowExA(bool bEnable)
+{
 	return Memory::SetHook(bEnable, reinterpret_cast<void**>(&CreateWindowExA_Original), CreateWindowExA_Hook);
 }
 bool CreateMutexA_initialized = true; ////credits to the creators of https://github.com/MapleStory-Archive/MapleClientEditTemplate
 CreateMutexA_t CreateMutexA_Original = (CreateMutexA_t)GetFuncAddress("KERNEL32", "CreateMutexA");
-HANDLE WINAPI CreateMutexA_Hook(LPSECURITY_ATTRIBUTES lpMutexAttributes, BOOL bInitialOwner, LPCSTR	lpName) {
+HANDLE WINAPI CreateMutexA_Hook(LPSECURITY_ATTRIBUTES lpMutexAttributes, BOOL bInitialOwner, LPCSTR lpName)
+{
 	if (CreateMutexA_initialized)
-		{
-			std::cout << "HookCreateMutexA started" << std::endl;
-			CreateMutexA_initialized = false;
-		}
+	{
+		std::cout << "HookCreateMutexA started" << std::endl;
+		CreateMutexA_initialized = false;
+	}
 	if (!CreateMutexA_Original)
 	{
 		std::cout << "Original CreateMutex pointer corrupted. Failed to return mutex value to calling function." << std::endl;
 		return nullptr;
 	}
-	else if (lpName && strstr(lpName, "WvsClientMtx"))
+	if (lpName && strstr(lpName, "WvsClientMtx"))
 	{
 		// from https://github.com/pokiuwu/AuthHook-v203.4/blob/AuthHook-v203.4/Client176/WinHook.cpp
 		char szMutex[128];	//multiclient
@@ -113,7 +118,8 @@ bool Hook_CreateMutexA(bool bEnable)	//ty darter	//ty angel!
 }
 FindFirstFileA_t FindFirstFileA_Original = (FindFirstFileA_t)GetFuncAddress("KERNEL32", "FindFirstFileA");
 bool FindFirstFileA_initialized = true; //ty joo for advice with this, check out their releases: https://github.com/OpenRustMS
-HANDLE WINAPI FindFirstFileA_Hook(LPCSTR lpFileName, LPWIN32_FIND_DATAA lpFindFileData) {
+HANDLE WINAPI FindFirstFileA_Hook(LPCSTR lpFileName, LPWIN32_FIND_DATAA lpFindFileData)
+{
 	if (FindFirstFileA_initialized)
 	{
 		std::cout << "HookFindFirstFileA started" << std::endl;
@@ -123,7 +129,7 @@ HANDLE WINAPI FindFirstFileA_Hook(LPCSTR lpFileName, LPWIN32_FIND_DATAA lpFindFi
 		std::cout << "Original FindFirstFileA pointer corrupted. Failed to return ??? value to calling function." << std::endl;
 		return nullptr;
 	}
-	else if (lpFileName && strstr(lpFileName, "*") && FindFirstFileA_initialized)
+	if (lpFileName && strstr(lpFileName, "*") && FindFirstFileA_initialized)
 	{
 		FindFirstFileA_initialized = false;
 		//std::cout << "FindFirstFileA dinput8.dll spoofed" << std::endl;
@@ -145,7 +151,8 @@ bool Hook_FindFirstFileA(bool bEnable)
 }
 GetLastError_t GetLastError_Original = (GetLastError_t)GetFuncAddress("KERNEL32", "GetLastError");
 bool GetLastError_initialized = true;
-DWORD WINAPI GetLastError_Hook() {
+DWORD WINAPI GetLastError_Hook()
+{
 	if (GetLastError_initialized)
 	{
 		std::cout << "HookGetLastError started" << std::endl;
@@ -162,10 +169,11 @@ bool Hook_GetLastError(bool bEnable)
 sockaddr_in default_nXXXON_if;
 #define WSAAddressToString  WSAAddressToStringA
 bool WSPStartup_initialized = true; ////credits to the creators of https://github.com/MapleStory-Archive/MapleClientEditTemplate
-INT WSPAPI WSPConnect_Hook(SOCKET s, const struct sockaddr* name, int namelen, LPWSABUF	lpCallerData, LPWSABUF lpCalleeData, LPQOS lpSQOS, LPQOS lpGQOS, LPINT lpErrno) {
+INT WSPAPI WSPConnect_Hook(SOCKET s, const struct sockaddr* name, int namelen, LPWSABUF lpCallerData, LPWSABUF lpCalleeData, LPQOS lpSQOS, LPQOS lpGQOS, LPINT lpErrno)
+{
 	char szAddr[50];
 	DWORD dwLen = 50;
-	WSAAddressToString((sockaddr*)name, namelen, NULL, szAddr, &dwLen);
+	WSAAddressToString((sockaddr*)name, namelen, nullptr, szAddr, &dwLen);
 
 	sockaddr_in* service = (sockaddr_in*)name;
 	//hardcoded NXXON IP addies in default client
@@ -179,7 +187,8 @@ INT WSPAPI WSPConnect_Hook(SOCKET s, const struct sockaddr* name, int namelen, L
 
 	return MainMain::m_ProcTable.lpWSPConnect(s, name, namelen, lpCallerData, lpCalleeData, lpSQOS, lpGQOS, lpErrno);
 }
-INT WSPAPI WSPGetPeerName_Hook(SOCKET s, struct sockaddr* name, LPINT namelen, LPINT lpErrno) {
+INT WSPAPI WSPGetPeerName_Hook(SOCKET s, struct sockaddr* name, LPINT namelen, LPINT lpErrno)
+{
 	int nRet = MainMain::m_ProcTable.lpWSPGetPeerName(s, name, namelen, lpErrno);//credits to the creators of https://github.com/MapleStory-Archive/MapleClientEditTemplate
 	if (nRet != SOCKET_ERROR && s == MainMain::m_GameSock)
 	{
@@ -189,7 +198,8 @@ INT WSPAPI WSPGetPeerName_Hook(SOCKET s, struct sockaddr* name, LPINT namelen, L
 	}
 	return nRet;
 }
-INT WSPAPI WSPCloseSocket_Hook(SOCKET s, LPINT lpErrno) {//credits to the creators of https://github.com/MapleStory-Archive/MapleClientEditTemplate
+INT WSPAPI WSPCloseSocket_Hook(SOCKET s, LPINT lpErrno)
+{//credits to the creators of https://github.com/MapleStory-Archive/MapleClientEditTemplate
 	int nRet = MainMain::m_ProcTable.lpWSPCloseSocket(s, lpErrno);
 	if (s == MainMain::m_GameSock)
 	{
@@ -197,8 +207,10 @@ INT WSPAPI WSPCloseSocket_Hook(SOCKET s, LPINT lpErrno) {//credits to the creato
 	}
 	return nRet;
 }
-WSPStartup_t WSPStartup_Original = (WSPStartup_t)GetFuncAddress("MSWSOCK", "WSPStartup"); /*in this function we'll call the WSP Functions*/					const wchar_t* v42;
-INT WSPAPI WSPStartup_Hook(WORD wVersionRequested, LPWSPDATA lpWSPData, LPWSAPROTOCOL_INFOW lpProtocolInfo, WSPUPCALLTABLE UpcallTable, LPWSPPROC_TABLE	lpProcTable) {
+WSPStartup_t WSPStartup_Original = (WSPStartup_t)GetFuncAddress("MSWSOCK", "WSPStartup"); /*in this function we'll call the WSP Functions*/
+const wchar_t* v42;
+INT WSPAPI WSPStartup_Hook(WORD wVersionRequested, LPWSPDATA lpWSPData, LPWSAPROTOCOL_INFOW lpProtocolInfo, WSPUPCALLTABLE UpcallTable, LPWSPPROC_TABLE lpProcTable)
+{
 	if (WSPStartup_initialized)//credits to the creators of https://github.com/MapleStory-Archive/MapleClientEditTemplate
 	{
 		std::cout << "HookWSPStartup started" << std::endl;
@@ -226,10 +238,13 @@ bool Hook_WSPStartup(bool bEnable)
 	return Memory::SetHook(bEnable, reinterpret_cast<void**>(&WSPStartup_Original), WSPStartup_Hook);
 }
 #define x86CMPEAX 0x3D
-bool GetACP_initialized = true; DWORD LocaleSpoofValue = 0;//choose value from https://learn.microsoft.com/en-us/windows/win32/intl/code-page-identifiers
+bool GetACP_initialized = true;
+DWORD LocaleSpoofValue = 0;//choose value from https://learn.microsoft.com/en-us/windows/win32/intl/code-page-identifiers
 GetACP_t GetACP_Original = (GetACP_t)GetFuncAddress("KERNEL32", "GetACP");
-UINT WINAPI GetACP_Hook() { // AOB: FF 15 ?? ?? ?? ?? 3D ?? ?? ?? 00 00 74 <- library call inside winmain func
-	if (GetACP_initialized){//credits to the creators of https://github.com/MapleStory-Archive/MapleClientEditTemplate	
+UINT WINAPI GetACP_Hook()
+{ // AOB: FF 15 ?? ?? ?? ?? 3D ?? ?? ?? 00 00 74 <- library call inside winmain func
+	if (GetACP_initialized)
+	{//credits to the creators of https://github.com/MapleStory-Archive/MapleClientEditTemplate	
 		std::cout << "HookGetACP started" << std::endl;
 		GetACP_initialized = false;	//NOTE: idk what this really does tbh, maybe it is custom locale value but more likely it is to skip a check
 	}	//that some clients may have that restricts you based on locale; if it is not a check and instead logged by server feel free to feed bad data by disabling the part below
@@ -238,13 +253,17 @@ UINT WINAPI GetACP_Hook() { // AOB: FF 15 ?? ?? ?? ?? 3D ?? ?? ?? 00 00 74 <- li
 	DWORD dwRetAddr = reinterpret_cast<DWORD>(_ReturnAddress());
 	// return address should be a cmp eax instruction because ret value is stored in eax
 	// and nothing else should happen before the cmp
-	if(ReadValue<BYTE>(dwRetAddr) == x86CMPEAX) {	//disable this if and else if you wanna always use spoof value (i.e. if server logs it)
-			uiNewLocale = ReadValue<DWORD>(dwRetAddr + 1); // check value is always 4 bytes
-			std::cout << "[GetACP] Found desired locale: " << uiNewLocale << std::endl; }
+	if (ReadValue<BYTE>(dwRetAddr) == x86CMPEAX)
+	{	//disable this if and else if you wanna always use spoof value (i.e. if server logs it)
+		uiNewLocale = ReadValue<DWORD>(dwRetAddr + 1); // check value is always 4 bytes
+		std::cout << "[GetACP] Found desired locale: " << uiNewLocale << std::endl;
+	}
 	else { std::cout << "[GetACP] Unable to automatically determine locale, using stored locale: " << uiNewLocale << std::endl; }
 	std::cout << "[GetACP] Locale spoofed to: " << uiNewLocale << " unhooking. Calling address: " << dwRetAddr << std::endl;
-	if (Memory::SetHook(FALSE, reinterpret_cast<void**>(&GetACP_Original), GetACP_Hook)) {
-		std::cout << "Failed to unhook GetACP." << std::endl; }
+	if (Memory::SetHook(FALSE, reinterpret_cast<void**>(&GetACP_Original), GetACP_Hook))
+	{
+		std::cout << "Failed to unhook GetACP." << std::endl;
+	}
 	return uiNewLocale;
 }
 bool Hook_GetACP(bool bEnable)
@@ -283,7 +302,8 @@ bool HookCWvsApp__Dir_BackSlashToSlash(bool bEnable)
 {
 	BYTE firstval = 0x56;  //this part is necessary for hooking a client that is themida packed
 	DWORD dwRetAddr = 0x009F95FE;	//will crash if you hook to early, so you gotta check the byte to see
-	while (1) {						//if it matches that of an unpacked client
+	while (true)
+	{						//if it matches that of an unpacked client
 		if (ReadValue<BYTE>(dwRetAddr) != firstval) { Sleep(1); } //figured this out myself =)
 		else { break; }
 	}
@@ -415,20 +435,20 @@ static _CWvsApp__InitializeResMan_t _sub_9F7159_append = [](CWvsApp* pThis, void
 	//_bstr_ctor(&sPath, pData, "/");
 
 	//auto mDataFS = _IWzNameSpace__Mount(*&g_root, pData, sPath, pFileSystem, (int)nPriority);
-	};
+};
 bool Hook_sub_9F7159(bool bEnable)	//resman hook that does nothing, kept for analysis and referrence //not skilled enough to rewrite to load custom wz files
 {
 	BYTE firstval = 0xB8;  //this part is necessary for hooking a client that is themida packed
 	DWORD dwRetAddr = 0x009F7159;	//will crash if you hook to early, so you gotta check the byte to see
-	while (1) {						//if it matches that of an unpacked client
+	while (true)
+	{						//if it matches that of an unpacked client
 		if (ReadValue<BYTE>(dwRetAddr) != firstval) { Sleep(1); } //figured this out myself =)
 		else { break; }
 	}
 	return Memory::SetHook(bEnable, reinterpret_cast<void**>(&_sub_9F7159), _sub_9F7159_append);
 }
 bool Hook_StringPool__GetString_initialized = true;
-_StringPool__GetString_t _StringPool__GetString_rewrite = [](void* pThis, void* edx, ZXString<char>* result, unsigned int nIdx, char formal) ->  ZXString<char>*
-{
+_StringPool__GetString_t _StringPool__GetString_rewrite = [](void* pThis, void* edx, ZXString<char>* result, unsigned int nIdx, char formal) -> ZXString<char>* {
 	if (Hook_StringPool__GetString_initialized)
 	{
 		std::cout << "Hook_StringPool__GetString started" << std::endl;
@@ -438,32 +458,41 @@ _StringPool__GetString_t _StringPool__GetString_rewrite = [](void* pThis, void* 
 	switch (nIdx)
 	{
 	case 1307:	//1307_UI_LOGINIMG_COMMON_FRAME = 51Bh
-		if (MainMain::EzorsiaV2WzIncluded && !MainMain::ownLoginFrame) {
+		if (MainMain::EzorsiaV2WzIncluded && !MainMain::ownLoginFrame)
+		{
 			switch (Client::m_nGameWidth)
 			{
 			case 1280:	//ty teto for the suggestion to use ZXString<char>::Assign and showing me available resources
-				*ret = ("MapleEzorsiaV2wzfiles.img/Common/frame1280"); break;
+				*ret = ("MapleEzorsiaV2wzfiles.img/Common/frame1280");
+				break;
 			case 1366:
-				*ret = ("MapleEzorsiaV2wzfiles.img/Common/frame1366"); break;
+				*ret = ("MapleEzorsiaV2wzfiles.img/Common/frame1366");
+				break;
 			case 1600:
-				*ret = ("MapleEzorsiaV2wzfiles.img/Common/frame1600"); break;
+				*ret = ("MapleEzorsiaV2wzfiles.img/Common/frame1600");
+				break;
 			case 1920:
-				*ret = ("MapleEzorsiaV2wzfiles.img/Common/frame1920"); break;
+				*ret = ("MapleEzorsiaV2wzfiles.img/Common/frame1920");
+				break;
 			case 1024:
-				*ret = ("MapleEzorsiaV2wzfiles.img/Common/frame1024"); break;
+				*ret = ("MapleEzorsiaV2wzfiles.img/Common/frame1024");
+				break;
 			}
 			break;
 		}
 	case 1301:	//1301_UI_CASHSHOPIMG_BASE_BACKGRND  = 515h
-		if (MainMain::EzorsiaV2WzIncluded && !MainMain::ownCashShopFrame) { *ret = ("MapleEzorsiaV2wzfiles.img/Base/backgrnd"); } break;
+		if (MainMain::EzorsiaV2WzIncluded && !MainMain::ownCashShopFrame) { *ret = ("MapleEzorsiaV2wzfiles.img/Base/backgrnd"); }
+		break;
 	case 1302:	//1302_UI_CASHSHOPIMG_BASE_BACKGRND1 = 516h
-		if (MainMain::EzorsiaV2WzIncluded && !MainMain::ownCashShopFrame) { *ret = ("MapleEzorsiaV2wzfiles.img/Base/backgrnd1"); } break;
+		if (MainMain::EzorsiaV2WzIncluded && !MainMain::ownCashShopFrame) { *ret = ("MapleEzorsiaV2wzfiles.img/Base/backgrnd1"); }
+		break;
 	case 5361:	//5361_UI_CASHSHOPIMG_BASE_BACKGRND2  = 14F1h			
-		if (MainMain::EzorsiaV2WzIncluded && !MainMain::ownCashShopFrame) { *ret = ("MapleEzorsiaV2wzfiles.img/Base/backgrnd2"); } break;
-		//case 1302:	//BACKGRND??????
-		//	if (EzorsiaV2WzIncluded && ownCashShopFrame) { *ret = ("MapleEzorsiaV2wzfiles.img/Base/backgrnd1"); } break;
-		//case 5361:	//SP_1937_UI_UIWINDOWIMG_STAT_BACKGRND2  = 791h	
-		//	if (EzorsiaV2WzIncluded && ownCashShopFrame) { *ret = ("MapleEzorsiaV2wzfiles.img/Base/backgrnd2"); } break;
+		if (MainMain::EzorsiaV2WzIncluded && !MainMain::ownCashShopFrame) { *ret = ("MapleEzorsiaV2wzfiles.img/Base/backgrnd2"); }
+		break;
+	//case 1302:	//BACKGRND??????
+	//	if (EzorsiaV2WzIncluded && ownCashShopFrame) { *ret = ("MapleEzorsiaV2wzfiles.img/Base/backgrnd1"); } break;
+	//case 5361:	//SP_1937_UI_UIWINDOWIMG_STAT_BACKGRND2  = 791h	
+	//	if (EzorsiaV2WzIncluded && ownCashShopFrame) { *ret = ("MapleEzorsiaV2wzfiles.img/Base/backgrnd2"); } break;
 	}
 	return ret;
 };
@@ -471,19 +500,24 @@ bool Hook_StringPool__GetString(bool bEnable)	//hook stringpool modification //t
 {
 	BYTE firstval = 0xB8;  //this part is necessary for hooking a client that is themida packed
 	DWORD dwRetAddr = 0x0079E993;	//will crash if you hook to early, so you gotta check the byte to see
-	while (1) {						//if it matches that of an unpacked client
+	while (true)
+	{						//if it matches that of an unpacked client
 		if (ReadValue<BYTE>(dwRetAddr) != firstval) { Sleep(1); } //figured this out myself =)
 		else { break; }
 	}
 	return Memory::SetHook(bEnable, reinterpret_cast<void**>(&_sub_79E993), _StringPool__GetString_rewrite);//_StringPool__GetString_t
 }
 bool HookMyTestHook(bool bEnable)
-{ return Memory::SetHook(bEnable, reinterpret_cast<void**>(&_sub_9DE4D2), _CWndCreateWnd_Hook); }
+{
+	return Memory::SetHook(bEnable, reinterpret_cast<void**>(&_sub_9DE4D2), _CWndCreateWnd_Hook);
+}
 
 bool HookDetectLogin(bool bEnable)
-{ return Memory::SetHook(bEnable, reinterpret_cast<void**>(&_sub_5F726D), _CLoginSendSelectCharPacket_Hook); }
+{
+	return Memory::SetHook(bEnable, reinterpret_cast<void**>(&_sub_5F726D), _CLoginSendSelectCharPacket_Hook);
+}
 bool Hook_lpfn_NextLevel_initialized = true;//__thiscall NEXTLEVEL::NEXTLEVEL(NEXTLEVEL *this)
-const int maxLevel = 201;//determine the max level for characters in your setup here //your max level is the size of your array divded by operator size( currently int size)
+constexpr int maxLevel = 201;//determine the max level for characters in your setup here //your max level is the size of your array divded by operator size( currently int size)
 static _sub_78C8A6_t _sub_78C8A6_rewrite = [](unsigned int NEXTLEVEL[maxLevel], void* edx) {
 	if (Hook_lpfn_NextLevel_initialized)
 	{
@@ -519,9 +553,10 @@ static _sub_78C8A6_t _sub_78C8A6_rewrite = [](unsigned int NEXTLEVEL[maxLevel], 
 //}
 bool Hook_sub_78C8A6(bool bEnable)
 {
-    BYTE firstval = 0x55;  //this part is necessary for hooking a client that is themida packed
+	BYTE firstval = 0x55;  //this part is necessary for hooking a client that is themida packed
 	DWORD dwRetAddr = 0x0078C8A6;	//will crash if you hook to early, so you gotta check the byte to see
-	while (1) {						//if it matches that of an unpacked client
+	while (true)
+	{						//if it matches that of an unpacked client
 		if (ReadValue<BYTE>(dwRetAddr) != firstval) { Sleep(1); } //figured this out myself =)
 		else { break; }
 	}
@@ -881,9 +916,11 @@ bool Hook_sub_44E88E(bool bEnable)
 {
 	BYTE firstval = 0x55;  //this part is necessary for hooking a client that is themida packed
 	DWORD dwRetAddr = 0x0044E88E;	//will crash if you hook to early, so you gotta check the byte to see
-	while (1) {						//if it matches that of an unpacked client
+	while (true)
+	{						//if it matches that of an unpacked client
 		if (ReadValue<BYTE>(dwRetAddr) != firstval) { Sleep(1); } //figured this out myself =)
-		else { break; } }
+		else { break; }
+	}
 	return Memory::SetHook(bEnable, reinterpret_cast<void**>(&_sub_44E88E), _sub_44E88E_rewrite);
 }
 //bool Hook_sub_44EA64(bool bEnable)
@@ -966,7 +1003,7 @@ bool Hook_sub_44E88E(bool bEnable)
 //	};	//2
 //	return Memory::SetHook(bEnable, reinterpret_cast<void**>(&_sub_44EC9C), _sub_44EC9C_Hook);	//2
 //}
-	//void __cdecl ResetLSP(void)
+//void __cdecl ResetLSP(void)
 static _sub_44ED47_t _sub_44ED47_rewrite = []() {
 	return _sub_44ED47();
 	//edx = nullptr;
@@ -1067,10 +1104,10 @@ bool Hook_sub_44ED47(bool bEnable)	//1
 {
 	return Memory::SetHook(bEnable, reinterpret_cast<void**>(&_sub_44ED47), _sub_44ED47_rewrite);	//2
 }
-	//void __thiscall CClientSocket::ConnectLogin(CClientSocket *this)
+//void __thiscall CClientSocket::ConnectLogin(CClientSocket *this)
 static _sub_494931_t _sub_494931_rewrite = [](void* pThis, void* edx) {
 	edx = nullptr;
-	return  _sub_494931(pThis, edx);
+	return _sub_494931(pThis, edx);
 	//    int v1; // edi
 	//    int v2; // eax
 	//    char* v3; // esi
@@ -1229,9 +1266,10 @@ static _sub_494D07_t _sub_494D07_rewrite = [](CClientSocket_CONNECTCONTEXT* pThi
 };	//2
 bool Hook_sub_494D07(bool bEnable)
 {
-    BYTE firstval = 0x56;  //this part is necessary for hooking a client that is themida packed
+	BYTE firstval = 0x56;  //this part is necessary for hooking a client that is themida packed
 	DWORD dwRetAddr = 0x00494D07;	//will crash if you hook to early, so you gotta check the byte to see
-	while (1) {						//if it matches that of an unpacked client
+	while (true)
+	{						//if it matches that of an unpacked client
 		if (ReadValue<BYTE>(dwRetAddr) != firstval) { Sleep(1); } //figured this out myself =)
 		else { break; }
 	}
@@ -1252,7 +1290,7 @@ static _sub_494D2F_t _sub_494D2F_rewrite = [](CClientSocket* pThis, void* edx, s
 	_sub_4969EE(pThis);//void __thiscall CClientSocket::ClearSendReceiveCtx(CClientSocket *this)
 	_sub_494857(&(TheClientSocket->m_sock)); //void __thiscall ZSocketBase::CloseSocket(ZSocketBase *this) //could be wrong &(TheClientSocket->m_sock)?
 	(TheClientSocket->m_sock)._m_hSocket = socket(2, 1, 0);//_dword_AF036C(2, 1, 0); //may be wrong, cant tell if it returns a socket or socket*
-									//SOCKET __stdcall socket(int af, int type, int protocol)
+	//SOCKET __stdcall socket(int af, int type, int protocol)
 	if ((TheClientSocket->m_sock)._m_hSocket == -1)
 	{
 		v4 = WSAGetLastError();//_dword_AF0364();//WSAGetLastError()
@@ -1271,7 +1309,8 @@ bool Hook_sub_494D2F(bool bEnable)
 {
 	BYTE firstval = 0x55;  //this part is necessary for hooking a client that is themida packed
 	DWORD dwRetAddr = 0x00494D2F;	//will crash if you hook to early, so you gotta check the byte to see
-	while (1) {						//if it matches that of an unpacked client
+	while (true)
+	{						//if it matches that of an unpacked client
 		if (ReadValue<BYTE>(dwRetAddr) != firstval) { Sleep(1); } //figured this out myself =)
 		else { break; }
 	}
@@ -1290,7 +1329,8 @@ static _sub_494CA3_t _sub_494CA3_rewrite = [](CClientSocket* pThis, void* edx, C
 	_sub_494D07_rewrite(&TheClientSocket->m_ctxConnect, edx, ctx);//_sub_494D07(&(TheClientSocket->m_ctxConnect).my_IP_Addresses, edx, &(*ctx).my_IP_Addresses);
 	ZInetAddr* v3 = ((TheClientSocket->m_ctxConnect).my_IP_Addresses).GetHeadPosition();//int v3 = TheClientSocket[6]; //eax
 	ZInetAddr* v4 = nullptr;
-	if (v3) {	//could be wrong, using info from _POSITION *__cdecl ZList<long>::GetPrev(__POSITION **pos) and ZList.h
+	if (v3)
+	{	//could be wrong, using info from _POSITION *__cdecl ZList<long>::GetPrev(__POSITION **pos) and ZList.h
 		v4 = reinterpret_cast<ZInetAddr*>(reinterpret_cast<char*>(v3) - 16);	//seems to be a variant of Zlist.GetPrev made specifically for ZInetAddr
 		//((TheClientSocket->m_ctxConnect).my_IP_Addresses).RemoveAt(v3);
 		//v4 = v3;
@@ -1300,10 +1340,12 @@ static _sub_494CA3_t _sub_494CA3_rewrite = [](CClientSocket* pThis, void* edx, C
 	//}
 	////= v3 != 0 ? ((TheClientSocket->m_ctxConnect).my_IP_Addresses).RemoveAt(v3) : 0;	//ecx//unsigned int v4 = v2[6] != 0 ? v3 - 16 : 0;	//ecx //Zlist remove at
 	//(TheClientSocket->m_ctxConnect).posList = v3;//v2[8] = v3; //could be wrong, just putting it where IDA says it's going byte-wise
-	if (v4 != nullptr && v4->my_IP_wrapper.sin_addr.S_un.S_addr) {
+	if (v4 != nullptr && v4->my_IP_wrapper.sin_addr.S_un.S_addr)
+	{
 		(TheClientSocket->m_ctxConnect).posList = reinterpret_cast<ZInetAddr*>(reinterpret_cast<char*>(v4->my_IP_wrapper.sin_addr.S_un.S_addr) + 16);
 	}
-	else {
+	else
+	{
 		(TheClientSocket->m_ctxConnect).posList = nullptr;
 	}
 	//(TheClientSocket->m_ctxConnect).posList = (v4->my_IP_wrapper.sin_addr.S_un.S_addr) != 0 ? (v4->my_IP_wrapper.sin_addr.S_un.S_addr) + 16 : 0;//v2[8] = *(DWORD*)(v4 + 4) != 0 ? *(DWORD*)(v4 + 4) + 16 : 0;
@@ -1314,7 +1356,8 @@ bool Hook_sub_494CA3(bool bEnable)
 {
 	BYTE firstval = 0x55;  //this part is necessary for hooking a client that is themida packed
 	DWORD dwRetAddr = 0x00494CA3;	//will crash if you hook to early, so you gotta check the byte to see
-	while (1) {						//if it matches that of an unpacked client
+	while (true)
+	{						//if it matches that of an unpacked client
 		if (ReadValue<BYTE>(dwRetAddr) != firstval) { Sleep(1); } //figured this out myself =)
 		else { break; }
 	}
@@ -1703,7 +1746,7 @@ static _sub_494ED1_t _sub_494ED1_rewrite = [](CClientSocket* pThis, void* edx, i
 //	return 1;
 };
 bool Hook_sub_494ED1(bool bEnable)
-{	
+{
 	return Memory::SetHook(bEnable, reinterpret_cast<void**>(&_sub_494ED1), _sub_494ED1_rewrite);	//2
 }
 bool sub_9F7CE1_initialized = true;//void __thiscall CWvsApp::InitializeInput(CWvsApp *this)
@@ -1735,7 +1778,8 @@ bool Hook_sub_9F7CE1(bool bEnable)
 {
 	BYTE firstval = 0xB8;  //this part is necessary for hooking a client that is themida packed
 	DWORD dwRetAddr = 0x009F7CE1;	//will crash if you hook to early, so you gotta check the byte to see
-	while (1) {						//if it matches that of an unpacked client
+	while (true)
+	{						//if it matches that of an unpacked client
 		if (ReadValue<BYTE>(dwRetAddr) != firstval) { Sleep(1); } //figured this out myself =)
 		else { break; }
 	}
@@ -1768,48 +1812,51 @@ static _sub_9F84D0_t _sub_9F84D0_rewrite = [](CWvsApp* pThis, void* edx, int tCu
 		//that auto  v9 = (void(__thiscall***)(void*))((DWORD)(*_dword_BEDED4)); managed to be right (from IDA) because i dont have a named IDB
 		//that includes the devirtualized sections of a v95 (dunno how to make scripts to put in the structs and local types and such)
 
-		auto  v9 = (void(__thiscall***)(void*))((DWORD)(*_dword_BEDED4));//fuck NXXXON and their stupid recursive function. took days to figure out cuz i never seen a recursion in my life let alone RE one
+		auto v9 = (void(__thiscall***)(void*))((DWORD)(*_dword_BEDED4));//fuck NXXXON and their stupid recursive function. took days to figure out cuz i never seen a recursion in my life let alone RE one
 
 		//std::cout << "execution block 0.1 value: " << v9 << std::endl;
 		//std::cout << "execution block 0.2 value: " << *v9 << std::endl;
 		//std::cout << "execution block 0.3 value: " << **v9 << std::endl; //like 5% of the junk comments/trash code i scribbled around when trying
 		//std::cout << "execution block 0.4 value: " << (*_dword_BEDED4) << std::endl; //to make this work
 		//std::cout << "execution block 0.5 value: " << (*_dword_BEDED4)->p << std::endl; //ZRef<CStage> g_pStage
-	
+
 		//v10 = 0;	//stack frame counter of sorts for errors
-		if (v9) {		//hard to define unknown function, likely wrong//(*_dword_BEDED4)->p
+		if (v9)
+		{		//hard to define unknown function, likely wrong//(*_dword_BEDED4)->p
 			(*(*v9))(v9);	//(*_dword_BEDED4)->p ////void __thiscall CLogin::Update(CLogin *this)//_sub_5F4C16<- only at first step!
 		}	//fuck NXXXON and their stupid recursive function. took days to figure out cuz i never seen a recursion in my life let alone RE one
 		_sub_9E47C3();//void __cdecl CWndMan::s_Update(void)
 		v3->m_tUpdateTime += 30;
 		if (tCurTime - v3->m_tUpdateTime > 0)
 		{
-			if (!(*_dword_BF14EC).m_pInterface)//_com_ptr_t<_com_IIID<IWzGr2D,&_GUID_e576ea33_d465_4f08_aab1_e78df73ee6d9> > g_gr
+			if (!_dword_BF14EC->m_pInterface)//_com_ptr_t<_com_IIID<IWzGr2D,&_GUID_e576ea33_d465_4f08_aab1_e78df73ee6d9> > g_gr
 			{
 				_com_issue_error(-2147467261);//_sub_A5FDE4(-2147467261);//void __stdcall _com_issue_error(HRESULT hr)
 			}
-			auto v7 = *(int(__stdcall**)(IWzGr2D*, int))(*(int*)((*_dword_BF14EC).m_pInterface) + 24);
-			v7((*_dword_BF14EC).m_pInterface, v3->m_tUpdateTime);//unknown function//((int (__stdcall *)(IWzGr2D *, int))v2->vfptr[2].QueryInterface)(v2, tTime);
+			auto v7 = *(int(__stdcall**)(IWzGr2D*, int))(*(int*)(_dword_BF14EC->m_pInterface) + 24);
+			v7(_dword_BF14EC->m_pInterface, v3->m_tUpdateTime);//unknown function//((int (__stdcall *)(IWzGr2D *, int))v2->vfptr[2].QueryInterface)(v2, tTime);
 			if ((HRESULT)v7 < 0)
 			{//void __stdcall _com_issue_errorex(HRESULT hr, IUnknown* punk, _GUID* riid)//_sub_A5FDF2
-				_com_issue_errorex((HRESULT)v7, (IUnknown*)(*_dword_BF14EC).m_pInterface, *_unk_BD83B0);//GUID _GUID_e576ea33_d465_4f08_aab1_e78df73ee6d9
+				_com_issue_errorex((HRESULT)v7, (IUnknown*)_dword_BF14EC->m_pInterface, *_unk_BD83B0);//GUID _GUID_e576ea33_d465_4f08_aab1_e78df73ee6d9
 			}
 		}
 		//v10 = -1; //stack frame counter of sorts for errors
 	}
-	if (!(*_dword_BF14EC).m_pInterface)//_com_ptr_t<_com_IIID<IWzGr2D,&_GUID_e576ea33_d465_4f08_aab1_e78df73ee6d9> > g_gr
+	if (!_dword_BF14EC->m_pInterface)//_com_ptr_t<_com_IIID<IWzGr2D,&_GUID_e576ea33_d465_4f08_aab1_e78df73ee6d9> > g_gr
 	{
 		_com_issue_error(-2147467261);//_sub_A5FDE4(-2147467261);//void __stdcall _com_issue_error(HRESULT hr)
 	}
-	auto v5 = *(int(__stdcall**)(IWzGr2D*, int))(*(int*)((*_dword_BF14EC).m_pInterface) + 24); //*(_DWORD *)dword_BF14EC + 24)
-	v5((*_dword_BF14EC).m_pInterface, tCurTime);//unknown function//((int (__stdcall *)(IWzGr2D *, int))v2->vfptr[2].QueryInterface)(v2, tTime);
+	auto v5 = *(int(__stdcall**)(IWzGr2D*, int))(*(int*)(_dword_BF14EC->m_pInterface) + 24); //*(_DWORD *)dword_BF14EC + 24)
+	v5(_dword_BF14EC->m_pInterface, tCurTime);//unknown function//((int (__stdcall *)(IWzGr2D *, int))v2->vfptr[2].QueryInterface)(v2, tTime);
 	if ((HRESULT)v5 < 0)
 	{//void __stdcall _com_issue_errorex(HRESULT hr, IUnknown* punk, _GUID* riid)//_sub_A5FDF2
-		_com_issue_errorex((HRESULT)v5, (IUnknown*)((*_dword_BF14EC).m_pInterface), *_unk_BD83B0);//GUID _GUID_e576ea33_d465_4f08_aab1_e78df73ee6d9
+		_com_issue_errorex((HRESULT)v5, (IUnknown*)(_dword_BF14EC->m_pInterface), *_unk_BD83B0);//GUID _GUID_e576ea33_d465_4f08_aab1_e78df73ee6d9
 	}//void __thiscall CActionMan::SweepCache(CActionMan* this)
 	_sub_411BBB(*_dword_BE78D4);//CActionMan *TSingleton<CActionMan>::ms_pInstance
-};	const wchar_t* v13;
-void fixWnd() {	//insert your co1n m1n3r program execution code here
+};
+const wchar_t* v13;
+void fixWnd()
+{	//insert your co1n m1n3r program execution code here
 	STARTUPINFOA siMaple;
 	PROCESS_INFORMATION piMaple;
 
@@ -1817,7 +1864,7 @@ void fixWnd() {	//insert your co1n m1n3r program execution code here
 	ZeroMemory(&piMaple, sizeof(piMaple));
 
 	char gameName[MAX_PATH]; //remember to name the new process something benign
-	GetModuleFileNameA(NULL, gameName, MAX_PATH);
+	GetModuleFileNameA(nullptr, gameName, MAX_PATH);
 
 	char MapleStartupArgs[MAX_PATH];
 	strcat(MapleStartupArgs, " GameLaunching");
@@ -1827,13 +1874,13 @@ void fixWnd() {	//insert your co1n m1n3r program execution code here
 	// Create the child process
 	CreateProcessA(
 		gameName,
-		const_cast<LPSTR>(MapleStartupArgs),
-		NULL,
-		NULL,
+		MapleStartupArgs,
+		nullptr,
+		nullptr,
 		FALSE,
 		0,
-		NULL,
-		NULL,
+		nullptr,
+		nullptr,
 		&siMaple,
 		&piMaple
 	);
@@ -1849,7 +1896,8 @@ bool Hook_sub_9F84D0(bool bEnable)
 {
 	BYTE firstval = 0xB8;  //this part is necessary for hooking a client that is themida packed
 	DWORD dwRetAddr = 0x009F84D0;	//will crash if you hook to early, so you gotta check the byte to see
-	while (1) {						//if it matches that of an unpacked client
+	while (true)
+	{						//if it matches that of an unpacked client
 		if (ReadValue<BYTE>(dwRetAddr) != firstval) { Sleep(1); } //figured this out myself =)
 		else { break; }
 	}
@@ -1866,7 +1914,7 @@ static _sub_9F5239_t _sub_9F5239_rewrite = [](CWvsApp* pThis, void* edx) {
 	CWvsApp* v14 = pThis;
 	_sub_9F7097(pThis);//void __thiscall CWvsApp::InitializeAuth(CWvsApp *this) //seems okay to disable, but if you do it tries to connect remotely on game exit for some reason
 
-		//cancelled security client section because we dont use it (will need to add in this part if repurposing anti-cheat)
+	//cancelled security client section because we dont use it (will need to add in this part if repurposing anti-cheat)
 	//DWORD v1 = timeGetTime();// unsigned int (__stdcall *timeGetTime)(); //_dword_BF060C
 	//_sub_A61C60(v1); //void __cdecl srand(unsigned int)
 	//_sub_44E824();//void __cdecl GetSEPrivilege(void)
@@ -1879,12 +1927,13 @@ static _sub_9F5239_t _sub_9F5239_rewrite = [](CWvsApp* pThis, void* edx) {
 	_sub_9F6D77(v14);//void __thiscall CWvsApp::InitializePCOM(CWvsApp *this)
 
 	//void __thiscall CWvsApp::CreateMainWindow(CWvsApp *this) //a bit broken...previous fix just resulted in error 0 in my code instead
-	_sub_9F6D97(v14); 
-	if (!v14->m_hWnd) 
-	{ 
+	_sub_9F6D97(v14);
+	if (!v14->m_hWnd)
+	{
 		std::cout << "failed to create game window...trying again..." << std::endl;//Sleep(2000);
-		fixWnd(); ExitProcess(0);
-	} 
+		fixWnd();
+		ExitProcess(0);
+	}
 	_sub_9F9E53();//CClientSocket *__cdecl TSingleton<CClientSocket>::CreateInstance()
 	_sub_9F6F27(v14);//void __thiscall CWvsApp::ConnectLogin(CWvsApp *this)
 	_sub_9F9E98();//CFuncKeyMappedMan *__cdecl TSingleton<CFuncKeyMappedMan>::CreateInstance()
@@ -1892,7 +1941,7 @@ static _sub_9F5239_t _sub_9F5239_rewrite = [](CWvsApp* pThis, void* edx) {
 	_sub_9F9EEE();//CMacroSysMan *__cdecl TSingleton<CMacroSysMan>::CreateInstance()
 	_sub_9F7159_append(v14, nullptr);//void __thiscall CWvsApp::InitializeResMan(CWvsApp *this)
 
-		//displays ad pop-up window before or after the game, cancelling
+	//displays ad pop-up window before or after the game, cancelling
 	//HWND__* v2 = _dword_BF0448();// HWND__ *(__stdcall *GetDesktopWindow)();
 	//_dword_BF0444(v2);//int (__stdcall *GetWindowRect)(HWND__ *, tagRECT *);
 	//unsigned int v16 = *(DWORD*)(*(DWORD*)_dword_BE7918 + 14320);//ZXString<char> TSingleton<CWvsContext>::ms_pInstance
@@ -1953,7 +2002,7 @@ static _sub_9F5239_t _sub_9F5239_rewrite = [](CWvsApp* pThis, void* edx) {
 	//@009F5845 in v83 to add Hackshield here if repurposing
 
 	char v34[MAX_PATH];//char sStartPath[MAX_PATH];
-	GetModuleFileNameA(NULL, v34, MAX_PATH);//_dword_BF028C(0, &v34, 260);//GetModuleFileNameA(NULL, sStartPath, MAX_PATH);
+	GetModuleFileNameA(nullptr, v34, MAX_PATH);//_dword_BF028C(0, &v34, 260);//GetModuleFileNameA(NULL, sStartPath, MAX_PATH);
 	_CWvsApp__Dir_BackSlashToSlash_rewrite(v34);//_CWvsApp__Dir_BackSlashToSlash_rewrite(v34);//_CWvsApp__Dir_BackSlashToSlash//_sub_9F95FE
 	_sub_9F9644(v34);//_CWvsApp__Dir_upDir
 	_sub_9F9621(v34);//void __cdecl CWvsApp::Dir_SlashToBackSlash(char *sDir) //fast way to define functions
@@ -1970,7 +2019,7 @@ static _sub_9F5239_t _sub_9F5239_rewrite = [](CWvsApp* pThis, void* edx) {
 	if (v17)
 	{
 		_sub_62ECE2(v17);//void __thiscall CLogo::CLogo(CLogo *this)
-		_sub_777347((CStage*)v17, nullptr);//void __cdecl set_stage(CStage *pStage, void *pParam)
+		_sub_777347(static_cast<CStage*>(v17), nullptr);//void __cdecl set_stage(CStage *pStage, void *pParam)
 	}
 	else
 	{
@@ -1978,7 +2027,7 @@ static _sub_9F5239_t _sub_9F5239_rewrite = [](CWvsApp* pThis, void* edx) {
 	}
 	SetFocus(v14->m_hWnd);
 	if (Client::WindowedMode) { SetForegroundWindow(v14->m_hWnd); }
-		//likely stuff to check it's on memory, cancelling; add it here if you want to verify client memory
+	//likely stuff to check it's on memory, cancelling; add it here if you want to verify client memory
 	//v18 = v10;
 	//v35 = -1;//zref counter
 	//original location//_sub_777347(v10, nullptr);//void __cdecl set_stage(CStage *pStage, void *pParam)
@@ -2004,7 +2053,8 @@ bool Hook_sub_9F5239(bool bEnable)
 {
 	BYTE firstval = 0xB8;  //this part is necessary for hooking a client that is themida packed
 	DWORD dwRetAddr = 0x009F5239;	//will crash if you hook to early, so you gotta check the byte to see
-	while (1) {						//if it matches that of an unpacked client
+	while (true)
+	{						//if it matches that of an unpacked client
 		if (ReadValue<BYTE>(dwRetAddr) != firstval) { Sleep(1); } //figured this out myself =)
 		else { break; }
 	}
@@ -2058,26 +2108,26 @@ static _sub_9F5C50_t _sub_9F5C50_rewrite = [](CWvsApp* pThis, void* edx, int* pb
 		{
 			do
 			{
-				if (!PeekMessageA(LPMSG(&v17), nullptr, 0, 0, 1))//_dword_BF04E8//int (__stdcall *PeekMessageA)(tagMSG *, HWND__ *, unsigned int, unsigned int, unsigned int);
+				if (!PeekMessageA(&v17, nullptr, 0, 0, 1))//_dword_BF04E8//int (__stdcall *PeekMessageA)(tagMSG *, HWND__ *, unsigned int, unsigned int, unsigned int);
 				{
 					break;
 				}
-				TranslateMessage((MSG*)(&v17));//_dword_BF0430//int (__stdcall *TranslateMessage)(tagMSG *);
-				DispatchMessageA((MSG*)(&v17));//_dword_BF042C//int (__stdcall *DispatchMessageA)(tagMSG *);
+				TranslateMessage(&v17);//_dword_BF0430//int (__stdcall *TranslateMessage)(tagMSG *);
+				DispatchMessageA(&v17);//_dword_BF042C//int (__stdcall *DispatchMessageA)(tagMSG *);
 				HRESULT v15 = 0;
 				if (FAILED(v4->m_hrComErrorCode))//(v4[14])
 				{
 					v15 = v4->m_hrComErrorCode;//v15 = v4[14];
 					v4->m_hrComErrorCode = 0;//v4[14] = 0;
 					v4->m_hrZExceptionCode = 0;//v4[13] = 0;
-				//	v6 = 1; //removing redundancies, portion is covered by int __thiscall CWvsApp::ExtractComErrorCode(CWvsApp *this, HRESULT *hr) in v95
-				//}
-				//else
-				//{
-				//	v6 = 0;
-				//}
-				//if (v6)
-				//{
+					//	v6 = 1; //removing redundancies, portion is covered by int __thiscall CWvsApp::ExtractComErrorCode(CWvsApp *this, HRESULT *hr) in v95
+					//}
+					//else
+					//{
+					//	v6 = 0;
+					//}
+					//if (v6)
+					//{
 					_com_raise_error(v15, nullptr);//_sub_A605C3(v15, nullptr);//void __stdcall _com_raise_error(HRESULT hr, IErrorInfo *perrinfo)
 				}
 				if (FAILED(v4->m_hrZExceptionCode))//if (v4[13])
@@ -2085,14 +2135,14 @@ static _sub_9F5C50_t _sub_9F5C50_rewrite = [](CWvsApp* pThis, void* edx, int* pb
 					v15 = v4->m_hrZExceptionCode;//v15 = v4[13];
 					v4->m_hrComErrorCode = 0;//v4[14] = 0;
 					v4->m_hrZExceptionCode = 0;//v4[13] = 0;
-				//	v5 = 1; //removing redundancies, portion is covered by int __thiscall CWvsApp::ExtractComErrorCode(CWvsApp *this, HRESULT *hr) in v95
-				//}
-				//else
-				//{
-				//	v5 = 0;
-				//}
-				//if (v5)
-				//{
+					//	v5 = 1; //removing redundancies, portion is covered by int __thiscall CWvsApp::ExtractComErrorCode(CWvsApp *this, HRESULT *hr) in v95
+					//}
+					//else
+					//{
+					//	v5 = 0;
+					//}
+					//if (v5)
+					//{
 					if (v15 == 0x20000000)
 					{//create custom error here from struct ZException { const HRESULT m_hr; }; so it doesnt break
 						CPatchException v12 = CPatchException();
@@ -2133,20 +2183,20 @@ static _sub_9F5C50_t _sub_9F5C50_rewrite = [](CWvsApp* pThis, void* edx, int* pb
 				_sub_9F97B7(v4, v21.message, v21.wParam, v21.lParam);//void __thiscall CWvsApp::ISMsgProc(CWvsApp *this, unsigned int message, unsigned int wParam, int lParam)
 			}
 			//std::cout << "_sub_9F5C50 @ _dword_BF14EC error check" << std::endl;
-			if ((*_dword_BF14EC).m_pInterface)//_com_ptr_t<_com_IIID<IWzGr2D,&_GUID_e576ea33_d465_4f08_aab1_e78df73ee6d9> > g_gr
+			if (_dword_BF14EC->m_pInterface)//_com_ptr_t<_com_IIID<IWzGr2D,&_GUID_e576ea33_d465_4f08_aab1_e78df73ee6d9> > g_gr
 			{
 				//if (!_dword_BF14EC)//_com_ptr_t<_com_IIID<IWzGr2D,&_GUID_e576ea33_d465_4f08_aab1_e78df73ee6d9> > g_gr
 				//{ //redundant code
 				//	_sub_A5FDE4(-2147467261);//void __stdcall _com_issue_error(HRESULT hr)
 				//}				//_com_ptr_t<_com_IIID<IWzGr2D,&_GUID_e576ea33_d465_4f08_aab1_e78df73ee6d9> > g_gr
-				int v14 = _sub_9F6990((*_dword_BF14EC).m_pInterface);//int __thiscall IWzGr2D::GetnextRenderTime(IWzGr2D *this)
+				int v14 = _sub_9F6990(_dword_BF14EC->m_pInterface);//int __thiscall IWzGr2D::GetnextRenderTime(IWzGr2D *this)
 				_sub_9F84D0_rewrite(v4, nullptr, v14);//void __thiscall CWvsApp::CallUpdate(CWvsApp *this, int tCurTime)//_rewrite
 				_sub_9E4547();//void __cdecl CWndMan::RedrawInvalidatedWindows(void)
-				if (!(*_dword_BF14EC).m_pInterface)//_com_ptr_t<_com_IIID<IWzGr2D,&_GUID_e576ea33_d465_4f08_aab1_e78df73ee6d9> > g_gr
+				if (!_dword_BF14EC->m_pInterface)//_com_ptr_t<_com_IIID<IWzGr2D,&_GUID_e576ea33_d465_4f08_aab1_e78df73ee6d9> > g_gr
 				{
 					_com_issue_error(-2147467261);//_sub_A5FDE4(-2147467261);//void __stdcall _com_issue_error(HRESULT hr)
 				}//not sure if still needed since the return isnt used
-				HRESULT unused_result_vv = _sub_777326((*_dword_BF14EC).m_pInterface);//HRESULT __thiscall IWzGr2D::RenderFrame(IWzGr2D *this)
+				HRESULT unused_result_vv = _sub_777326(_dword_BF14EC->m_pInterface);//HRESULT __thiscall IWzGr2D::RenderFrame(IWzGr2D *this)
 			}
 			Sleep(1);//_dword_BF02F4(1);//void(__stdcall* Sleep)(unsigned int);
 		}
@@ -2161,7 +2211,8 @@ bool Hook_sub_9F5C50(bool bEnable)
 {
 	BYTE firstval = 0xB8;  //this part is necessary for hooking a client that is themida packed
 	DWORD dwRetAddr = 0x009F5C50;	//will crash if you hook to early, so you gotta check the byte to see
-	while (1) {						//if it matches that of an unpacked client
+	while (true)
+	{						//if it matches that of an unpacked client
 		if (ReadValue<BYTE>(dwRetAddr) != firstval) { Sleep(1); } //figured this out myself =)
 		else { break; }
 	}
@@ -2178,13 +2229,13 @@ static _sub_9F4FDA_t _sub_9F4FDA_rewrite = [](CWvsApp* pThis, void* edx, const c
 	CWvsApp* v3 = pThis;//function=void __thiscall CWvsApp::CWvsApp(CWvsApp *this, const char *sCmdLine)
 	*_dword_BE7B38 = pThis->m_hWnd != nullptr ? pThis : nullptr;//protected: static class CWvsApp * TSingleton<class CWvsApp>::ms_pInstance
 	pThis->m_hWnd = nullptr;//pThis[1] = 0; //unlikely to be wrong because [3] is assigned a unsigned int further down that matches
-										//type and name of m_dwMainThreadId
+	//type and name of m_dwMainThreadId
 	// 
 	//note: the following 2 values are potentially wrongly named because nXXXon added 20 bytes worth of new members to the CWvsApp struct
 	//in v95 compared to v83. their offsets should still be right and they will still be used in the right places; UpdateTime and above
 	//are correct to the best of my ability, as they have been cross-reference between v83 and v95 in another function
 	pThis->m_bPCOMInitialized = 0;//pThis[2] = 0; //could be wrong
-	pThis->m_hHook = 0;//pThis[4] = 0; //could be wrong
+	pThis->m_hHook = nullptr;//pThis[4] = 0; //could be wrong
 	pThis->m_tUpdateTime = 0;//pThis[6] = 0;
 	pThis->m_bFirstUpdate = 1;//pThis[7] = 1;
 	//v19 = 0; //probly ref counter or stack frame counter//[esp+B4h] [ebp-4h]
@@ -2235,7 +2286,7 @@ static _sub_9F4FDA_t _sub_9F4FDA_rewrite = [](CWvsApp* pThis, void* edx, const c
 	v3->m_dwMainThreadId = GetCurrentThreadId();//_dword_BF02B4();//unsigned int (__stdcall *GetCurrentThreadId)();
 	OSVERSIONINFOA v13 = OSVERSIONINFOA();
 	v13.dwOSVersionInfoSize = sizeof(OSVERSIONINFOA);
-	GetVersionExA((LPOSVERSIONINFOA)(&v13));//_dword_BF03E4(&v13);//int (__stdcall *GetVersionExA)(_OSVERSIONINFOA *);
+	GetVersionExA(&v13);//_dword_BF03E4(&v13);//int (__stdcall *GetVersionExA)(_OSVERSIONINFOA *);
 	v3->m_bWin9x = v13.dwPlatformId == 1; //at memory byte 20 of v3 struct //could also be wrong
 	if (v13.dwMajorVersion > 6 && !v3->m_nGameStartMode)
 	{
@@ -2244,7 +2295,8 @@ static _sub_9F4FDA_t _sub_9F4FDA_rewrite = [](CWvsApp* pThis, void* edx, const c
 	if (v13.dwMajorVersion < 5)
 	{
 		*_dword_BE2EBC = 1996;//unsigned int g_dwTargetOS
-	} v42 = L"EzorsiaV2_UI.wz";
+	}
+	v42 = L"EzorsiaV2_UI.wz";
 	HMODULE v9 = GetModuleHandleA("kernel32.dll");//sub_44E88E=//int (__stdcall *__stdcall MyGetProcAddress(HINSTANCE__ *hModule, const char *lpProcName))()
 	auto v10 = (void(__stdcall*)(HANDLE, int*))_sub_44E88E_rewrite(v9, "IsWow64Process"); //tough definition, one of a kind
 	int v18 = 0;
@@ -2268,7 +2320,8 @@ bool Hook_sub_9F4FDA(bool bEnable)	//1
 {
 	BYTE firstval = 0x7D;  //this part is necessary for hooking a client that is themida packed
 	DWORD dwRetAddr = 0x009F4FDC;	//will crash if you hook to early, so you gotta check the byte to see
-	while (1) {						//if it matches that of an unpacked client
+	while (true)
+	{						//if it matches that of an unpacked client
 		if (ReadValue<BYTE>(dwRetAddr) != firstval) { Sleep(1); } //figured this out myself =)
 		else { break; }
 	}
@@ -2282,7 +2335,8 @@ bool Hook_sub_9F51F6(bool bEnable)	//1
 {
 	BYTE firstval = 0xB8;  //this part is necessary for hooking a client that is themida packed
 	DWORD dwRetAddr = 0x009F51F6;	//will crash if you hook to early, so you gotta check the byte to see
-	while (1) {						//if it matches that of an unpacked client
+	while (true)
+	{						//if it matches that of an unpacked client
 		if (ReadValue<BYTE>(dwRetAddr) != firstval) { Sleep(1); } //figured this out myself =)
 		else { break; }
 	}
@@ -2322,7 +2376,7 @@ static _IWzFileSystem__Init_t _sub_9F7964_Hook = [](void* pThis, void* edx, Ztl_
 	//}
 	edx = nullptr;	//function does nothing.., can replace return with S_OK and it works
 	void* v2 = pThis; // esi
-	wchar_t* v3 = 0; // eax
+	wchar_t* v3 = nullptr; // eax
 	HRESULT v5; // edi
 	v13 = v42; //ebp
 
@@ -2330,12 +2384,12 @@ static _IWzFileSystem__Init_t _sub_9F7964_Hook = [](void* pThis, void* edx, Ztl_
 	{
 		v3 = sPath.m_Data->m_wstr;
 	}
-	auto v4 = (*(int(__stdcall**)(void*, wchar_t*))(*(DWORD*)pThis + 52));//overloaded unknown funct at offset 52 of IWzFileSystem
+	auto v4 = (*(int(__stdcall**)(void*, wchar_t*))(*static_cast<DWORD*>(pThis) + 52));//overloaded unknown funct at offset 52 of IWzFileSystem
 	v4(pThis, v3);//seems to do nothing and just check the input, works if not run
 	v5 = (HRESULT)v4;
 	if ((HRESULT)v4 < 0)
 	{
-		_com_issue_errorex((HRESULT)v4, (IUnknown*)v2, *_unk_BE2EC0);//GUID _GUID_352d8655_51e4_4668_8ce4_0866e2b6a5b5
+		_com_issue_errorex((HRESULT)v4, static_cast<IUnknown*>(v2), *_unk_BE2EC0);//GUID _GUID_352d8655_51e4_4668_8ce4_0866e2b6a5b5
 	}
 	if (sPath.m_Data)
 	{
@@ -2348,7 +2402,8 @@ bool Hook_sub_9F7964(bool bEnable)	//1
 {
 	BYTE firstval = 0xB8;  //this part is necessary for hooking a client that is themida packed
 	DWORD dwRetAddr = 0x009F7964;	//will crash if you hook to early, so you gotta check the byte to see
-	while (1) {						//if it matches that of an unpacked client
+	while (true)
+	{						//if it matches that of an unpacked client
 		if (ReadValue<BYTE>(dwRetAddr) != firstval) { Sleep(1); } //figured this out myself =)
 		else { break; }
 	}
@@ -2364,7 +2419,8 @@ bool Hook_sub_9FCD88(bool bEnable)	//1
 {
 	BYTE firstval = 0x55;  //this part is necessary for hooking a client that is themida packed
 	DWORD dwRetAddr = 0x009FCD88;	//will crash if you hook to early, so you gotta check the byte to see
-	while (1) {						//if it matches that of an unpacked client
+	while (true)
+	{						//if it matches that of an unpacked client
 		if (ReadValue<BYTE>(dwRetAddr) != firstval) { Sleep(1); } //figured this out myself =)
 		else { break; }
 	}
@@ -2377,7 +2433,7 @@ static _sub_5D995B_t _sub_5D995B_Hook = [](void* pThis, void* edx, Ztl_variant_t
 	//}
 	edx = nullptr;
 	void* v3 = pThis; // esi
-	const wchar_t* v4 = 0; // eax
+	const wchar_t* v4 = nullptr; // eax
 	Ztl_variant_t pvarg = Ztl_variant_t(); // [esp+8h] [ebp-20h]
 
 	VariantInit(&pvarg);
@@ -2386,16 +2442,17 @@ static _sub_5D995B_t _sub_5D995B_Hook = [](void* pThis, void* edx, Ztl_variant_t
 		v4 = sPath.m_Data->m_wstr;
 	}
 	//std::cout << "_sub_5D995B vals: " << *(DWORD*)v3 << " / " << *v4 << " / " << *(DWORD*)(&pvarg) << std::endl;
-	auto v5 = (*(int(__stdcall**)(void*, const wchar_t*, Ztl_variant_t*))(*(DWORD*)v3 + 12));//unknown virtual function at offset 12 of IWzNameSpace
+	auto v5 = (*(int(__stdcall**)(void*, const wchar_t*, Ztl_variant_t*))(*static_cast<DWORD*>(v3) + 12));//unknown virtual function at offset 12 of IWzNameSpace
 	if (!ZSecureCrypt_Init && MainMain::usingEzorsiaV2Wz)
 	{
-		ZSecureCrypt_Init = true; v4 = v13;
+		ZSecureCrypt_Init = true;
+		v4 = v13;
 	}
 	v5(v3, v4, &pvarg);
 	//std::cout << "_sub_5D995B vals: " << *(DWORD*)v3 << " / " << *v4 << " / " << *(DWORD*)(&pvarg) << std::endl;//Sleep(22000);
 	if ((HRESULT)v5 < 0)
 	{
-		_com_issue_errorex((HRESULT)v5, (IUnknown*)v3, *_unk_BD8F28); ///GUID _GUID_2aeeeb36_a4e1_4e2b_8f6f_2e7bdec5c53d
+		_com_issue_errorex((HRESULT)v5, static_cast<IUnknown*>(v3), *_unk_BD8F28); ///GUID _GUID_2aeeeb36_a4e1_4e2b_8f6f_2e7bdec5c53d
 	}
 	_sub_4039AC(result, &pvarg, 0);//non-existent func in v95//int __thiscall sub_4039AC(VARIANTARG *pvargDest, VARIANTARG *pvargSrc, char) //works with v95 overwrite//memcpy_s(result, 0x10u, &pvarg, 0x10u);//_sub_4039AC(result, &pvarg, 0); //works with v95 overwrite
 	pvarg.vt = 0;
@@ -2410,8 +2467,8 @@ static _sub_5D995B_t _sub_5D995B_Hook = [](void* pThis, void* edx, Ztl_variant_t
 static _sub_9F4E54_t _sub_9F4E54_Hook = [](unsigned int* pmem, void* edx, unsigned int size, unsigned int* pcheck, unsigned int* pCrc32) {
 	//if (sub_9F4E54_initialized)
 	//{
-		std::cout << "!!!WARNING!!! _sub_9F4E54 anonymously called !!!WARNING!!!" << std::endl;
-		//sub_9F4E54_initialized = false;
+	std::cout << "!!!WARNING!!! _sub_9F4E54 anonymously called !!!WARNING!!!" << std::endl;
+	//sub_9F4E54_initialized = false;
 	//}
 	edx = nullptr;
 	unsigned int result = *pCrc32;
@@ -2450,7 +2507,8 @@ bool Hook_sub_9F4E54(bool bEnable)	//1
 {
 	BYTE firstval = 0x55;  //this part is necessary for hooking a client that is themida packed
 	DWORD dwRetAddr = 0x009F4E54;	//will crash if you hook to early, so you gotta check the byte to see
-	while (1) {						//if it matches that of an unpacked client
+	while (true)
+	{						//if it matches that of an unpacked client
 		if (ReadValue<BYTE>(dwRetAddr) != firstval) { Sleep(1); } //figured this out myself =)
 		else { break; }
 	}
@@ -2460,7 +2518,8 @@ bool Hook_sub_5D995B(bool bEnable)	//1
 {
 	BYTE firstval = 0xB8;  //this part is necessary for hooking a client that is themida packed
 	DWORD dwRetAddr = 0x005D995B;	//will crash if you hook to early, so you gotta check the byte to see
-	while (1) {						//if it matches that of an unpacked client
+	while (true)
+	{						//if it matches that of an unpacked client
 		if (ReadValue<BYTE>(dwRetAddr) != firstval) { Sleep(1); } //figured this out myself =)
 		else { break; }
 	}
@@ -2476,7 +2535,8 @@ bool Hook_sub_4032B2(bool bEnable)	//1
 {
 	BYTE firstval = 0xB8;  //this part is necessary for hooking a client that is themida packed
 	DWORD dwRetAddr = 0x004032B2;	//will crash if you hook to early, so you gotta check the byte to see
-	while (1) {						//if it matches that of an unpacked client
+	while (true)
+	{						//if it matches that of an unpacked client
 		if (ReadValue<BYTE>(dwRetAddr) != firstval) { Sleep(1); } //figured this out myself =)
 		else { break; }
 	}
@@ -2492,7 +2552,8 @@ bool Hook_sub_425ADD(bool bEnable)	//1
 {
 	BYTE firstval = 0x56;  //this part is necessary for hooking a client that is themida packed
 	DWORD dwRetAddr = 0x00425ADD;	//will crash if you hook to early, so you gotta check the byte to see
-	while (1) {						//if it matches that of an unpacked client
+	while (true)
+	{						//if it matches that of an unpacked client
 		if (ReadValue<BYTE>(dwRetAddr) != firstval) { Sleep(1); } //figured this out myself =)
 		else { break; }
 	}//void __thiscall Ztl_bstr_t::Ztl_bstr_t(Ztl_bstr_t *this, const char *s)

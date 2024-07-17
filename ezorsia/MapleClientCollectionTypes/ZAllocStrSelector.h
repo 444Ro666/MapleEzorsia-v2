@@ -3,7 +3,7 @@
 #include "ZXString.h"
 //credits to the creators of https://github.com/MapleStory-Archive/MapleClientEditTemplate
 /* forward declare zxstring for compiler happiness */
-template<typename T> class ZXString;
+template <typename T> class ZXString;
 
 template <typename T>
 struct ZAllocStrSelector

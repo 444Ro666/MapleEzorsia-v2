@@ -12,7 +12,6 @@
 template <class T>
 class ZRef : protected ZRefCountedAccessor<T>, protected ZRefCountedAccessor<ZRefCountedDummy<T>>
 {
-private:
 	BYTE gap0[1];
 
 public:
@@ -137,7 +136,7 @@ public:
 	/// <summary>
 	/// Fetch pointer to encapsulated object.
 	/// </summary>
-	operator T* ()
+	operator T*()
 	{
 		return this->p;
 	}
@@ -192,7 +191,7 @@ private:
 		}
 		else
 		{
-			pBase = reinterpret_cast<ZRefCounted*>(((char*)this->p) - (sizeof(ZRefCountedDummy<T>) - sizeof(T)));
+			pBase = reinterpret_cast<ZRefCounted*>(reinterpret_cast<char*>(this->p) - (sizeof(ZRefCountedDummy<T>) - sizeof(T)));
 
 			static_assert(sizeof(ZRefCountedDummy<T>) - sizeof(T) == 16, "Size is not expected value");
 		}

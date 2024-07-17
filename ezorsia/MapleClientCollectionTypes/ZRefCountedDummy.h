@@ -18,12 +18,12 @@ public:
 	{
 		return ZRecyclableAvBuffer<ZRefCountedDummy<T>>::GetInstance()->raw_new();
 	}
-		void operator delete[](void* p)
+	void operator delete[](void* p)
 	{
 		ZRecyclableAvBuffer<ZRefCountedDummy<T>>::GetInstance()->raw_delete(p);
 	}
 
-		void operator delete(void* p)
+	void operator delete(void* p)
 	{
 		ZRecyclableAvBuffer<ZRefCountedDummy<T>>::GetInstance()->raw_delete(p);
 	}

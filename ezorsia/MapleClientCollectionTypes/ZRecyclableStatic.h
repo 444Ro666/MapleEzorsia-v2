@@ -7,8 +7,7 @@ class ZRecyclableStatic
 public:
 	struct CallBack
 	{
-	public:
-		ZRecyclableStatic::CallBack* m_pNext;
+		CallBack* m_pNext;
 
 	protected:
 		CallBack()
@@ -20,7 +19,7 @@ public:
 	};
 
 protected:
-	ZRecyclableStatic::CallBack* m_pHead;
+	CallBack* m_pHead;
 };
 
 //assert_size(sizeof(ZFakeStatAvBuff), 0x1)
