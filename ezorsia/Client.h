@@ -15,5 +15,7 @@ public:
 	static double setDamageCap;
 	static bool useTubi;
 	static int speedMovementCap;
+	static bool editSendCheckPasswordPacket;
+	static bool ezorsiaCheckExecPathReg;
 	static std::string ServerIP_AddressFromINI;
 };
