@@ -1855,6 +1855,7 @@ bool Hook_sub_9F84D0(bool bEnable)
 	}
 	return Memory::SetHook(bEnable, reinterpret_cast<void**>(&_sub_9F84D0), _sub_9F84D0_rewrite);
 }
+
 bool sub_9F5239_initialized = true;	//void __thiscall CWvsApp::SetUp(CWvsApp *this)
 static _sub_9F5239_t _sub_9F5239_rewrite = [](CWvsApp* pThis, void* edx) {
 	edx = nullptr;
@@ -1964,7 +1965,18 @@ static _sub_9F5239_t _sub_9F5239_rewrite = [](CWvsApp* pThis, void* edx) {
 	//v35 = 3;//zref counter
 	//void* vcb2 = _sub_538C98();//CConfig *__cdecl TSingleton<CConfig>::GetInstance() //redundant
 	//v35 = -1;//zref counter
-	_sub_49CCF3(vcb, v8);//void __thiscall CConfig::CheckExecPathReg(CConfig *this, ZXString<char> sModulePath)
+
+	// commenting this works on GMS_v83.1_L.exe but causes keyboard input freezing login page for "MapleStory 4G (no admin req).exe" instead of crashing
+	//_sub_49CCF3(vcb, v8);//void __thiscall CConfig::CheckExecPathReg(CConfig *this, ZXString<char> sModulePath)
+	// uncommenting this causes keyboard input freezing login page for GMS_v83.1_L.exe but crashes for "MapleStory 4G (no admin req).exe"
+	//_sub_49CCF3(vcb, v8);//void __thiscall CConfig::CheckExecPathReg(CConfig *this, ZXString<char> sModulePath)
+	// changing 2nd param from v8 to "" seem to work ?
+	if (Client::ezorsiaCheckExecPathReg) {
+		_sub_49CCF3(vcb, v8);//void __thiscall CConfig::CheckExecPathReg(CConfig *this, ZXString<char> sModulePath)
+	}else {
+		_sub_49CCF3(vcb, "");//void __thiscall CConfig::CheckExecPathReg(CConfig *this, ZXString<char> sModulePath)
+	}
+
 	void* v17 = _sub_403065(_unk_BF0B00, 0x38u);//void *__thiscall ZAllocEx<ZAllocAnonSelector>::Alloc(ZAllocEx<ZAllocAnonSelector> *this, unsigned int uSize)
 	//v35 = 4;//zref counter
 	if (v17)
@@ -2000,6 +2012,7 @@ static _sub_9F5239_t _sub_9F5239_rewrite = [](CWvsApp* pThis, void* edx) {
 	//	_dword_BF167C[i] = v27; //unsigned int g_crc32Table[256]
 	//}
 };
+
 bool Hook_sub_9F5239(bool bEnable)
 {
 	BYTE firstval = 0xB8;  //this part is necessary for hooking a client that is themida packed

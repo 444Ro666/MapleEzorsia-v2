@@ -10,17 +10,23 @@ bool Client::RemoveLogos = true;
 double Client::setDamageCap = 199999.0;
 bool Client::useTubi = false;
 int Client::speedMovementCap = 140;
+bool Client::editSendCheckPasswordPacket = true;
+bool Client::ezorsiaCheckExecPathReg = true;
 std::string Client::ServerIP_AddressFromINI = "127.0.0.1";
 
 void Client::UpdateGameStartup() {
 
 	Memory::CodeCave(cc0x00A63FF3, dw0x00A63FF3, dw0x00A63FF3Nops); //fix start @0x00A63FF3, may be unnecessary, but dump of vanilla client showed broken code here
 
-	Memory::CodeCave(ccCLoginSendCheckPasswordPacket, dwCLoginSendCheckPasswordPacket, CLoginSendCheckPasswordPacketNops); //CLogin::SendCheckPasswordPacket: At the start of the sequence of pushes that contains 0C9h, place a long jmp to further down in the method to the SystemInfo basic block.Do auth patches for encoding the correct strings(user / pw)
-	Memory::WriteByte(0x005F6B87 + 2, 0x08); //CLogin::SendCheckPasswordPacket/sub_5F6952		end 005F6C6F //??
-	Memory::WriteByte(0x005F6BA0 + 2, 0xA0); //CLogin::SendCheckPasswordPacket //?? //not sure what these edits specifically do, but hendi's client has them in place for getting rid of checks at this part
-	unsigned char CA_005F6BA4[] = { 0xFF, 0x75, 0x0C, 0x90, 0x90, 0x90, 0x90 }; //CLogin::SendCheckPasswordPacket //??
-	Memory::WriteByteArray(0x005F6BA4, CA_005F6BA4, sizeof(CA_005F6BA4)); //CLogin::SendCheckPasswordPacket //??
+	if (editSendCheckPasswordPacket) {
+		//start comment this code section if it seems to freeze or crash the client (eg GMS_v83.1_L.exe) on login screen upon clicking the "log in" button (or pressing enter to login) for some devices or people
+		Memory::CodeCave(ccCLoginSendCheckPasswordPacket, dwCLoginSendCheckPasswordPacket, CLoginSendCheckPasswordPacketNops); //CLogin::SendCheckPasswordPacket: At the start of the sequence of pushes that contains 0C9h, place a long jmp to further down in the method to the SystemInfo basic block.Do auth patches for encoding the correct strings(user / pw)
+		Memory::WriteByte(0x005F6B87 + 2, 0x08); //CLogin::SendCheckPasswordPacket/sub_5F6952		end 005F6C6F //??
+		Memory::WriteByte(0x005F6BA0 + 2, 0xA0); //CLogin::SendCheckPasswordPacket //?? //not sure what these edits specifically do, but hendi's client has them in place for getting rid of checks at this part
+		unsigned char CA_005F6BA4[] = { 0xFF, 0x75, 0x0C, 0x90, 0x90, 0x90, 0x90 }; //CLogin::SendCheckPasswordPacket //??
+		Memory::WriteByteArray(0x005F6BA4, CA_005F6BA4, sizeof(CA_005F6BA4)); //CLogin::SendCheckPasswordPacket //??
+		//end comment this code section
+	}
 
 	Memory::WriteByte(0x00496633 + 1, 0x47); //kill CSecurityClient::OnPacket//ty chronicle for idea for this
 
